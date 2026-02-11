@@ -247,13 +247,37 @@ export default function HeroSection() {
                 <AnimatedLetter key={i} letter={letter} index={i} totalDelay={0.4} />
               ))}
             </span>
-            <span className="block mt-2 overflow-hidden">
-              <span className="text-gradient inline-block">
+            <motion.span
+              className="block mt-2 overflow-hidden"
+              animate={{
+                textShadow: [
+                  '0 0 20px var(--color-asics-accent), 0 0 40px var(--color-asics-blue)',
+                  '0 0 30px var(--color-asics-accent), 0 0 60px var(--color-asics-blue)',
+                  '0 0 20px var(--color-asics-accent), 0 0 40px var(--color-asics-blue)',
+                ],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            >
+              <span
+                className="inline-block font-extrabold"
+                style={{
+                  background: 'linear-gradient(135deg, #00D1FF 0%, #00A3FF 30%, #003DA5 70%, #00D1FF 100%)',
+                  backgroundSize: '200% 200%',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  animation: 'gradient-shift 4s ease infinite',
+                }}
+              >
                 {headlineText2.split('').map((letter, i) => (
                   <AnimatedLetter key={i} letter={letter} index={i} totalDelay={0.8} />
                 ))}
               </span>
-            </span>
+            </motion.span>
           </h1>
 
           {/* Subtitle with fade in */}
@@ -283,68 +307,6 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* Enhanced floating shoe icons with glow */}
-        <div className="absolute inset-0 pointer-events-none">
-          <motion.span
-            animate={{
-              y: [-15, 15, -15],
-              rotate: [-5, 5, -5],
-            }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-1/4 left-1/4 text-5xl"
-            style={{
-              filter: 'drop-shadow(0 0 10px var(--color-asics-blue))',
-              opacity: 0.4,
-            }}
-          >
-            👟
-          </motion.span>
-          <motion.span
-            animate={{
-              y: [15, -15, 15],
-              x: [-5, 5, -5],
-            }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-1/3 right-1/4 text-4xl"
-            style={{
-              filter: 'drop-shadow(0 0 10px var(--color-asics-accent))',
-              opacity: 0.4,
-            }}
-          >
-            🏃
-          </motion.span>
-          <motion.span
-            animate={{
-              y: [-10, 20, -10],
-              scale: [1, 1.1, 1],
-            }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute bottom-1/3 left-1/3 text-6xl"
-            style={{
-              filter: 'drop-shadow(0 0 15px var(--color-asics-accent))',
-              opacity: 0.5,
-            }}
-          >
-            ⚡
-          </motion.span>
-          <motion.span
-            animate={{
-              y: [10, -20, 10],
-              rotate: [0, 360],
-            }}
-            transition={{
-              y: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
-              rotate: { duration: 20, repeat: Infinity, ease: 'linear' },
-            }}
-            className="absolute top-1/2 right-1/6 text-4xl"
-            style={{
-              filter: 'drop-shadow(0 0 10px var(--color-asics-blue))',
-              opacity: 0.3,
-            }}
-          >
-            🎯
-          </motion.span>
-        </div>
       </div>
 
       {/* Enhanced scroll indicator */}
