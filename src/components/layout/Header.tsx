@@ -57,17 +57,6 @@ export default function Header() {
             </div>
 
             <div className="flex items-center gap-4">
-              {/* Desktop CTA */}
-              <Link href="/quiz" className="hidden sm:block">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)] text-white text-sm font-medium"
-                >
-                  Find My Shoe
-                </motion.button>
-              </Link>
-
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -142,22 +131,6 @@ export default function Header() {
                 <MobileNavLink href="/quiz" onClick={() => setMobileMenuOpen(false)}>
                   🎯 Quiz
                 </MobileNavLink>
-
-                <div className="pt-6 border-t border-[var(--color-border)]">
-                  <Link
-                    href="/quiz"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block"
-                  >
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)] text-white font-medium"
-                    >
-                      Find My Shoe
-                    </motion.button>
-                  </Link>
-                </div>
               </div>
             </motion.div>
           </motion.div>
