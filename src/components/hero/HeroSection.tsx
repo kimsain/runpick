@@ -263,15 +263,7 @@ export default function HeroSection() {
               }}
             >
               <span
-                className="inline-block font-extrabold"
-                style={{
-                  background: 'linear-gradient(135deg, #FFFFFF 0%, #00D1FF 25%, #00F5FF 50%, #00D1FF 75%, #FFFFFF 100%)',
-                  backgroundSize: '200% 200%',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  animation: 'gradient-shift 4s ease infinite',
-                }}
+                className="inline-block font-extrabold text-white"
               >
                 {headlineText2.split('').map((letter, i) => (
                   <AnimatedLetter key={i} letter={letter} index={i} totalDelay={0.8} />
