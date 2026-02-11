@@ -265,7 +265,7 @@ export default function HeroSection() {
               <span
                 className="inline-block font-extrabold"
                 style={{
-                  background: 'linear-gradient(135deg, #00D1FF 0%, #00A3FF 30%, #003DA5 70%, #00D1FF 100%)',
+                  background: 'linear-gradient(135deg, #FFFFFF 0%, #00D1FF 25%, #00F5FF 50%, #00D1FF 75%, #FFFFFF 100%)',
                   backgroundSize: '200% 200%',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
