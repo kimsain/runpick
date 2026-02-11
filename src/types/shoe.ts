@@ -66,6 +66,8 @@ export interface RunningShoe {
   releaseYear: number;
   colorways: string[];
   slug: string;
+  isUpcoming?: boolean;
+  upcomingNote?: string;
 }
 
 export interface Brand {

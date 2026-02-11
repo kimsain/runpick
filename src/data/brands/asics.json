@@ -9,19 +9,21 @@
   },
   "shoes": [
     {
-      "id": "gel-cumulus-27",
+      "id": "gel-cumulus-28",
       "brandId": "asics",
-      "name": "GEL-CUMULUS 27",
-      "nameKo": "젤-큐뮬러스 27",
+      "name": "GEL-CUMULUS 28",
+      "nameKo": "젤-큐뮬러스 28",
       "categoryId": "daily",
       "subcategoryId": "entry",
       "price": 179000,
       "priceFormatted": "179,000원",
-      "description": "아식스의 대표 입문용 러닝화로, 27대를 이어온 검증된 쿠셔닝과 안정성을 제공합니다. FF BLAST PLUS 폼과 GEL 기술이 결합되어 편안한 착화감과 충격 흡수를 제공하며, 처음 러닝을 시작하는 분들에게 완벽한 선택입니다.",
+      "description": "아식스의 대표 입문용 러닝화로, 28대를 이어온 검증된 쿠셔닝과 안정성을 제공합니다. FF BLAST PLUS 폼과 GEL 기술이 결합되어 편안한 착화감과 충격 흡수를 제공하며, 처음 러닝을 시작하는 분들에게 완벽한 선택입니다.",
       "shortDescription": "입문자를 위한 검증된 쿠셔닝 러닝화",
-      "imageUrl": "https://images.asics.com/is/image/asics/1011B861_002_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/gel-cumulus-28.png",
+      "isUpcoming": true,
+      "upcomingNote": "한국 미출시",
       "specs": {
-        "weight": 285,
+        "weight": 280,
         "drop": 8,
         "cushioning": 7,
         "responsiveness": 5,
@@ -47,9 +49,9 @@
         "장거리 LSD 훈련"
       ],
       "technologies": ["FF BLAST PLUS", "GEL", "AHARPLUS"],
-      "releaseYear": 2024,
+      "releaseYear": 2025,
       "colorways": ["Black/White", "French Blue", "Safety Yellow"],
-      "slug": "gel-cumulus-27"
+      "slug": "gel-cumulus-28"
     },
     {
       "id": "gel-nimbus-28",
@@ -62,7 +64,7 @@
       "priceFormatted": "229,000원",
       "description": "아식스의 플래그십 맥스 쿠션 러닝화입니다. 두꺼운 FF BLAST PLUS ECO 미드솔과 PureGEL 기술이 결합되어 구름 위를 걷는 듯한 푹신한 착화감을 선사합니다. 장거리 러닝에서 발의 피로를 최소화하고 싶은 러너에게 최고의 선택.",
       "shortDescription": "구름 위를 걷는 듯한 맥스 쿠셔닝",
-      "imageUrl": "https://images.asics.com/is/image/asics/1011B916_002_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/gel-nimbus-28.webp",
       "specs": {
         "weight": 290,
         "drop": 8,
@@ -105,7 +107,7 @@
       "priceFormatted": "219,000원",
       "description": "에너지 효율적인 러닝을 위해 설계된 맥스 쿠션 러닝화입니다. 독특한 로커 구조가 자연스러운 발 구름을 유도하여 에너지 소비를 줄여줍니다. 마라톤 트레이닝이나 장거리 러닝에 특화되어 있습니다.",
       "shortDescription": "에너지 효율적인 맥스 쿠션 러닝화",
-      "imageUrl": "https://images.asics.com/is/image/asics/1011B767_001_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/glideride-max-2.webp",
       "specs": {
         "weight": 295,
         "drop": 5,
@@ -148,7 +150,7 @@
       "priceFormatted": "249,000원",
       "description": "30년 이상의 역사를 자랑하는 아식스의 대표 안정성 러닝화입니다. 4D GUIDANCE SYSTEM이 과회내를 방지하고 발을 안정적으로 잡아줍니다. 평발이나 과회내 러너에게 완벽한 선택입니다.",
       "shortDescription": "검증된 안정성의 대명사",
-      "imageUrl": "https://images.asics.com/is/image/asics/1011B900_003_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/gel-kayano-32.webp",
       "specs": {
         "weight": 299,
         "drop": 10,
@@ -191,7 +193,7 @@
       "priceFormatted": "189,000원",
       "description": "트램폴린 같은 반발력으로 유명한 올라운더 러닝화입니다. FF BLAST PLUS가 탄성 있는 쿠셔닝을 제공하며, 이지런부터 템포런까지 다양한 훈련에 활용할 수 있습니다. 재미있게 뛰고 싶은 러너에게 추천!",
       "shortDescription": "트램폴린 같은 반발력의 올라운더",
-      "imageUrl": "https://images.asics.com/is/image/asics/1011B923_100_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/novablast-5.webp",
       "specs": {
         "weight": 258,
         "drop": 8,
@@ -224,49 +226,6 @@
       "slug": "novablast-5"
     },
     {
-      "id": "evoride-speed-3",
-      "brandId": "asics",
-      "name": "EVORIDE SPEED 3",
-      "nameKo": "에보라이드 스피드 3",
-      "categoryId": "daily",
-      "subcategoryId": "lightweight",
-      "price": 169000,
-      "priceFormatted": "169,000원",
-      "description": "가볍고 빠른 템포런을 위한 경량 러닝화입니다. 에너지 효율적인 GUIDESOLE 기술과 가벼운 FF BLAST 미드솔이 결합되어 빠른 페이스에서도 발이 편합니다. 가성비 좋은 경량 트레이너를 찾는다면 이거!",
-      "shortDescription": "가볍고 빠른 템포런의 친구",
-      "imageUrl": "https://images.asics.com/is/image/asics/1011B786_001_SR_RT_GLB?wid=600",
-      "specs": {
-        "weight": 225,
-        "drop": 5,
-        "cushioning": 6,
-        "responsiveness": 7,
-        "stability": 5,
-        "durability": 6,
-        "stackHeight": {
-          "heel": 35,
-          "forefoot": 30
-        }
-      },
-      "pros": [
-        "가벼운 무게",
-        "빠른 페이스에 적합",
-        "가성비 우수"
-      ],
-      "cons": [
-        "쿠셔닝이 다소 얇음",
-        "장거리에는 피로도 증가"
-      ],
-      "bestFor": [
-        "템포런 및 인터벌 훈련",
-        "5K/10K 레이스 훈련",
-        "가벼운 신발을 선호하는 러너"
-      ],
-      "technologies": ["FF BLAST", "GUIDESOLE", "AHAR"],
-      "releaseYear": 2024,
-      "colorways": ["Black/Orange Pop", "White/Thunder Blue", "Illuminate Green"],
-      "slug": "evoride-speed-3"
-    },
-    {
       "id": "superblast-2",
       "brandId": "asics",
       "name": "SUPERBLAST 2",
@@ -277,7 +236,7 @@
       "priceFormatted": "259,000원",
       "description": "플레이트 없이도 레이싱급 반발력을 느낄 수 있는 슈퍼 트레이너입니다. FF TURBO PLUS 폼이 폭발적인 에너지 리턴을 제공하며, 템포런부터 레이스 페이스 훈련까지 폭넓게 활용됩니다. 플레이트 신발이 부담스럽다면 이게 답!",
       "shortDescription": "플레이트 없는 폭발적 반발력",
-      "imageUrl": "https://images.asics.com/is/image/asics/1013A127_100_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/superblast-2.webp",
       "specs": {
         "weight": 240,
         "drop": 8,
@@ -320,7 +279,7 @@
       "priceFormatted": "239,000원",
       "description": "슈퍼블라스트의 형제 모델로, 더 두꺼운 쿠셔닝과 넓은 아웃솔이 특징입니다. 안정성이 필요하면서도 반발력을 원하는 러너에게 적합합니다. 장거리 슈퍼 트레이닝의 새로운 선택지!",
       "shortDescription": "안정성을 더한 슈퍼 트레이너",
-      "imageUrl": "https://images.asics.com/is/image/asics/1013A165_001_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/megablast.webp",
       "specs": {
         "weight": 265,
         "drop": 8,
@@ -363,7 +322,7 @@
       "priceFormatted": "249,000원",
       "description": "가벼운 플레이트를 탑재한 슈퍼 트레이너입니다. 플레이트가 제공하는 추진력과 FF TURBO PLUS의 반발력이 결합되어 레이싱화에 가까운 경험을 선사합니다. 레이스 준비 훈련에 완벽한 선택!",
       "shortDescription": "라이트 플레이트의 레이스급 반발력",
-      "imageUrl": "https://images.asics.com/is/image/asics/1013A167_100_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/sonicblast.webp",
       "specs": {
         "weight": 235,
         "drop": 8,
@@ -406,7 +365,7 @@
       "priceFormatted": "229,000원",
       "description": "풀 카본 플레이트를 탑재한 슈퍼 트레이너입니다. 레이싱화에 가장 가까운 훈련화로, 대회 준비 훈련이나 빠른 템포런에 최적화되어 있습니다. 가성비 카본 슈퍼 트레이너를 찾는다면 정답!",
       "shortDescription": "가성비 카본 슈퍼 트레이너",
-      "imageUrl": "https://images.asics.com/is/image/asics/1011B927_001_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/magic-speed-5.webp",
       "specs": {
         "weight": 215,
         "drop": 5,
@@ -449,7 +408,7 @@
       "priceFormatted": "299,000원",
       "description": "케이던스형 러너를 위한 레이싱화입니다. 가볍고 반응성이 뛰어나며, 빠른 발 회전으로 달리는 러너에게 최적화되어 있습니다. 하프마라톤이나 10K 레이스에서 빛을 발합니다.",
       "shortDescription": "케이던스형 러너를 위한 레이서",
-      "imageUrl": "https://images.asics.com/is/image/asics/1013A116_600_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/metaspeed-ray.webp",
       "specs": {
         "weight": 185,
         "drop": 5,
@@ -492,7 +451,7 @@
       "priceFormatted": "349,000원",
       "description": "아식스의 최신 최상위 레이싱화입니다. 새로운 FF TURBO PLUS 폼과 최적화된 카본 플레이트가 결합되어 마라톤에서 최고의 퍼포먼스를 제공합니다. 서브3를 목표로 하는 시리어스 러너를 위한 선택.",
       "shortDescription": "최상위 풀마라톤 레이싱화",
-      "imageUrl": "https://images.asics.com/is/image/asics/1013A154_600_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/yogiri-s4-plus.webp",
       "specs": {
         "weight": 195,
         "drop": 5,
@@ -535,7 +494,7 @@
       "priceFormatted": "319,000원",
       "description": "스트라이드형 러너를 위한 도쿄 에디션 레이싱화입니다. 보폭이 큰 러너에게 최적화된 설계로, 에너지 효율을 극대화하여 마라톤에서 최고의 결과를 이끌어냅니다.",
       "shortDescription": "스트라이드형 러너의 도쿄 에디션",
-      "imageUrl": "https://images.asics.com/is/image/asics/1013A115_600_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/metaspeed-sky-tokyo.webp",
       "specs": {
         "weight": 200,
         "drop": 5,
@@ -578,7 +537,7 @@
       "priceFormatted": "319,000원",
       "description": "케이던스형 러너를 위한 도쿄 에디션 레이싱화입니다. 빠른 발 회전에 최적화된 설계로, 하프마라톤부터 풀마라톤까지 케이던스 러너의 잠재력을 최대화합니다.",
       "shortDescription": "케이던스형 러너의 도쿄 에디션",
-      "imageUrl": "https://images.asics.com/is/image/asics/1013A117_600_SR_RT_GLB?wid=600",
+      "imageUrl": "/shoes/metaspeed-edge-tokyo.webp",
       "specs": {
         "weight": 190,
         "drop": 5,
