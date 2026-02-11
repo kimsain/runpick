@@ -9,51 +9,6 @@
   },
   "shoes": [
     {
-      "id": "gel-cumulus-28",
-      "brandId": "asics",
-      "name": "GEL-CUMULUS 28",
-      "nameKo": "젤-큐뮬러스 28",
-      "categoryId": "daily",
-      "subcategoryId": "entry",
-      "price": 179000,
-      "priceFormatted": "179,000원",
-      "description": "아식스의 대표 입문용 러닝화로, 28대를 이어온 검증된 쿠셔닝과 안정성을 제공합니다. FF BLAST PLUS 폼과 GEL 기술이 결합되어 편안한 착화감과 충격 흡수를 제공하며, 처음 러닝을 시작하는 분들에게 완벽한 선택입니다.",
-      "shortDescription": "입문자를 위한 검증된 쿠셔닝 러닝화",
-      "imageUrl": "/shoes/gel-cumulus-28.png",
-      "isUpcoming": true,
-      "upcomingNote": "한국 미출시",
-      "specs": {
-        "weight": 280,
-        "drop": 8,
-        "cushioning": 7,
-        "responsiveness": 5,
-        "stability": 6,
-        "durability": 8,
-        "stackHeight": {
-          "heel": 40,
-          "forefoot": 32
-        }
-      },
-      "pros": [
-        "편안한 쿠셔닝으로 장거리에도 피로도 적음",
-        "내구성이 뛰어나 오래 사용 가능",
-        "다양한 발 유형에 맞는 안정적인 착화감"
-      ],
-      "cons": [
-        "무게가 다소 있어 빠른 페이스에는 부담",
-        "반발력이 높지 않아 스피드 훈련에는 비적합"
-      ],
-      "bestFor": [
-        "러닝 입문자",
-        "편안한 이지런",
-        "장거리 LSD 훈련"
-      ],
-      "technologies": ["FF BLAST PLUS", "GEL", "AHARPLUS"],
-      "releaseYear": 2025,
-      "colorways": ["Black/White", "French Blue", "Safety Yellow"],
-      "slug": "gel-cumulus-28"
-    },
-    {
       "id": "gel-nimbus-28",
       "brandId": "asics",
       "name": "GEL-NIMBUS 28",
