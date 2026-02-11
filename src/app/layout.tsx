@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import LayoutClient from "@/components/layout/LayoutClient";
 
 export const metadata: Metadata = {
   title: "RunPick - 당신에게 딱 맞는 러닝화를 찾아드립니다",
@@ -32,7 +33,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen antialiased">
-        {children}
+        <LayoutClient>
+          {children}
+        </LayoutClient>
       </body>
     </html>
   );

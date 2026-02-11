@@ -1,9 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ShoeCard from '@/components/shoe/ShoeCard';
 import { getAllShoes } from '@/utils/shoe-utils';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 // Animated star/sparkle component
 function Sparkle({ delay, x, y }: { delay: number; x: string; y: string }) {
@@ -187,6 +189,10 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
 }
 
 export default function FeaturedShoes() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+
   const allShoes = getAllShoes();
   // 각 카테고리에서 인기 모델 선택
   const featuredShoes = [
@@ -195,8 +201,74 @@ export default function FeaturedShoes() {
     allShoes.find((s) => s.id === 'metaspeed-sky-tokyo'),
   ].filter(Boolean);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // Title animation with scale and opacity
+      if (titleRef.current) {
+        gsap.fromTo(
+          titleRef.current,
+          {
+            opacity: 0,
+            y: 100,
+            scale: 0.8,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: titleRef.current,
+              start: 'top 85%',
+              end: 'top 50%',
+              scrub: 1,
+            },
+          }
+        );
+      }
+
+      // Card stagger animation with 3D rotation
+      if (cardsRef.current) {
+        const cards = cardsRef.current.children;
+        gsap.fromTo(
+          cards,
+          {
+            opacity: 0,
+            y: 150,
+            rotateX: 45,
+            rotateY: -15,
+            scale: 0.8,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            rotateX: 0,
+            rotateY: 0,
+            scale: 1,
+            duration: 1.2,
+            stagger: 0.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: cardsRef.current,
+              start: 'top 80%',
+              end: 'top 30%',
+              scrub: 1.2,
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="relative py-28 bg-[var(--color-background)] overflow-hidden">
+    <section ref={sectionRef} className="relative py-28 bg-[var(--color-background)] overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Subtle gradient orbs */}
@@ -233,11 +305,8 @@ export default function FeaturedShoes() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Animated section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
+        <div
+          ref={titleRef}
           className="text-center mb-16"
         >
           <FeaturedBadge />
@@ -301,10 +370,10 @@ export default function FeaturedShoes() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.5 }}
           />
-        </motion.div>
+        </div>
 
         {/* Shoe cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10" style={{ perspective: '1000px' }}>
           {featuredShoes.map((shoe, index) => (
             shoe && <SpotlightShoeCard key={shoe.id} shoe={shoe} index={index} />
           ))}

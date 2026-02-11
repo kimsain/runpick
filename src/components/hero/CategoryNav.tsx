@@ -2,8 +2,10 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { categories } from '@/data/categories';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 // Particle effect for hover
 function HoverParticles({ isHovered, color }: { isHovered: boolean; color: string }) {
@@ -237,15 +239,80 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
 }
 
 export default function CategoryNav() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // Header reveal animation
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          {
+            opacity: 0,
+            y: 80,
+            scale: 0.9,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              end: 'top 50%',
+              scrub: 1,
+            },
+          }
+        );
+      }
+
+      // Cards reveal with stagger
+      if (cardsContainerRef.current) {
+        const cards = cardsContainerRef.current.children;
+        gsap.fromTo(
+          cards,
+          {
+            opacity: 0,
+            y: 120,
+            rotateY: -30,
+            scale: 0.85,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            rotateY: 0,
+            scale: 1,
+            duration: 1,
+            stagger: 0.2,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: cardsContainerRef.current,
+              start: 'top 80%',
+              end: 'top 30%',
+              scrub: 1.5,
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-28 bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]">
+    <section ref={sectionRef} className="py-28 bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Animated section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
+        <div
+          ref={headerRef}
           className="text-center mb-20"
         >
           {/* Decorative line */}
@@ -322,10 +389,10 @@ export default function CategoryNav() {
               />
             ))}
           </motion.div>
-        </motion.div>
+        </div>
 
         {/* Category cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div ref={cardsContainerRef} className="grid grid-cols-1 md:grid-cols-3 gap-8" style={{ perspective: '1000px' }}>
           {categories.map((category, index) => (
             <CategoryCard key={category.id} category={category} index={index} />
           ))}

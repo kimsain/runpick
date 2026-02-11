@@ -1,7 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useEffect, useState, useRef } from 'react';
 import Button from '@/components/common/Button';
 
 // Floating particle component
@@ -131,6 +131,18 @@ function PulsingButton({ children, href, variant = 'primary' }: {
 
 export default function HeroSection() {
   const [particles, setParticles] = useState<Array<{ id: number; delay: number; duration: number; size: number; x: string; y: string }>>([]);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Parallax scroll effects
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  });
+
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.9]);
 
   // Generate particles on mount (client-side only)
   useEffect(() => {
@@ -149,9 +161,12 @@ export default function HeroSection() {
   const headlineText2 = '러닝화를 찾아드립니다';
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-background)] via-[var(--color-background)] to-[var(--color-asics-blue)]/10" />
+    <section ref={sectionRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background gradient with parallax */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-[var(--color-background)] via-[var(--color-background)] to-[var(--color-asics-blue)]/10"
+        style={{ y: backgroundY }}
+      />
 
       {/* Animated gradient wave background */}
       <div className="absolute inset-0 overflow-hidden">
@@ -223,8 +238,11 @@ export default function HeroSection() {
         ))}
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      {/* Content with parallax */}
+      <motion.div
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+        style={{ y: contentY, opacity: contentOpacity, scale }}
+      >
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -362,7 +380,7 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
 
-      </div>
+      </motion.div>
 
       {/* Enhanced scroll indicator */}
       <motion.div

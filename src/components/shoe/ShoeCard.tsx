@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { RunningShoe } from '@/types/shoe';
 import Badge from '@/components/common/Badge';
 import { getCategoryById } from '@/data/categories';
@@ -159,12 +160,12 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
         {/* Image container */}
         <div className="relative aspect-[4/3] bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] overflow-hidden">
           <motion.div
-            className="absolute inset-0 flex items-center justify-center p-6"
+            className="absolute inset-0 flex items-center justify-center p-4"
             style={{ transform: 'translateZ(50px)' }}
           >
-            {/* Placeholder for shoe image with bounce effect */}
+            {/* Product image with bounce effect */}
             <motion.div
-              className="w-full h-full flex items-center justify-center text-6xl opacity-20"
+              className="relative w-full h-full"
               animate={isHovered ? {
                 scale: [1, 1.15, 1.1],
                 rotate: [0, -3, 3, 0],
@@ -176,7 +177,14 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
                 damping: 15,
               }}
             >
-              👟
+              <Image
+                src={shoe.imageUrl}
+                alt={shoe.name}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-contain drop-shadow-2xl"
+                priority={index < 3}
+              />
             </motion.div>
           </motion.div>
 
