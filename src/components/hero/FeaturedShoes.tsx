@@ -378,32 +378,6 @@ export default function FeaturedShoes() {
             shoe && <SpotlightShoeCard key={shoe.id} shoe={shoe} index={index} />
           ))}
         </div>
-
-        {/* Bottom CTA hint */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-16"
-        >
-          <motion.p
-            className="text-sm text-[var(--color-foreground)]/50"
-            animate={{ opacity: [0.5, 0.8, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            카테고리를 탐색하여 더 많은 러닝화를 발견하세요
-          </motion.p>
-          <motion.div
-            className="mt-3 flex justify-center gap-1"
-            animate={{ y: [0, 5, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            <span className="text-[var(--color-foreground)]/30">↓</span>
-            <span className="text-[var(--color-foreground)]/50">↓</span>
-            <span className="text-[var(--color-foreground)]/30">↓</span>
-          </motion.div>
-        </motion.div>
       </div>
     </section>
   );
