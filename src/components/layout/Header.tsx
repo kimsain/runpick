@@ -34,33 +34,53 @@ export default function Header() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled || mobileMenuOpen ? 'glass' : 'bg-transparent'
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled || mobileMenuOpen
+            ? 'glass shadow-lg shadow-[var(--color-asics-blue)]/10 backdrop-blur-xl'
+            : 'bg-transparent backdrop-blur-none'
         }`}
+        style={{
+          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.1)' : 'none',
+        }}
       >
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
+            {/* Logo - Left */}
+            <Link href="/" className="flex items-center gap-2 flex-shrink-0">
               <motion.span
-                className="text-2xl font-bold text-gradient"
+                className="text-2xl font-bold text-gradient relative"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                animate={{
+                  textShadow: [
+                    '0 0 20px rgba(0, 51, 141, 0.3)',
+                    '0 0 30px rgba(0, 51, 141, 0.5)',
+                    '0 0 20px rgba(0, 51, 141, 0.3)',
+                  ],
+                }}
+                transition={{
+                  textShadow: {
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  },
+                }}
               >
                 RunPick
               </motion.span>
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Navigation - Right aligned */}
             <div className="hidden md:flex items-center gap-8">
               <NavLink href="/brand/asics">Catalog</NavLink>
               <NavLink href="/quiz">Quiz</NavLink>
             </div>
 
-            <div className="flex items-center gap-4">
-              {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Right */}
+            <div className="flex items-center gap-4 md:hidden">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-lg hover:bg-[var(--color-card)] transition-colors"
+                className="p-2 rounded-lg hover:bg-[var(--color-card)] transition-colors"
                 aria-label="Toggle menu"
               >
                 <motion.div
@@ -141,18 +161,43 @@ export default function Header() {
 }
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <Link href={href}>
       <motion.span
-        className="text-sm font-medium text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)] transition-colors relative"
-        whileHover={{ y: -2 }}
+        className="text-sm font-semibold text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)] transition-all duration-300 relative px-3 py-2 rounded-lg"
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        whileHover={{
+          y: -2,
+          color: 'var(--color-asics-accent)',
+        }}
+        animate={{
+          backgroundColor: isHovered ? 'rgba(0, 51, 141, 0.1)' : 'transparent',
+        }}
+        transition={{ duration: 0.2 }}
       >
         {children}
+        {/* Animated underline */}
         <motion.span
-          className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)]"
-          initial={{ scaleX: 0 }}
-          whileHover={{ scaleX: 1 }}
-          transition={{ duration: 0.2 }}
+          className="absolute -bottom-0 left-1/2 h-0.5 bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)] rounded-full"
+          initial={{ width: 0, x: '-50%' }}
+          animate={{
+            width: isHovered ? '80%' : 0,
+            x: '-50%',
+          }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+        />
+        {/* Subtle glow on hover */}
+        <motion.span
+          className="absolute inset-0 rounded-lg pointer-events-none"
+          animate={{
+            boxShadow: isHovered
+              ? '0 0 15px rgba(0, 51, 141, 0.3)'
+              : '0 0 0px rgba(0, 51, 141, 0)',
+          }}
+          transition={{ duration: 0.3 }}
         />
       </motion.span>
     </Link>
@@ -171,10 +216,19 @@ function MobileNavLink({
   return (
     <Link href={href} onClick={onClick}>
       <motion.div
-        whileHover={{ x: 10 }}
+        whileHover={{
+          x: 10,
+          backgroundColor: 'rgba(0, 51, 141, 0.1)',
+        }}
         whileTap={{ scale: 0.98 }}
-        className="text-lg font-medium text-[var(--color-foreground)] py-3 border-b border-[var(--color-border)]/50"
+        className="text-lg font-medium text-[var(--color-foreground)] py-4 px-4 -mx-4 border-b border-[var(--color-border)]/50 rounded-lg transition-colors relative overflow-hidden"
       >
+        <motion.span
+          className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[var(--color-asics-blue)] to-[var(--color-asics-accent)]"
+          initial={{ scaleY: 0 }}
+          whileHover={{ scaleY: 1 }}
+          transition={{ duration: 0.2 }}
+        />
         {children}
       </motion.div>
     </Link>
