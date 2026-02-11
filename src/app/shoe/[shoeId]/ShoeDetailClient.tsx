@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
@@ -77,24 +78,38 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="relative aspect-square bg-[var(--color-card)] rounded-3xl overflow-hidden border border-[var(--color-border)]"
+                className="relative aspect-square bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] rounded-3xl overflow-hidden border border-[var(--color-border)]"
               >
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <motion.span
-                    className="text-[12rem] opacity-20"
-                    animate={{ y: [-10, 10, -10] }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                  >
-                    👟
-                  </motion.span>
-                </div>
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center p-8"
+                  animate={{ y: [-5, 5, -5] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Image
+                    src={shoe.imageUrl}
+                    alt={shoe.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-contain drop-shadow-2xl p-8"
+                    priority
+                  />
+                </motion.div>
 
                 {/* Category badge */}
-                <div className="absolute top-6 left-6">
+                <div className="absolute top-6 left-6 z-10">
                   <Badge variant="category" categoryId={shoe.categoryId}>
                     {category?.icon} {category?.name}
                   </Badge>
                 </div>
+
+                {/* Upcoming badge */}
+                {shoe.isUpcoming && (
+                  <div className="absolute top-6 right-6 z-10">
+                    <span className="px-3 py-1.5 bg-orange-500/90 text-white text-xs font-bold rounded-full">
+                      {shoe.upcomingNote || 'Coming Soon'}
+                    </span>
+                  </div>
+                )}
               </motion.div>
 
               {/* Info */}
