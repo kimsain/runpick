@@ -54,19 +54,36 @@ function AnimatedLetter({ letter, index, totalDelay }: { letter: string; index: 
       className="inline-block"
       style={{ transformStyle: 'preserve-3d' }}
     >
+      {letter}
+    </motion.span>
+  );
+}
+
+// Accent headline letter with enhanced glow animation
+function AccentLetter({ letter, index, totalDelay }: { letter: string; index: number; totalDelay: number }) {
+  if (letter === ' ') return <span>&nbsp;</span>;
+
+  return (
+    <motion.span
+      initial={{ opacity: 0, y: 60, scale: 0.5 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{
+        duration: 0.5,
+        delay: totalDelay + index * 0.04,
+        ease: [0.34, 1.56, 0.64, 1], // spring-like bounce
+      }}
+      className="inline-block relative"
+    >
       <motion.span
+        className="relative z-10"
         animate={{
-          textShadow: [
-            '0 0 0px transparent',
-            '0 0 20px var(--color-asics-blue)',
-            '0 0 0px transparent',
-          ],
+          color: ['#ffffff', '#00D1FF', '#ffffff'],
         }}
         transition={{
-          duration: 2,
-          delay: totalDelay + index * 0.05 + 0.6,
+          duration: 3,
+          delay: totalDelay + index * 0.1 + 1.5,
           repeat: Infinity,
-          repeatDelay: 3,
+          repeatDelay: 2,
         }}
       >
         {letter}
@@ -248,27 +265,73 @@ export default function HeroSection() {
               ))}
             </span>
             <motion.span
-              className="block mt-2 overflow-hidden"
-              animate={{
-                textShadow: [
-                  '0 0 20px var(--color-asics-accent), 0 0 40px var(--color-asics-blue)',
-                  '0 0 30px var(--color-asics-accent), 0 0 60px var(--color-asics-blue)',
-                  '0 0 20px var(--color-asics-accent), 0 0 40px var(--color-asics-blue)',
-                ],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
+              className="block mt-2 overflow-hidden relative"
             >
-              <span
-                className="inline-block font-extrabold text-white"
+              {/* Glow backdrop */}
+              <motion.span
+                className="absolute inset-0 blur-2xl"
+                animate={{
+                  opacity: [0.3, 0.6, 0.3],
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+                style={{
+                  background: 'linear-gradient(90deg, var(--color-asics-blue), var(--color-asics-accent), var(--color-asics-blue))',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+                aria-hidden="true"
               >
+                {headlineText2}
+              </motion.span>
+
+              {/* Main text with shimmer */}
+              <motion.span
+                className="inline-block font-extrabold text-white relative"
+                animate={{
+                  textShadow: [
+                    '0 0 10px rgba(0, 209, 255, 0.5), 0 0 20px rgba(0, 61, 165, 0.3)',
+                    '0 0 25px rgba(0, 209, 255, 0.8), 0 0 50px rgba(0, 61, 165, 0.5)',
+                    '0 0 10px rgba(0, 209, 255, 0.5), 0 0 20px rgba(0, 61, 165, 0.3)',
+                  ],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              >
+                {/* Shimmer sweep effect */}
+                <motion.span
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundSize: '200% 100%',
+                  }}
+                  animate={{
+                    backgroundPosition: ['-200% 0', '200% 0'],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    repeatDelay: 2,
+                    ease: 'easeInOut',
+                  }}
+                  aria-hidden="true"
+                >
+                  {headlineText2}
+                </motion.span>
+
                 {headlineText2.split('').map((letter, i) => (
-                  <AnimatedLetter key={i} letter={letter} index={i} totalDelay={0.8} />
+                  <AccentLetter key={i} letter={letter} index={i} totalDelay={0.8} />
                 ))}
-              </span>
+              </motion.span>
             </motion.span>
           </h1>
 
