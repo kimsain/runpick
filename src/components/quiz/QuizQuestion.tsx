@@ -2,19 +2,39 @@
 
 import { motion } from 'framer-motion';
 import { QuizQuestion as QuizQuestionType } from '@/types/quiz';
-import MagneticElement from '@/components/effects/MagneticElement';
+import { useRef } from 'react';
 
 interface QuizQuestionProps {
   question: QuizQuestionType;
-  selectedOptions: string[];
+  selectedOption: string | null;
   onSelectOption: (optionId: string) => void;
+  onAutoAdvance: (optionId: string) => void;
 }
 
 export default function QuizQuestion({
   question,
-  selectedOptions,
+  selectedOption,
   onSelectOption,
+  onAutoAdvance,
 }: QuizQuestionProps) {
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const pendingAdvanceRef = useRef(false);
+
+  const handleClick = (optionId: string) => {
+    // Cancel any pending auto-advance
+    if (timerRef.current) clearTimeout(timerRef.current);
+
+    // Update selection
+    onSelectOption(optionId);
+    pendingAdvanceRef.current = true;
+
+    // Start auto-advance timer
+    timerRef.current = setTimeout(() => {
+      pendingAdvanceRef.current = false;
+      onAutoAdvance(optionId);
+    }, 500);
+  };
+
   return (
     <div>
       <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-foreground)] mb-2">
@@ -26,75 +46,66 @@ export default function QuizQuestion({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {question.options.map((option, index) => {
-          const isSelected = selectedOptions.includes(option.id);
+          const isSelected = selectedOption === option.id;
+          const hasSelection = selectedOption !== null;
 
           return (
-            <MagneticElement key={option.id} strength={0.15} radius={100}>
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.02, y: -4 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => onSelectOption(option.id)}
-                className={`relative w-full p-6 rounded-2xl border text-left transition-all ${
-                  isSelected
-                    ? 'border-[var(--color-asics-accent)] bg-[var(--color-asics-accent)]/10'
-                    : 'border-[var(--color-border)] bg-[var(--color-card)] hover:border-[var(--color-border-hover)]'
-                }`}
-              >
-                {/* Selection indicator */}
-                {isSelected && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute top-4 right-4 w-6 h-6 rounded-full bg-[var(--color-asics-accent)] flex items-center justify-center"
-                  >
-                    <svg
-                      className="w-4 h-4 text-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={3}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </motion.div>
-                )}
-
-                {/* Icon */}
-                {option.icon && (
-                  <span className="text-3xl mb-3 block">{option.icon}</span>
-                )}
-
-                {/* Label */}
-                <h3
-                  className={`text-lg font-medium mb-1 ${
-                    isSelected
-                      ? 'text-[var(--color-asics-accent)]'
-                      : 'text-[var(--color-foreground)]'
-                  }`}
+            <motion.button
+              key={option.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{
+                opacity: hasSelection && !isSelected ? 0.5 : 1,
+                y: 0,
+                scale: isSelected ? 1.02 : 1,
+              }}
+              transition={{ delay: index * 0.08, duration: 0.3 }}
+              whileHover={!isSelected ? { scale: 1.02, y: -4 } : {}}
+              whileTap={!isSelected ? { scale: 0.98 } : {}}
+              onClick={() => handleClick(option.id)}
+              className={`relative w-full p-6 rounded-2xl border text-left transition-all ${
+                isSelected
+                  ? 'border-[var(--color-asics-accent)] bg-[var(--color-asics-accent)]/10 shadow-[0_0_20px_rgba(0,209,255,0.15)]'
+                  : 'border-[var(--color-border)] bg-[var(--color-card)] hover:border-[var(--color-border-hover)]'
+              }`}
+            >
+              {/* Check icon for selected */}
+              {isSelected && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                  className="absolute top-4 right-4 w-6 h-6 rounded-full bg-[var(--color-asics-accent)] flex items-center justify-center"
                 >
-                  {option.labelKo}
-                </h3>
+                  <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </motion.div>
+              )}
 
-                {/* Description */}
-                {option.description && (
-                  <p className="text-sm text-[var(--color-foreground)]/60">
-                    {option.description}
-                  </p>
-                )}
+              {/* Icon */}
+              {option.icon && <span className="text-3xl mb-3 block">{option.icon}</span>}
 
-                {/* Glow effect */}
-                {isSelected && (
-                  <div className="absolute inset-0 rounded-2xl bg-[var(--color-asics-accent)]/5 pointer-events-none" />
-                )}
-              </motion.button>
-            </MagneticElement>
+              {/* Label */}
+              <h3 className={`text-lg font-medium mb-1 ${
+                isSelected ? 'text-[var(--color-asics-accent)]' : 'text-[var(--color-foreground)]'
+              }`}>
+                {option.labelKo}
+              </h3>
+
+              {/* Description */}
+              {option.description && (
+                <p className="text-sm text-[var(--color-foreground)]/60">{option.description}</p>
+              )}
+
+              {/* Glow effect */}
+              {isSelected && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="absolute inset-0 rounded-2xl bg-[var(--color-asics-accent)]/5 pointer-events-none"
+                />
+              )}
+            </motion.button>
           );
         })}
       </div>

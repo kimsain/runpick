@@ -1,13 +1,11 @@
 import { RunningShoe } from './shoe';
 
 export type QuestionId =
-  | 'running-pace'
+  | 'running-purpose'
   | 'weekly-distance'
-  | 'foot-type'
   | 'priority'
   | 'race-distance'
-  | 'weight-category'
-  | 'strike-pattern';
+  | 'body-style';
 
 export interface QuizOption {
   id: string;
@@ -24,7 +22,6 @@ export interface QuizQuestion {
   questionKo: string;
   description?: string;
   options: QuizOption[];
-  multiSelect?: boolean;
 }
 
 export type ScoringCategory =
@@ -34,19 +31,19 @@ export type ScoringCategory =
   | 'stability'
   | 'racing'
   | 'daily'
-  | 'super-trainer'
-  | 'beginner'
-  | 'advanced';
+  | 'super-trainer';
 
 export interface QuizAnswer {
   questionId: QuestionId;
-  selectedOptionIds: string[];
+  selectedOptionId: string; // Changed from selectedOptionIds array (single select only)
 }
 
 export interface QuizResult {
   primaryRecommendation: RunningShoe;
-  alternatives: RunningShoe[];
-  scores: Record<string, number>;
+  alternatives: Array<{ shoe: RunningShoe; reason: string }>;
+  matchScore: number; // 0-100
+  matchReasons: string[];
+  userProfile: Record<string, number>;
   reasoning: string;
 }
 

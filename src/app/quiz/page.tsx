@@ -14,54 +14,58 @@ import { quizQuestions } from '@/data/quiz-questions';
 import { QuizAnswer, QuizResult as QuizResultType } from '@/types/quiz';
 import { calculateQuizResult } from '@/utils/quiz-logic';
 
+type QuizPhase = 'quiz' | 'analyzing' | 'result';
+
 export default function QuizPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswer[]>([]);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [result, setResult] = useState<QuizResultType | null>(null);
-  const [isComplete, setIsComplete] = useState(false);
+  const [phase, setPhase] = useState<QuizPhase>('quiz');
+  const [analysisStep, setAnalysisStep] = useState(0);
 
   const currentQuestion = quizQuestions[currentIndex];
   const isLastQuestion = currentIndex === quizQuestions.length - 1;
 
   const handleSelectOption = useCallback((optionId: string) => {
-    setSelectedOptions((prev) => {
-      if (currentQuestion.multiSelect) {
-        return prev.includes(optionId)
-          ? prev.filter((id) => id !== optionId)
-          : [...prev, optionId];
-      }
-      return [optionId];
-    });
-  }, [currentQuestion.multiSelect]);
+    setSelectedOption(optionId);
+  }, []);
 
-  const handleNext = useCallback(() => {
-    if (selectedOptions.length === 0) return;
-
+  const handleAutoAdvance = useCallback((optionId: string) => {
     const newAnswer: QuizAnswer = {
       questionId: currentQuestion.id,
-      selectedOptionIds: selectedOptions,
+      selectedOptionId: optionId,
     };
 
     const updatedAnswers = [...answers, newAnswer];
     setAnswers(updatedAnswers);
 
     if (isLastQuestion) {
-      // Calculate result
-      const quizResult = calculateQuizResult(updatedAnswers);
-      setResult(quizResult);
-      setIsComplete(true);
+      // Start analysis animation
+      setPhase('analyzing');
+      setAnalysisStep(0);
+
+      // Phase text changes
+      setTimeout(() => setAnalysisStep(1), 300);
+      setTimeout(() => setAnalysisStep(2), 600);
+
+      // Calculate and show result
+      setTimeout(() => {
+        const quizResult = calculateQuizResult(updatedAnswers);
+        setResult(quizResult);
+        setPhase('result');
+      }, 900);
     } else {
       setCurrentIndex((prev) => prev + 1);
-      setSelectedOptions([]);
+      setSelectedOption(null);
     }
-  }, [selectedOptions, currentQuestion, answers, isLastQuestion]);
+  }, [currentQuestion, answers, isLastQuestion]);
 
   const handlePrev = useCallback(() => {
     if (currentIndex > 0) {
-      setCurrentIndex((prev) => prev - 1);
       const prevAnswer = answers[currentIndex - 1];
-      setSelectedOptions(prevAnswer?.selectedOptionIds || []);
+      setCurrentIndex((prev) => prev - 1);
+      setSelectedOption(prevAnswer?.selectedOptionId || null);
       setAnswers((prev) => prev.slice(0, -1));
     }
   }, [currentIndex, answers]);
@@ -69,21 +73,27 @@ export default function QuizPage() {
   const handleRetry = useCallback(() => {
     setCurrentIndex(0);
     setAnswers([]);
-    setSelectedOptions([]);
+    setSelectedOption(null);
     setResult(null);
-    setIsComplete(false);
+    setPhase('quiz');
+    setAnalysisStep(0);
   }, []);
+
+  const analysisTexts = [
+    '답변 분석 중...',
+    '러닝 프로필 생성 중...',
+    '최적 러닝화 매칭 중...',
+  ];
 
   return (
     <>
       <Header />
       <main className="pt-20 min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)] relative overflow-hidden">
-        {/* Floating shapes background */}
         <FloatingShapes count={4} />
 
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <AnimatePresence mode="wait">
-            {!isComplete ? (
+            {phase === 'quiz' && (
               <motion.div
                 key="quiz"
                 initial={{ opacity: 0 }}
@@ -92,11 +102,7 @@ export default function QuizPage() {
               >
                 {/* Header */}
                 <div className="text-center mb-8">
-                  <TextReveal
-                    as="h1"
-                    mode="clip"
-                    className="text-3xl font-bold text-gradient mb-2"
-                  >
+                  <TextReveal as="h1" mode="clip" className="text-3xl font-bold text-gradient mb-2">
                     러닝화 추천 퀴즈
                   </TextReveal>
                   <motion.p
@@ -105,70 +111,93 @@ export default function QuizPage() {
                     transition={{ delay: 0.3 }}
                     className="text-[var(--color-foreground)]/60"
                   >
-                    몇 가지 질문에 답하면 딱 맞는 러닝화를 찾아드려요
+                    5가지 질문으로 딱 맞는 러닝화를 찾아드려요
                   </motion.p>
                 </div>
 
                 {/* Progress */}
-                <QuizProgress
-                  current={currentIndex}
-                  total={quizQuestions.length}
-                />
+                <QuizProgress current={currentIndex} total={quizQuestions.length} />
 
-                {/* Question with clipPath reveal */}
+                {/* Question card */}
                 <div className="bg-[var(--color-card)] rounded-3xl p-6 sm:p-8 border border-[var(--color-border)]">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={currentIndex}
-                      initial={{ clipPath: 'inset(0 100% 0 0)', opacity: 0 }}
-                      animate={{ clipPath: 'inset(0 0% 0 0)', opacity: 1 }}
-                      exit={{ clipPath: 'inset(0 0 0 100%)', opacity: 0 }}
-                      transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -30 }}
+                      transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
                     >
                       <QuizQuestionComponent
                         question={currentQuestion}
-                        selectedOptions={selectedOptions}
+                        selectedOption={selectedOption}
                         onSelectOption={handleSelectOption}
+                        onAutoAdvance={handleAutoAdvance}
                       />
                     </motion.div>
                   </AnimatePresence>
 
-                  {/* Navigation */}
-                  <div className="flex items-center justify-between mt-8 pt-6 border-t border-[var(--color-border)]">
-                    <Button
-                      variant="ghost"
-                      onClick={handlePrev}
-                      disabled={currentIndex === 0}
-                      className={currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}
-                    >
-                      ← 이전
-                    </Button>
-
-                    <Button
-                      onClick={handleNext}
-                      disabled={selectedOptions.length === 0}
-                      className={
-                        selectedOptions.length === 0
-                          ? 'opacity-50 cursor-not-allowed'
-                          : ''
-                      }
-                    >
-                      {isLastQuestion ? '결과 보기' : '다음 →'}
-                    </Button>
-                  </div>
+                  {/* Back button only (no "Next" button) */}
+                  {currentIndex > 0 && (
+                    <div className="mt-8 pt-6 border-t border-[var(--color-border)]">
+                      <Button variant="ghost" onClick={handlePrev}>
+                        ← 이전
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </motion.div>
-            ) : (
-              result && (
+            )}
+
+            {phase === 'analyzing' && (
+              <motion.div
+                key="analyzing"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col items-center justify-center min-h-[400px]"
+              >
+                {/* Spinning loader */}
                 <motion.div
-                  key="result"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <QuizResult result={result} onRetry={handleRetry} />
-                </motion.div>
-              )
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+                  className="w-16 h-16 rounded-full border-4 border-[var(--color-border)] border-t-[var(--color-asics-accent)] mb-8"
+                />
+
+                {/* Analysis text */}
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={analysisStep}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="text-lg text-[var(--color-foreground)]/80 mb-6"
+                  >
+                    {analysisTexts[analysisStep]}
+                  </motion.p>
+                </AnimatePresence>
+
+                {/* Progress bar */}
+                <div className="w-64 h-1.5 bg-[var(--color-border)] rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: '0%' }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 0.8, ease: 'easeInOut' }}
+                    className="h-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)] rounded-full"
+                  />
+                </div>
+              </motion.div>
+            )}
+
+            {phase === 'result' && result && (
+              <motion.div
+                key="result"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <QuizResult result={result} onRetry={handleRetry} />
+              </motion.div>
             )}
           </AnimatePresence>
         </div>

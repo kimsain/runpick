@@ -8,71 +8,77 @@ interface QuizProgressProps {
 }
 
 export default function QuizProgress({ current, total }: QuizProgressProps) {
-  const percentage = ((current + 1) / total) * 100;
-
   return (
     <div className="mb-8">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-sm text-[var(--color-foreground)]/60">
-          질문 {current + 1} / {total}
-        </span>
-        <span className="text-sm font-medium text-[var(--color-asics-accent)]">
-          {Math.round(percentage)}%
-        </span>
-      </div>
-
-      {/* Progress bar with glow */}
-      <div className="relative h-2 bg-[var(--color-card)] rounded-full overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="h-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)] rounded-full relative"
-        >
-          {/* Glow on bar end */}
-          <div
-            className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full"
-            style={{
-              background: 'var(--color-asics-accent)',
-              boxShadow: '0 0 8px var(--color-asics-accent), 0 0 16px rgba(0, 209, 255, 0.4)',
-            }}
-          />
-        </motion.div>
-      </div>
-
-      {/* Dot indicators */}
-      <div className="flex items-center justify-between mt-3">
+      <div className="flex items-center justify-center gap-0">
         {Array.from({ length: total }, (_, i) => (
-          <div key={i} className="relative flex items-center justify-center">
-            <motion.div
-              className="w-2.5 h-2.5 rounded-full"
-              style={{
-                backgroundColor:
-                  i <= current
-                    ? 'var(--color-asics-accent)'
-                    : 'var(--color-border)',
-              }}
-              animate={
-                i === current
-                  ? {
-                      scale: [1, 1.4, 1],
-                      boxShadow: [
-                        '0 0 0px var(--color-asics-accent)',
-                        '0 0 8px var(--color-asics-accent)',
-                        '0 0 0px var(--color-asics-accent)',
-                      ],
-                    }
-                  : {}
-              }
-              transition={
-                i === current
-                  ? { duration: 1.5, repeat: Infinity, ease: 'easeInOut' }
-                  : {}
-              }
-            />
+          <div key={i} className="flex items-center">
+            {/* Step circle */}
+            <div className="relative flex items-center justify-center">
+              <motion.div
+                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2 transition-colors ${
+                  i < current
+                    ? 'bg-[var(--color-asics-accent)] border-[var(--color-asics-accent)] text-white'
+                    : i === current
+                      ? 'border-[var(--color-asics-accent)] text-[var(--color-asics-accent)] bg-[var(--color-asics-accent)]/10'
+                      : 'border-[var(--color-border)] text-[var(--color-foreground)]/30 bg-[var(--color-card)]'
+                }`}
+                animate={
+                  i === current
+                    ? {
+                        boxShadow: [
+                          '0 0 0px rgba(0, 209, 255, 0)',
+                          '0 0 12px rgba(0, 209, 255, 0.4)',
+                          '0 0 0px rgba(0, 209, 255, 0)',
+                        ],
+                      }
+                    : {}
+                }
+                transition={
+                  i === current
+                    ? { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+                    : {}
+                }
+              >
+                {i < current ? (
+                  <motion.svg
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </motion.svg>
+                ) : (
+                  i + 1
+                )}
+              </motion.div>
+            </div>
+
+            {/* Connector line (not after last step) */}
+            {i < total - 1 && (
+              <div className="relative w-12 sm:w-16 h-0.5 mx-1">
+                <div className="absolute inset-0 bg-[var(--color-border)] rounded-full" />
+                {i < current && (
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
+                    className="absolute inset-y-0 left-0 bg-[var(--color-asics-accent)] rounded-full"
+                  />
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
+
+      {/* Question label */}
+      <p className="text-center text-sm text-[var(--color-foreground)]/50 mt-4">
+        질문 {current + 1} / {total}
+      </p>
     </div>
   );
 }
