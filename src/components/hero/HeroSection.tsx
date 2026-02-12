@@ -1,7 +1,6 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { motion } from 'framer-motion';
 import Button from '@/components/common/Button';
 import TextReveal from '@/components/effects/TextReveal';
 import FloatingShapes from '@/components/effects/FloatingShapes';
@@ -53,20 +52,8 @@ function PulsingButton({ children, href, variant = 'primary', delay = 0 }: {
 }
 
 export default function HeroSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  // Parallax scroll effects
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"]
-  });
-
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.9]);
-
   return (
-    <section ref={sectionRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background gradient - static to prevent flicker */}
       <div
         className="absolute inset-0 bg-gradient-to-br from-[var(--color-background)] via-[var(--color-background)] to-[var(--color-asics-blue)]/10"
@@ -91,10 +78,9 @@ export default function HeroSection() {
         <Sparkle delay={1.6} x="50%" y="15%" />
       </div>
 
-      {/* Content with parallax - 20% speed */}
-      <motion.div
-        className="hero-parallax-content relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
-        style={{ y: contentY, opacity: contentOpacity, scale }}
+      {/* Content */}
+      <div
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
       >
         <motion.div
           initial={{ opacity: 0 }}
@@ -210,7 +196,7 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-      </motion.div>
+      </div>
 
       {/* Enhanced scroll indicator wrapped with MagneticElement */}
       <motion.div

@@ -199,7 +199,7 @@ export default function FeaturedShoes() {
   }, [isDesktop]);
 
   return (
-    <section ref={sectionRef} className="relative bg-[var(--color-background)] overflow-hidden">
+    <section ref={sectionRef} className="relative bg-[var(--color-background)]">
       {/* Background decorative elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
         {/* Sparkles */}
@@ -212,7 +212,7 @@ export default function FeaturedShoes() {
 
       <div
         ref={scrollContainerRef}
-        className={`relative flex flex-col justify-center ${!isDesktop ? '' : 'min-h-screen'}`}
+        className={`relative flex flex-col justify-center overflow-hidden ${!isDesktop ? '' : 'min-h-screen'}`}
         data-cursor="drag"
       >
         {/* Section header */}
