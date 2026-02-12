@@ -67,7 +67,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
       <Header />
       <main className="pt-20">
         {/* Hero Section */}
-        <section className="py-16 bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)] relative overflow-hidden">
+        <section className="py-10 sm:py-16 bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)] relative overflow-hidden">
           <FloatingShapes />
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,7 +75,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
               <TextReveal
                 as="h1"
                 mode="clip"
-                className="text-5xl sm:text-6xl font-bold text-balance leading-tight"
+                className="text-4xl sm:text-5xl md:text-6xl font-bold text-balance leading-tight"
               >
                 <span style={{ color: brand.color }}>{brand.name}</span>
               </TextReveal>
@@ -102,14 +102,14 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
         {/* Category Navigation with MagneticElement */}
         <section className="py-8 border-b border-[var(--color-border)] sticky top-16 bg-[var(--color-background)]/95 backdrop-blur-sm z-40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-center gap-4 flex-wrap">
+            <div className="flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
               {categories.map((category) => (
                 <MagneticElement key={category.id} strength={0.2} radius={120}>
                   <Link href={`/brand/${brandId}/${category.id}`}>
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-6 py-3 rounded-full border border-[var(--color-border)] hover:border-transparent transition-all cursor-pointer"
+                      className="px-4 py-2 sm:px-6 sm:py-3 rounded-full border border-[var(--color-border)] hover:border-transparent transition-all cursor-pointer"
                       style={{
                         background: `linear-gradient(135deg, transparent, ${category.color}10)`,
                       }}

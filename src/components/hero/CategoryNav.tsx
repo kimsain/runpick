@@ -69,7 +69,7 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
             onHoverEnd={() => setIsHovered(false)}
             whileHover={{ y: -12, scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="group relative h-72 rounded-3xl overflow-hidden border border-[var(--color-border)] hover:border-transparent transition-all duration-500"
+            className="group relative h-56 sm:h-72 rounded-3xl overflow-hidden border border-[var(--color-border)] hover:border-transparent transition-all duration-500"
             style={{
               background: `linear-gradient(135deg, var(--color-card) 0%, var(--color-card-hover) 100%)`,
               transformStyle: 'preserve-3d',
@@ -128,10 +128,10 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
             />
 
             {/* Content */}
-            <div className="relative h-full flex flex-col items-center justify-center p-8 text-center">
+            <div className="relative h-full flex flex-col items-center justify-center p-5 sm:p-8 text-center">
               {/* Floating/breathing icon */}
               <motion.div
-                className="relative mb-6"
+                className="relative mb-3 sm:mb-6"
                 animate={{
                   y: [0, -5, 0],
                   scale: isHovered ? 1.2 : [1, 1.05, 1],
@@ -152,7 +152,7 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
                   transition={{ duration: 0.3 }}
                 />
                 <motion.span
-                  className="text-6xl relative z-10 block"
+                  className="text-4xl sm:text-6xl relative z-10 block"
                   animate={{
                     rotate: isHovered ? [0, -10, 10, 0] : 0,
                     filter: isHovered
@@ -313,12 +313,12 @@ export default function CategoryNav() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-28 bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]">
+    <section ref={sectionRef} className="py-16 sm:py-28 bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Animated section header */}
         <div
           ref={headerRef}
-          className="text-center mb-20"
+          className="text-center mb-10 sm:mb-20"
         >
           {/* Decorative line */}
           <motion.div

@@ -44,14 +44,14 @@ function MatchScoreCircle({ score }: { score: number }) {
   }, [score, motionValue, rounded]);
 
   return (
-    <div className="relative w-36 h-36">
+    <div className="relative w-28 h-28 sm:w-36 sm:h-36">
       {/* Glow behind */}
       <div
         className="absolute inset-0 rounded-full blur-xl opacity-30"
         style={{ background: 'var(--color-asics-accent)' }}
       />
 
-      <svg className="w-36 h-36 -rotate-90" viewBox="0 0 120 120">
+      <svg className="w-28 h-28 sm:w-36 sm:h-36 -rotate-90" viewBox="0 0 120 120">
         {/* Background circle */}
         <circle
           cx="60"
@@ -79,7 +79,7 @@ function MatchScoreCircle({ score }: { score: number }) {
       <div className="absolute inset-0 flex items-center justify-center">
         <span
           ref={displayRef}
-          className="text-3xl font-bold text-[var(--color-asics-accent)]"
+          className="text-2xl sm:text-3xl font-bold text-[var(--color-asics-accent)]"
         >
           0%
         </span>
@@ -102,7 +102,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
       <FloatingShapes count={4} />
 
       {/* Hero: Match Score + Title */}
-      <div className="relative text-center mb-12">
+      <div className="relative text-center mb-8 sm:mb-12">
         {/* Particle burst */}
         <motion.div
           initial={{ scale: 0 }}
@@ -197,7 +197,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
       >
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-asics-blue)]/5 to-[var(--color-asics-accent)]/10" />
 
-        <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+        <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 p-5 sm:gap-8 sm:p-8">
           <ImageDistortion variant="glow">
             <div className="relative aspect-square bg-[var(--color-background)] rounded-2xl overflow-hidden">
               <Image
@@ -222,14 +222,14 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
               </Badge>
             </div>
 
-            <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-1 text-balance leading-tight">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-foreground)] mb-1 text-balance leading-tight">
               {primaryRecommendation.name}
             </h2>
             <div className="flex items-center gap-3 mb-4">
               <span className="text-[var(--color-foreground)]/60">
                 {primaryRecommendation.nameKo}
               </span>
-              <span className="text-2xl font-bold text-gradient">
+              <span className="text-xl sm:text-2xl font-bold text-gradient">
                 {primaryRecommendation.priceFormatted}
               </span>
             </div>
@@ -252,7 +252,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
-        className="mb-12 p-6 bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)]"
+        className="mb-12 p-4 sm:p-6 bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)]"
       >
         <h3 className="text-lg font-bold text-[var(--color-foreground)] mb-4">
           스펙 분석

@@ -59,7 +59,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
       <main className="pt-20">
         {/* Hero Section */}
         <section
-          className="py-20 relative overflow-hidden"
+          className="py-12 sm:py-20 relative overflow-hidden"
           style={{
             background: `linear-gradient(135deg, var(--color-card) 0%, var(--color-background) 100%)`,
           }}
@@ -88,7 +88,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
               </Link>
 
               <motion.span
-                className="block text-6xl mb-4"
+                className="block text-4xl sm:text-6xl mb-4"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', delay: 0.2 }}
@@ -99,13 +99,13 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
               <TextReveal
                 as="h1"
                 mode="clip"
-                className="text-4xl sm:text-5xl font-bold mb-4 text-balance leading-tight"
+                className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-balance leading-tight"
               >
                 <span style={{ color: categoryData.color }}>
                   {categoryData.name}
                 </span>
               </TextReveal>
-              <p className="text-xl text-[var(--color-foreground)]/60 max-w-2xl mx-auto text-pretty leading-relaxed">
+              <p className="text-lg sm:text-xl text-[var(--color-foreground)]/60 max-w-2xl mx-auto text-pretty leading-relaxed">
                 {categoryData.description}
               </p>
               <p className="mt-4 text-sm text-[var(--color-foreground)]/40">
@@ -118,7 +118,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
         {/* Subcategory Tabs with sliding indicator */}
         <section className="py-6 border-b border-[var(--color-border)] sticky top-16 bg-[var(--color-background)]/95 backdrop-blur-sm z-40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
+            <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-hide">
               <button
                 onClick={() => setSelectedSubcategory('all')}
                 className="relative px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"

@@ -7,7 +7,7 @@ import { getAllShoes } from '@/utils/shoe-utils';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
-import { EASE_OUT_EXPO, DUR_REVEAL } from '@/constants/animation';
+import { EASE_OUT_EXPO, DUR_REVEAL, MOBILE_BREAKPOINT } from '@/constants/animation';
 
 // Animated star/sparkle component
 function Sparkle({ delay, x, y }: { delay: number; x: string; y: string }) {
@@ -185,6 +185,7 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
 export default function FeaturedShoes() {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const allShoes = getAllShoes();
   // 각 카테고리에서 인기 모델 Top 5
@@ -196,13 +197,22 @@ export default function FeaturedShoes() {
     allShoes.find((s) => s.id === 'magic-speed-5'),
   ].filter(Boolean);
 
+  // Mobile detection
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    setIsMobile(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
+
+  // Desktop: GSAP horizontal scroll with pin
+  useEffect(() => {
+    if (typeof window === 'undefined' || isMobile) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Horizontal scroll gallery
       const container = scrollContainerRef.current;
       const cards = container?.querySelector('.horizontal-cards') as HTMLElement | null;
       if (cards && container) {
@@ -222,7 +232,7 @@ export default function FeaturedShoes() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isMobile]);
 
   return (
     <section ref={sectionRef} className="relative bg-[var(--color-background)] overflow-hidden">
@@ -236,7 +246,11 @@ export default function FeaturedShoes() {
         <Sparkle delay={0.5} x="50%" y="10%" />
       </div>
 
-      <div ref={scrollContainerRef} className="relative min-h-screen flex flex-col justify-center" data-cursor="drag">
+      <div
+        ref={scrollContainerRef}
+        className={`relative flex flex-col justify-center ${isMobile ? '' : 'min-h-screen'}`}
+        data-cursor="drag"
+      >
         {/* Section header */}
         <div className="text-center pt-20 pb-12 px-4">
           <FeaturedBadge />
@@ -276,7 +290,11 @@ export default function FeaturedShoes() {
         </div>
 
         {/* Horizontal scrolling cards */}
-        <div className="horizontal-cards flex items-center gap-8 pl-[10vw] pr-[10vw] pb-20">
+        <div
+          className={`horizontal-cards flex items-center gap-8 pl-[5vw] md:pl-[10vw] pr-[10vw] pb-20 ${
+            isMobile ? 'mobile-scroll-snap scrollbar-hide' : ''
+          }`}
+        >
           {featuredShoes.map((shoe, index) => (
             shoe && <SpotlightShoeCard key={shoe.id} shoe={shoe} index={index} />
           ))}

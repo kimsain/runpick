@@ -181,3 +181,14 @@ body {
 .horizontal-scroll-section {
   overflow: hidden;
 }
+
+/* Mobile scroll-snap carousel */
+.mobile-scroll-snap {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-scroll-snap > * {
+  scroll-snap-align: center;
+}

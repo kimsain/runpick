@@ -84,7 +84,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
         <Header />
         <main className="pt-20 min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-[var(--color-foreground)]">
+            <h1 className="text-2xl sm:text-4xl font-bold text-[var(--color-foreground)]">
               러닝화를 찾을 수 없습니다
             </h1>
             <Link
@@ -132,7 +132,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
         {/* Hero Section */}
         <section className="py-12 bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
               {/* Image with ImageDistortion glow */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -194,11 +194,11 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 <TextReveal
                   as="h1"
                   mode="clip"
-                  className="text-4xl sm:text-5xl font-bold text-[var(--color-foreground)] mb-2 text-balance leading-tight"
+                  className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-foreground)] mb-2 text-balance leading-tight"
                 >
                   {shoe.name}
                 </TextReveal>
-                <p className="text-xl text-[var(--color-foreground)]/60 mb-6 text-pretty">
+                <p className="text-lg sm:text-xl text-[var(--color-foreground)]/60 mb-6 text-pretty">
                   {shoe.nameKo}
                 </p>
 
@@ -208,7 +208,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
 
                 {/* Price */}
                 <div className="mb-8">
-                  <span className="text-4xl font-bold text-gradient">
+                  <span className="text-3xl sm:text-4xl font-bold text-gradient">
                     {shoe.priceFormatted}
                   </span>
                 </div>
@@ -239,7 +239,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 </div>
 
                 {/* CTA */}
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                   <Button size="lg">공식 스토어에서 보기</Button>
                   <Button variant="outline" size="lg" href="/quiz">
                     나에게 맞을까?
@@ -261,7 +261,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 viewport={{ once: true }}
                 className="lg:col-span-1 bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
               >
-                <h2 className="text-xl font-bold text-[var(--color-foreground)] mb-6">
+                <h2 className="text-lg sm:text-xl font-bold text-[var(--color-foreground)] mb-6">
                   스펙
                 </h2>
                 <ShoeSpecChart specs={shoe.specs} />
@@ -274,7 +274,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                   ref={prosRef}
                   className="bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
                 >
-                  <h2 className="text-xl font-bold text-[var(--color-daily)] mb-4 flex items-center gap-2">
+                  <h2 className="text-lg sm:text-xl font-bold text-[var(--color-daily)] mb-4 flex items-center gap-2">
                     <span>👍</span> 장점
                   </h2>
                   <ul className="space-y-3">
@@ -299,7 +299,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                   ref={consRef}
                   className="bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
                 >
-                  <h2 className="text-xl font-bold text-[var(--color-racing)] mb-4 flex items-center gap-2">
+                  <h2 className="text-lg sm:text-xl font-bold text-[var(--color-racing)] mb-4 flex items-center gap-2">
                     <span>👎</span> 단점
                   </h2>
                   <ul className="space-y-3">
@@ -328,7 +328,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
               viewport={{ once: true }}
               className="mt-8 bg-gradient-to-r from-[var(--color-asics-blue)]/10 to-[var(--color-asics-accent)]/10 rounded-2xl p-6 border border-[var(--color-asics-accent)]/20"
             >
-              <h2 className="text-xl font-bold text-[var(--color-foreground)] mb-4 flex items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-bold text-[var(--color-foreground)] mb-4 flex items-center gap-2">
                 <span>🎯</span> 이런 분에게 추천
               </h2>
               <div className="flex flex-wrap gap-3">
@@ -364,7 +364,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 viewport={{ once: true }}
                 className="mb-8"
               >
-                <h2 className="text-2xl font-bold text-[var(--color-foreground)] text-balance">
+                <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-foreground)] text-balance">
                   비슷한 러닝화
                 </h2>
                 <p className="text-[var(--color-foreground)]/60 text-pretty">
@@ -373,11 +373,11 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
               </motion.div>
 
               <div
-                className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide"
+                className="flex gap-4 lg:gap-6 overflow-x-auto pb-4 scrollbar-hide"
                 data-cursor="drag"
               >
                 {similarShoes.map((similarShoe, index) => (
-                  <div key={similarShoe.id} className="min-w-[300px] sm:min-w-[340px] flex-shrink-0">
+                  <div key={similarShoe.id} className="min-w-[260px] sm:min-w-[340px] flex-shrink-0">
                     <ShoeCard shoe={similarShoe} index={index} />
                   </div>
                 ))}

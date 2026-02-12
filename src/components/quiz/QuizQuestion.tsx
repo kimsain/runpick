@@ -44,7 +44,7 @@ export default function QuizQuestion({
         <p className="text-[var(--color-foreground)]/60 mb-8 text-pretty">{question.description}</p>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         {question.options.map((option, index) => {
           const isSelected = selectedOption === option.id;
           const hasSelection = selectedOption !== null;
@@ -62,7 +62,7 @@ export default function QuizQuestion({
               whileHover={!isSelected ? { scale: 1.02, y: -4 } : {}}
               whileTap={!isSelected ? { scale: 0.98 } : {}}
               onClick={() => handleClick(option.id)}
-              className={`relative w-full p-6 rounded-2xl border text-left transition-all ${
+              className={`relative w-full p-4 sm:p-6 rounded-2xl border text-left transition-all ${
                 isSelected
                   ? 'border-[var(--color-asics-accent)] bg-[var(--color-asics-accent)]/10 shadow-[0_0_20px_rgba(0,209,255,0.15)]'
                   : 'border-[var(--color-border)] bg-[var(--color-card)] hover:border-[var(--color-border-hover)]'
@@ -86,7 +86,7 @@ export default function QuizQuestion({
               {option.icon && <span className="text-3xl mb-3 block">{option.icon}</span>}
 
               {/* Label */}
-              <h3 className={`text-lg font-medium mb-1 ${
+              <h3 className={`text-base sm:text-lg font-medium mb-1 ${
                 isSelected ? 'text-[var(--color-asics-accent)]' : 'text-[var(--color-foreground)]'
               }`}>
                 {option.labelKo}

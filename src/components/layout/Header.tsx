@@ -93,7 +93,7 @@ export default function Header() {
             <div className="flex items-center gap-4 md:hidden">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg hover:bg-[var(--color-card)] transition-colors"
+                className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-[var(--color-card)] transition-colors"
                 aria-label="Toggle menu"
               >
                 <motion.div

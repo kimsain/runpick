@@ -54,7 +54,7 @@ export default function Footer() {
       <FloatingShoe />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div ref={linksRef} className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div ref={linksRef} className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
           <div className="col-span-1 md:col-span-2 footer-link-item">
             <TextReveal as="span" mode="clip" className="text-2xl font-bold text-gradient inline-block">
               RunPick

@@ -91,7 +91,7 @@ export default function QuizPage() {
       <main className="pt-20 min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)] relative overflow-hidden">
         <FloatingShapes count={4} />
 
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <AnimatePresence mode="wait">
             {phase === 'quiz' && (
               <motion.div
@@ -102,7 +102,7 @@ export default function QuizPage() {
               >
                 {/* Header */}
                 <div className="text-center mb-8">
-                  <TextReveal as="h1" mode="clip" className="text-3xl font-bold text-gradient mb-2 text-balance leading-tight">
+                  <TextReveal as="h1" mode="clip" className="text-2xl sm:text-3xl font-bold text-gradient mb-2 text-balance leading-tight">
                     러닝화 추천 퀴즈
                   </TextReveal>
                   <motion.p

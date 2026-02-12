@@ -42,7 +42,7 @@ export default function QuizCTA() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-32 relative">
+    <section ref={sectionRef} className="py-16 sm:py-32 relative">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           ref={containerRef}
@@ -109,7 +109,7 @@ export default function QuizCTA() {
           />
 
           {/* Content */}
-          <div className="relative py-20 px-8 sm:py-24 sm:px-16 text-center">
+          <div className="relative py-12 px-5 sm:py-20 sm:px-8 md:py-24 md:px-16 text-center">
             {/* Pill badge */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
