@@ -8,6 +8,7 @@ import Badge from '@/components/common/Badge';
 import { getCategoryById } from '@/data/categories';
 import { useRef, useState, useCallback } from 'react';
 import ImageDistortion from '@/components/effects/ImageDistortion';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 interface ShoeCardProps {
   shoe: RunningShoe;
@@ -170,33 +171,91 @@ function ShoeCardDecorations({ isHovered, sparkles }: {
   );
 }
 
+function ShoeCardImage({ shoe, category, index, isHovered }: {
+  shoe: RunningShoe;
+  category: ReturnType<typeof getCategoryById>;
+  index: number;
+  isHovered: boolean;
+}) {
+  return (
+    <div className="relative aspect-[4/3] bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] overflow-hidden">
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center p-4"
+        animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      >
+        <motion.div
+          className="relative w-full h-full"
+          animate={isHovered ? {
+            scale: [1, 1.15, 1.1],
+            rotate: [0, -3, 3, 0],
+          } : { scale: 1, rotate: 0 }}
+          transition={{
+            duration: 0.5,
+            type: 'spring',
+            stiffness: 300,
+            damping: 15,
+          }}
+        >
+          <Image
+            src={shoe.imageUrl}
+            alt={shoe.name}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-contain drop-shadow-2xl"
+            priority={index < 3}
+          />
+        </motion.div>
+      </motion.div>
+
+      <div className="absolute top-3 left-3 z-10">
+        <Badge variant="category" categoryId={shoe.categoryId}>
+          {category?.icon} {category?.name}
+        </Badge>
+      </div>
+
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+        initial={{ x: '-100%' }}
+        animate={isHovered ? { x: '100%' } : { x: '-100%' }}
+        transition={{ duration: 0.8, ease: 'easeInOut' }}
+      />
+
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-transparent via-[var(--color-asics-accent)]/5 to-transparent"
+        initial={{ opacity: 0 }}
+        animate={isHovered ? { opacity: [0, 1, 0] } : { opacity: 0 }}
+        transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}
+      />
+    </div>
+  );
+}
+
 export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
   const category = getCategoryById(shoe.categoryId);
   const cardRef = useRef<HTMLDivElement>(null);
   const [sparkles, setSparkles] = useState<{ id: number; x: number; y: number }[]>([]);
   const [isHovered, setIsHovered] = useState(false);
   const sparkleIdRef = useRef(0);
+  const isDesktop = useIsDesktop();
 
-  // 3D tilt effect values - enhanced responsiveness
+  // 3D tilt effect values - desktop only
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // More responsive springs
   const mouseXSpring = useSpring(x, { stiffness: 400, damping: 25 });
   const mouseYSpring = useSpring(y, { stiffness: 400, damping: 25 });
 
-  // Subtle tilt range (reduced to keep text sharp)
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['6deg', '-6deg']);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-6deg', '6deg']);
 
-  // Glow position follows mouse
   const glowX = useTransform(mouseXSpring, [-0.5, 0.5], ['0%', '100%']);
   const glowY = useTransform(mouseYSpring, [-0.5, 0.5], ['0%', '100%']);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
+    if (!isDesktop || !cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
@@ -210,7 +269,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
     mouseY.set(currentMouseY);
 
     // Add sparkles occasionally
-    if (window.innerWidth >= 768 && Math.random() > 0.85) {
+    if (Math.random() > 0.85) {
       const newSparkle = {
         id: sparkleIdRef.current++,
         x: currentMouseX,
@@ -221,7 +280,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
         setSparkles((prev) => prev.filter((s) => s.id !== newSparkle.id));
       }, 600);
     }
-  }, [x, y, mouseX, mouseY]);
+  }, [isDesktop, x, y, mouseX, mouseY]);
 
   const handleMouseLeave = useCallback(() => {
     x.set(0);
@@ -254,12 +313,14 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onMouseEnter={handleMouseEnter}
-        style={{
+        style={isDesktop ? {
           rotateX,
           rotateY,
           filter: isHovered
             ? 'drop-shadow(0 25px 50px rgba(0, 209, 255, 0.15))'
             : 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1))',
+        } : {
+          filter: 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1))',
         }}
         className="group relative bg-[var(--color-card)] rounded-2xl overflow-hidden border border-[var(--color-border)] hover:border-[var(--color-asics-accent)]/60 transition-colors duration-300 cursor-pointer"
       >
@@ -273,63 +334,14 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
           }}
         />
 
-        {/* Image container with ImageDistortion */}
-        <ImageDistortion variant="scan">
-          <div className="relative aspect-[4/3] bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] overflow-hidden">
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center p-4"
-              animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            >
-              {/* Product image with bounce effect */}
-              <motion.div
-                className="relative w-full h-full"
-                animate={isHovered ? {
-                  scale: [1, 1.15, 1.1],
-                  rotate: [0, -3, 3, 0],
-                } : { scale: 1, rotate: 0 }}
-                transition={{
-                  duration: 0.5,
-                  type: 'spring',
-                  stiffness: 300,
-                  damping: 15,
-                }}
-              >
-                <Image
-                  src={shoe.imageUrl}
-                  alt={shoe.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-contain drop-shadow-2xl"
-                  priority={index < 3}
-                />
-              </motion.div>
-            </motion.div>
-
-            {/* Category badge */}
-            <div className="absolute top-3 left-3 z-10">
-              <Badge variant="category" categoryId={shoe.categoryId}>
-                {category?.icon} {category?.name}
-              </Badge>
-            </div>
-
-            {/* Enhanced shimmer effect */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-              initial={{ x: '-100%' }}
-              animate={isHovered ? { x: '100%' } : { x: '-100%' }}
-              transition={{ duration: 0.8, ease: 'easeInOut' }}
-            />
-
-            {/* Secondary diagonal shimmer */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-br from-transparent via-[var(--color-asics-accent)]/5 to-transparent"
-              initial={{ opacity: 0 }}
-              animate={isHovered ? { opacity: [0, 1, 0] } : { opacity: 0 }}
-              transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}
-            />
-          </div>
-        </ImageDistortion>
+        {/* Image container — ImageDistortion on desktop only */}
+        {isDesktop ? (
+          <ImageDistortion variant="scan">
+            <ShoeCardImage shoe={shoe} category={category} index={index} isHovered={isHovered} />
+          </ImageDistortion>
+        ) : (
+          <ShoeCardImage shoe={shoe} category={category} index={index} isHovered={isHovered} />
+        )}
 
         {/* Content */}
         <div className="p-4" style={{ backfaceVisibility: 'hidden' }}>

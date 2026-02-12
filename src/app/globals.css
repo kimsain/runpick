@@ -215,6 +215,21 @@ body {
   scroll-snap-align: center;
 }
 
+/* Default visible state — GSAP inline styles override on desktop */
+.category-nav-header,
+.quiz-cta-container,
+.footer-link-item,
+.shoe-detail-pros,
+.shoe-detail-cons,
+.shoe-card-wrapper {
+  opacity: 1;
+  transform: none;
+}
+
+.spec-bar-fill {
+  transform: scaleX(var(--target-scale, 0));
+}
+
 /* ========== MOBILE PERFORMANCE OVERRIDES ========== */
 @media (max-width: 767px) {
   /* Hero: parallax opacity/scale disable */
