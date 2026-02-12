@@ -149,8 +149,8 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                   >
                     <motion.div
                       className="absolute inset-0 flex items-center justify-center p-8"
-                      animate={{ y: [-5, 5, -5] }}
-                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                      animate={isDesktop ? { y: [-5, 5, -5] } : undefined}
+                      transition={isDesktop ? { duration: 4, repeat: Infinity, ease: "easeInOut" } : undefined}
                     >
                       <Image
                         src={shoe.imageUrl}

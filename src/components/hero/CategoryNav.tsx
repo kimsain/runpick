@@ -48,7 +48,7 @@ function HoverParticles({ isHovered, color }: { isHovered: boolean; color: strin
 }
 
 // Category card component
-function CategoryCard({ category, index }: { category: typeof categories[0]; index: number }) {
+function CategoryCard({ category, index, isDesktop }: { category: typeof categories[0]; index: number; isDesktop: boolean }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -133,12 +133,16 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
               {/* Floating/breathing icon */}
               <motion.div
                 className="relative mb-3 sm:mb-6"
-                animate={{
+                animate={isDesktop ? {
                   y: [0, -5, 0],
                   scale: isHovered ? 1.2 : [1, 1.05, 1],
+                } : {
+                  scale: isHovered ? 1.2 : 1,
                 }}
-                transition={{
+                transition={isDesktop ? {
                   y: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
+                  scale: { duration: 0.3 },
+                } : {
                   scale: { duration: 0.3 },
                 }}
               >
@@ -302,10 +306,10 @@ export default function CategoryNav() {
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-foreground)] text-balance leading-tight"
           >
             <motion.span
-              animate={{
+              animate={isDesktop ? {
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-              }}
-              transition={{ duration: 5, repeat: Infinity }}
+              } : undefined}
+              transition={isDesktop ? { duration: 5, repeat: Infinity } : undefined}
               style={{
                 backgroundImage: 'linear-gradient(90deg, var(--color-foreground), var(--color-asics-blue), var(--color-asics-accent), var(--color-foreground))',
                 backgroundSize: '200% 100%',
@@ -356,7 +360,7 @@ export default function CategoryNav() {
         {/* Category cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" style={{ perspective: '1000px' }}>
           {categories.map((category, index) => (
-            <CategoryCard key={category.id} category={category} index={index} />
+            <CategoryCard key={category.id} category={category} index={index} isDesktop={isDesktop} />
           ))}
         </div>
       </div>

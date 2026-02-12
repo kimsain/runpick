@@ -9,6 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
 import { EASE_OUT_EXPO, DUR_REVEAL } from '@/constants/animation';
 import Sparkle from '@/components/effects/Sparkle';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 // Featured badge component
 function FeaturedBadge() {
@@ -29,20 +30,22 @@ function FeaturedBadge() {
         <motion.span
           animate={{ rotate: 360 }}
           transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-          className="text-lg"
+          className="text-lg hidden md:inline-block"
         >
           ⭐
         </motion.span>
+        <span className="text-lg md:hidden">⭐</span>
         <span className="text-sm font-semibold text-[var(--color-asics-accent)]">
           RUNNER&apos;S CHOICE
         </span>
         <motion.span
           animate={{ scale: [1, 1.2, 1] }}
           transition={{ duration: 1.5, repeat: Infinity }}
-          className="text-lg"
+          className="text-lg hidden md:inline-block"
         >
           🔥
         </motion.span>
+        <span className="text-lg md:hidden">🔥</span>
       </div>
     </motion.div>
   );
@@ -162,11 +165,9 @@ export default function FeaturedShoes() {
     allShoes.find((s) => s.id === 'magic-speed-5'),
   ].filter(Boolean);
 
+  const isDesktop = useIsDesktop();
   // GSAP pin needs wider viewport (1024px+) — at 768px cards are too narrow
-  const [isPinDesktop, setIsPinDesktop] = useState(false);
-  useEffect(() => {
-    setIsPinDesktop(window.innerWidth >= 1024);
-  }, []);
+  const isPinDesktop = useIsDesktop(1024);
 
   // Desktop: GSAP horizontal scroll with pin
   useEffect(() => {
@@ -224,10 +225,10 @@ export default function FeaturedShoes() {
           >
             <motion.span
               className="inline-block"
-              animate={{
+              animate={isDesktop ? {
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-              }}
-              transition={{ duration: 4, repeat: Infinity }}
+              } : undefined}
+              transition={isDesktop ? { duration: 4, repeat: Infinity } : undefined}
               style={{
                 backgroundImage: 'linear-gradient(90deg, var(--color-foreground), var(--color-asics-blue), var(--color-asics-accent), var(--color-foreground))',
                 backgroundSize: '300% 100%',
