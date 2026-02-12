@@ -2,11 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
-import Button from '@/components/common/Button';
+import Link from 'next/link';
 import TextReveal from '@/components/effects/TextReveal';
-import FloatingShapes from '@/components/effects/FloatingShapes';
+import MagneticElement from '@/components/effects/MagneticElement';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { EASE_OUT_EXPO } from '@/constants/animation';
 
 export default function QuizCTA() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -21,9 +22,10 @@ export default function QuizCTA() {
       if (containerRef.current) {
         gsap.fromTo(
           containerRef.current,
-          { scale: 0.9 },
+          { scale: 0.92, opacity: 0.8 },
           {
             scale: 1,
+            opacity: 1,
             ease: 'power2.out',
             scrollTrigger: {
               trigger: containerRef.current,
@@ -40,51 +42,112 @@ export default function QuizCTA() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={sectionRef} className="py-32 relative">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           ref={containerRef}
-          className="relative overflow-hidden rounded-3xl"
+          className="relative overflow-hidden rounded-[2rem]"
+          style={{
+            background: 'linear-gradient(135deg, #0a1628 0%, #0d2847 40%, #0a3a6b 70%, #084c8a 100%)',
+          }}
         >
-          {/* Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-asics-blue)] to-[var(--color-asics-accent)]" />
+          {/* Noise texture overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'256\' height=\'256\' filter=\'url(%23n)\' opacity=\'1\'/%3E%3C/svg%3E")',
+              backgroundSize: '128px 128px',
+            }}
+          />
 
-          {/* Pattern overlay */}
-          <div className="absolute inset-0 opacity-10">
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage:
-                  'radial-gradient(circle at 25% 25%, white 1px, transparent 1px)',
-                backgroundSize: '30px 30px',
-              }}
-            />
-          </div>
+          {/* Animated gradient orbs */}
+          <motion.div
+            className="absolute -top-32 -right-32 w-80 h-80 rounded-full"
+            style={{
+              background: 'radial-gradient(circle, rgba(0,209,255,0.15) 0%, transparent 70%)',
+            }}
+            animate={{
+              x: [0, 20, 0],
+              y: [0, -15, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full"
+            style={{
+              background: 'radial-gradient(circle, rgba(0,61,165,0.2) 0%, transparent 70%)',
+            }}
+            animate={{
+              x: [0, -15, 0],
+              y: [0, 20, 0],
+              scale: [1, 1.15, 1],
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          />
 
-          {/* FloatingShapes replacing static floating emojis */}
-          <FloatingShapes color="rgba(255,255,255,0.15)" count={3} />
+          {/* Accent light streak */}
+          <motion.div
+            className="absolute top-0 left-0 right-0 h-px"
+            style={{
+              background: 'linear-gradient(90deg, transparent 0%, var(--color-asics-accent) 50%, transparent 100%)',
+            }}
+            animate={{ opacity: [0.3, 0.7, 0.3] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          />
+
+          {/* Grid pattern */}
+          <div
+            className="absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
+              `,
+              backgroundSize: '60px 60px',
+            }}
+          />
 
           {/* Content */}
-          <div className="relative py-16 px-8 sm:py-20 sm:px-16 text-center">
-            <motion.span
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+          <div className="relative py-20 px-8 sm:py-24 sm:px-16 text-center">
+            {/* Pill badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="inline-block px-4 py-1 bg-white/20 rounded-full text-sm text-white font-medium mb-6"
+              transition={{ delay: 0.1, duration: 0.5, ease: EASE_OUT_EXPO as unknown as number[] }}
+              className="inline-flex items-center gap-2 mb-8"
             >
-              7개 질문으로 찾는 나의 러닝화
-            </motion.span>
+              <span
+                className="px-5 py-2 rounded-full text-sm font-medium tracking-wide"
+                style={{
+                  background: 'rgba(0,209,255,0.08)',
+                  border: '1px solid rgba(0,209,255,0.2)',
+                  color: 'var(--color-asics-accent)',
+                }}
+              >
+                <motion.span
+                  className="inline-block mr-2"
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                >
+                  🎯
+                </motion.span>
+                7개 질문 &middot; 1분 소요
+              </span>
+            </motion.div>
 
+            {/* Headline */}
             <TextReveal
               as="h2"
               mode="clip"
-              className="text-3xl sm:text-4xl font-bold text-white mb-4"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-5 leading-tight"
             >
               어떤 러닝화가 나에게 맞을까?
             </TextReveal>
+
             <motion.p
-              className="text-lg text-white/80 max-w-xl mx-auto mb-8"
+              className="text-base sm:text-lg text-white/50 max-w-lg mx-auto mb-10 leading-relaxed"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -95,18 +158,72 @@ export default function QuizCTA() {
               딱 맞는 러닝화를 추천해드려요.
             </motion.p>
 
+            {/* CTA Button */}
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.5 }}
             >
-              <Button
-                href="/quiz"
-                variant="secondary"
-                size="lg"
-                className="bg-white text-[var(--color-asics-blue)] hover:bg-white/90"
-              >
-                추천 퀴즈 시작하기
-              </Button>
+              <MagneticElement strength={0.2}>
+                <Link href="/quiz" data-cursor="hover">
+                  <motion.span
+                    className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full text-base font-semibold overflow-hidden"
+                    style={{
+                      background: 'white',
+                      color: 'var(--color-asics-blue)',
+                    }}
+                    whileHover={{
+                      scale: 1.04,
+                      boxShadow: '0 20px 50px -12px rgba(0,209,255,0.35), 0 0 0 1px rgba(255,255,255,0.1)',
+                    }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                  >
+                    {/* Shimmer on hover */}
+                    <motion.span
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100"
+                      style={{
+                        background: 'linear-gradient(90deg, transparent, rgba(0,209,255,0.08), transparent)',
+                      }}
+                      animate={{ x: ['-100%', '200%'] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                    />
+                    <span className="relative z-10">추천 퀴즈 시작하기</span>
+                    <motion.span
+                      className="relative z-10"
+                      animate={{ x: [0, 3, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                    >
+                      →
+                    </motion.span>
+                  </motion.span>
+                </Link>
+              </MagneticElement>
+            </motion.div>
+
+            {/* Bottom decorative dots */}
+            <motion.div
+              className="flex justify-center gap-1.5 mt-10"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.6 }}
+            >
+              {[0, 1, 2].map((i) => (
+                <motion.div
+                  key={i}
+                  className="w-1 h-1 rounded-full bg-white/20"
+                  animate={{
+                    opacity: [0.2, 0.6, 0.2],
+                  }}
+                  transition={{
+                    duration: 2,
+                    delay: i * 0.3,
+                    repeat: Infinity,
+                  }}
+                />
+              ))}
             </motion.div>
           </div>
         </div>

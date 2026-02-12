@@ -6,7 +6,7 @@ import Button from '@/components/common/Button';
 import TextReveal from '@/components/effects/TextReveal';
 import FloatingShapes from '@/components/effects/FloatingShapes';
 import MagneticElement from '@/components/effects/MagneticElement';
-import { EASE_OUT_EXPO, DUR_REVEAL, STAGGER_NORMAL } from '@/constants/animation';
+import { EASE_OUT_EXPO, STAGGER_NORMAL } from '@/constants/animation';
 
 // Animated star/sparkle component
 function Sparkle({ delay, x, y }: { delay: number; x: string; y: string }) {
@@ -50,30 +50,28 @@ function PulsingButton({ children, href, variant = 'primary', delay = 0 }: {
   return (
     <motion.div
       className="relative"
-      initial={{ opacity: 0, clipPath: 'inset(0 100% 0 0)' }}
-      animate={{ opacity: 1, clipPath: 'inset(0 0% 0 0)' }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{
-        duration: DUR_REVEAL,
+        duration: 0.6,
         delay,
         ease: EASE_OUT_EXPO as unknown as number[],
       }}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.98 }}
     >
       {/* Glow effect behind button */}
       {isPrimary && (
         <motion.div
-          className="absolute inset-0 rounded-xl bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)]"
+          className="absolute inset-0 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)]"
           animate={{
-            opacity: [0.5, 0.8, 0.5],
-            scale: [1, 1.1, 1],
+            opacity: [0.4, 0.7, 0.4],
+            scale: [1, 1.08, 1],
           }}
           transition={{
             duration: 2,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          style={{ filter: 'blur(15px)' }}
+          style={{ filter: 'blur(18px)' }}
         />
       )}
       <Button href={href} size="lg" variant={variant === 'outline' ? 'outline' : undefined}>

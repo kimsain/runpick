@@ -187,11 +187,13 @@ export default function FeaturedShoes() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const allShoes = getAllShoes();
-  // 각 카테고리에서 인기 모델 선택
+  // 각 카테고리에서 인기 모델 Top 5
   const featuredShoes = [
     allShoes.find((s) => s.id === 'novablast-5'),
     allShoes.find((s) => s.id === 'superblast-2'),
     allShoes.find((s) => s.id === 'metaspeed-sky-tokyo'),
+    allShoes.find((s) => s.id === 'gel-nimbus-28'),
+    allShoes.find((s) => s.id === 'magic-speed-5'),
   ].filter(Boolean);
 
   useEffect(() => {
