@@ -24,7 +24,7 @@ function FeaturedBadge() {
       <div
         className="featured-badge-pulse flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)]/20 to-[var(--color-asics-accent)]/20 border border-[var(--color-asics-accent)]/30"
         style={{
-          animation: 'featured-badge-pulse 3s ease-in-out infinite',
+          animation: 'badge-pulse 3s ease-in-out infinite',
         }}
       >
         <motion.span
