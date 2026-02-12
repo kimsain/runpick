@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -15,7 +15,7 @@ import { categories } from '@/data/categories';
 import { getShoesByBrand, getShoesByCategory } from '@/utils/shoe-utils';
 import asicsData from '@/data/brands/asics.json';
 import Link from 'next/link';
-import { STAGGER_NORMAL } from '@/constants/animation';
+import { STAGGER_NORMAL, DUR_FAST } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 interface BrandPageClientProps {
@@ -27,6 +27,22 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
   const shoes = getShoesByBrand(brandId);
   const sectionsRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
+
+  // Track header visibility (mirrors Header.tsx logic)
+  const [headerHidden, setHeaderHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      const isDown = currentY > lastScrollY.current;
+      const scrolled = currentY > 20;
+      lastScrollY.current = currentY;
+      setHeaderHidden(isDown && scrolled);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!isDesktop) return;
@@ -102,8 +118,12 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
           </div>
         </section>
 
-        {/* Category Navigation with MagneticElement */}
-        <section className="py-8 border-b border-[var(--color-border)] sticky top-16 bg-[var(--color-background)]/95 backdrop-blur-sm z-40">
+        {/* Category Navigation — fixed below header, follows header hide/show */}
+        <motion.section
+          animate={{ y: headerHidden ? -64 : 0 }}
+          transition={{ duration: DUR_FAST, ease: 'easeOut' }}
+          className="fixed top-16 left-0 right-0 py-3 border-b border-[var(--color-border)] bg-[var(--color-background)]/95 backdrop-blur-sm z-40"
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
               {categories.map((category) => (
@@ -130,7 +150,10 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
               ))}
             </div>
           </div>
-        </section>
+        </motion.section>
+
+        {/* Spacer for fixed category nav */}
+        <div className="h-16" />
 
         {/* All Shoes by Category */}
         <div ref={sectionsRef}>
