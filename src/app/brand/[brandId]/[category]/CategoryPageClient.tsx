@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
@@ -11,6 +11,7 @@ import { getCategoryById, getSubcategoriesByCategory } from '@/data/categories';
 import { getShoesByCategory, getShoesBySubcategory } from '@/utils/shoe-utils';
 import { CategoryId, SubcategoryId } from '@/types/shoe';
 import Link from 'next/link';
+import { DUR_FAST } from '@/constants/animation';
 
 interface CategoryPageClientProps {
   brandId: string;
@@ -25,6 +26,22 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
   const [selectedSubcategory, setSelectedSubcategory] = useState<SubcategoryId | 'all'>(
     'all'
   );
+
+  // Track header visibility (mirrors Header.tsx logic)
+  const [headerHidden, setHeaderHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      const isDown = currentY > lastScrollY.current;
+      const scrolled = currentY > 20;
+      lastScrollY.current = currentY;
+      setHeaderHidden(isDown && scrolled);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   if (!categoryData) {
     return (
@@ -115,8 +132,12 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
           </div>
         </section>
 
-        {/* Subcategory Tabs with sliding indicator */}
-        <section className="py-6 border-b border-[var(--color-border)] sticky top-16 bg-[var(--color-background)]/95 backdrop-blur-sm z-40">
+        {/* Subcategory Tabs — fixed below header, follows header hide/show */}
+        <motion.section
+          animate={{ y: headerHidden ? -64 : 0 }}
+          transition={{ duration: DUR_FAST, ease: 'easeOut' }}
+          className="fixed top-16 left-0 right-0 py-3 border-b border-[var(--color-border)] bg-[var(--color-background)]/95 backdrop-blur-sm z-40"
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-hide">
               <button
@@ -167,7 +188,10 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
               })}
             </div>
           </div>
-        </section>
+        </motion.section>
+
+        {/* Spacer for fixed subcategory nav */}
+        <div className="h-14" />
 
         {/* Shoes Grid with AnimatePresence layout */}
         <section className="py-16">
