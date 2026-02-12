@@ -90,7 +90,7 @@ export default function HeroSection() {
             className="relative inline-block mb-6"
           >
             <span
-              className="hero-eyebrow-badge relative z-10 text-[11px] sm:text-sm font-medium tracking-wider uppercase px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[var(--color-asics-accent)]/30 bg-[var(--color-asics-accent)]/5 whitespace-nowrap"
+              className="hero-eyebrow-badge relative z-10 text-[11px] sm:text-sm font-medium tracking-wider uppercase px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[var(--color-asics-accent)]/30 bg-[var(--color-asics-accent)]/5 text-center"
               style={{
                 color: 'var(--color-asics-accent)',
                 animation: 'badge-pulse 3s ease-in-out infinite',
@@ -101,7 +101,7 @@ export default function HeroSection() {
           </motion.div>
 
           {/* Main headline with TextReveal */}
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-balance leading-[1.15]" data-cursor="text">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tight text-balance leading-[1.15]" data-cursor="text">
             <TextReveal
               as="span"
               mode="clip"

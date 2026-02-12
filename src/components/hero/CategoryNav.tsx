@@ -389,7 +389,7 @@ export default function CategoryNav() {
         </div>
 
         {/* Category cards grid */}
-        <div ref={cardsContainerRef} className="grid grid-cols-1 md:grid-cols-3 gap-8" style={{ perspective: '1000px' }}>
+        <div ref={cardsContainerRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" style={{ perspective: '1000px' }}>
           {categories.map((category, index) => (
             <CategoryCard key={category.id} category={category} index={index} />
           ))}

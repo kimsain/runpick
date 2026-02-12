@@ -134,7 +134,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
       <MagneticElement strength={0.1}>
         <Link href={href}>
           <motion.span
-            className="text-sm text-[var(--color-foreground)]/60 hover:text-[var(--color-foreground)] transition-colors inline-flex items-center gap-2 relative"
+            className="text-sm text-[var(--color-foreground)]/60 hover:text-[var(--color-foreground)] transition-colors inline-flex items-center gap-2 relative min-h-[44px]"
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             whileHover={{ x: 4 }}

@@ -45,26 +45,23 @@ export default function Header() {
         transition={{ duration: DUR_FAST, ease: 'easeOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled || mobileMenuOpen
-            ? 'glass shadow-lg shadow-[var(--color-asics-blue)]/10 backdrop-blur-xl'
-            : 'bg-transparent backdrop-blur-none'
+            ? 'glass shadow-lg shadow-[var(--color-asics-blue)]/10 backdrop-blur-xl border-b border-white/10'
+            : 'bg-transparent backdrop-blur-none border-b border-transparent'
         }`}
-        style={{
-          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.1)' : 'none',
-        }}
       >
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             {/* Logo - Left */}
-            <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+            <Link href="/" className="flex items-center gap-2 shrink-0">
               <motion.span
                 className="text-2xl font-bold text-gradient relative"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 animate={{
                   textShadow: [
-                    '0 0 20px rgba(0, 51, 141, 0.3)',
-                    '0 0 30px rgba(0, 51, 141, 0.5)',
-                    '0 0 20px rgba(0, 51, 141, 0.3)',
+                    '0 0 20px rgba(0, 61, 165, 0.3)',
+                    '0 0 30px rgba(0, 61, 165, 0.5)',
+                    '0 0 20px rgba(0, 61, 165, 0.3)',
                   ],
                 }}
                 transition={{
@@ -187,7 +184,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
           color: 'var(--color-asics-accent)',
         }}
         animate={{
-          backgroundColor: isHovered ? 'rgba(0, 51, 141, 0.1)' : 'transparent',
+          backgroundColor: isHovered ? 'rgba(0, 61, 165, 0.1)' : 'transparent',
         }}
         transition={{ duration: 0.2 }}
       >
@@ -205,8 +202,8 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
           className="absolute inset-0 rounded-lg pointer-events-none"
           animate={{
             boxShadow: isHovered
-              ? '0 0 15px rgba(0, 51, 141, 0.3)'
-              : '0 0 0px rgba(0, 51, 141, 0)',
+              ? '0 0 15px rgba(0, 61, 165, 0.3)'
+              : '0 0 0px rgba(0, 61, 165, 0)',
           }}
           transition={{ duration: 0.3 }}
         />
@@ -229,7 +226,7 @@ function MobileNavLink({
       <motion.div
         whileHover={{
           x: 10,
-          backgroundColor: 'rgba(0, 51, 141, 0.1)',
+          backgroundColor: 'rgba(0, 61, 165, 0.1)',
         }}
         whileTap={{ scale: 0.98 }}
         className="text-lg font-medium text-[var(--color-foreground)] py-4 px-4 -mx-4 border-b border-[var(--color-border)]/50 rounded-lg transition-colors relative overflow-hidden"

@@ -380,7 +380,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 data-cursor="drag"
               >
                 {similarShoes.map((similarShoe, index) => (
-                  <div key={similarShoe.id} className="min-w-[260px] sm:min-w-[340px] flex-shrink-0">
+                  <div key={similarShoe.id} className="min-w-[260px] sm:min-w-[340px] shrink-0">
                     <ShoeCard shoe={similarShoe} index={index} />
                   </div>
                 ))}

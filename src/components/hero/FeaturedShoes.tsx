@@ -9,7 +9,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
 import { EASE_OUT_EXPO, DUR_REVEAL } from '@/constants/animation';
 import Sparkle from '@/components/effects/Sparkle';
-import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 // Featured badge component
 function FeaturedBadge() {
@@ -55,7 +54,7 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
 
   return (
     <div
-      className="relative flex-shrink-0 w-[80vw] md:w-[33vw] px-4"
+      className="relative shrink-0 w-[80vw] md:w-[33vw] px-4"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -163,11 +162,15 @@ export default function FeaturedShoes() {
     allShoes.find((s) => s.id === 'magic-speed-5'),
   ].filter(Boolean);
 
-  const isDesktop = useIsDesktop();
+  // GSAP pin needs wider viewport (1024px+) — at 768px cards are too narrow
+  const [isPinDesktop, setIsPinDesktop] = useState(false);
+  useEffect(() => {
+    setIsPinDesktop(window.innerWidth >= 1024);
+  }, []);
 
   // Desktop: GSAP horizontal scroll with pin
   useEffect(() => {
-    if (!isDesktop) return;
+    if (!isPinDesktop) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -191,7 +194,7 @@ export default function FeaturedShoes() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [isDesktop]);
+  }, [isPinDesktop]);
 
   return (
     <section ref={sectionRef} className="relative bg-[var(--color-background)]">
@@ -207,7 +210,7 @@ export default function FeaturedShoes() {
 
       <div
         ref={scrollContainerRef}
-        className={`relative flex flex-col justify-center overflow-hidden ${!isDesktop ? '' : 'min-h-screen'}`}
+        className={`relative flex flex-col justify-center overflow-hidden ${!isPinDesktop ? '' : 'min-h-screen'}`}
         data-cursor="drag"
       >
         {/* Section header */}
@@ -251,7 +254,7 @@ export default function FeaturedShoes() {
         {/* Horizontal scrolling cards */}
         <div
           className={`horizontal-cards flex items-center gap-8 pl-[5vw] md:pl-[10vw] pr-[10vw] pb-20 md:pb-6 ${
-            !isDesktop ? 'mobile-scroll-snap scrollbar-hide' : ''
+            !isPinDesktop ? 'mobile-scroll-snap scrollbar-hide' : ''
           }`}
         >
           {featuredShoes.map((shoe, index) => (
