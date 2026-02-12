@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { DUR_TRANSITION, EASE_IN_OUT_QUART } from '@/constants/animation';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 interface PageTransitionProps {
   children: React.ReactNode;
@@ -44,6 +45,11 @@ const pageVariants = {
 
 export default function PageTransition({ children }: PageTransitionProps) {
   const pathname = usePathname();
+  const isDesktop = useIsDesktop();
+
+  if (!isDesktop) {
+    return <div key={pathname}>{children}</div>;
+  }
 
   return (
     <AnimatePresence mode="wait" initial={false}>
