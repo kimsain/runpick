@@ -216,7 +216,7 @@ export default function FeaturedShoes() {
         data-cursor="drag"
       >
         {/* Section header */}
-        <div className="text-center pt-20 pb-12 px-4">
+        <div className="text-center pt-20 md:pt-8 pb-12 md:pb-4 px-4">
           <FeaturedBadge />
 
           <TextReveal
@@ -255,7 +255,7 @@ export default function FeaturedShoes() {
 
         {/* Horizontal scrolling cards */}
         <div
-          className={`horizontal-cards flex items-center gap-8 pl-[5vw] md:pl-[10vw] pr-[10vw] pb-20 ${
+          className={`horizontal-cards flex items-center gap-8 pl-[5vw] md:pl-[10vw] pr-[10vw] pb-20 md:pb-6 ${
             !isDesktop ? 'mobile-scroll-snap scrollbar-hide' : ''
           }`}
         >
