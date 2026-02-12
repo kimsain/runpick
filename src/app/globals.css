@@ -72,6 +72,33 @@
   }
 }
 
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--color-asics-accent); }
+  50% { box-shadow: 0 0 15px 2px var(--color-asics-accent); }
+}
+
+@keyframes button-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.65; transform: scale(1.06); }
+}
+
+@keyframes featured-badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--color-asics-accent); }
+  50% { box-shadow: 0 0 15px 2px var(--color-asics-accent); }
+}
+
+@keyframes floating-shape {
+  0%, 100% { transform: translate(0, 0) scale(1); border-radius: 50%; }
+  25% { transform: translate(30px, -20px) scale(1.1); border-radius: 40% 60% 50% 50%; }
+  50% { transform: translate(-20px, 30px) scale(0.9); border-radius: 50% 40% 60% 50%; }
+  75% { transform: translate(10px, 10px) scale(1.05); border-radius: 45% 55% 45% 55%; }
+}
+
+@keyframes dot-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.3); opacity: 1; }
+}
+
 /* Base styles */
 html {
   scroll-behavior: smooth;

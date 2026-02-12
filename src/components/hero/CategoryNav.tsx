@@ -53,7 +53,7 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50, rotateX: -15 }}
+      initial={{ opacity: 0, y: 50, rotateX: -5 }}
       whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
       viewport={{ once: true }}
       transition={{
@@ -289,7 +289,7 @@ export default function CategoryNav() {
           {
             opacity: 0,
             y: 120,
-            rotateY: -30,
+            rotateY: -5,
             scale: 0.85,
           },
           {
@@ -372,7 +372,7 @@ export default function CategoryNav() {
             transition={{ delay: 0.6 }}
           >
             {[0, 1, 2].map((i) => (
-              <motion.div
+              <div
                 key={i}
                 className="w-2 h-2 rounded-full"
                 style={{
@@ -380,16 +380,8 @@ export default function CategoryNav() {
                     ? '#4CAF50'
                     : i === 1
                       ? '#FF9800'
-                      : '#F44336'
-                }}
-                animate={{
-                  scale: [1, 1.3, 1],
-                  opacity: [0.5, 1, 0.5],
-                }}
-                transition={{
-                  duration: 2,
-                  delay: i * 0.3,
-                  repeat: Infinity,
+                      : '#F44336',
+                  animation: `dot-pulse 2s ease-in-out ${i * 0.3}s infinite`,
                 }}
               />
             ))}

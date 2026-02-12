@@ -1,5 +1,4 @@
 'use client';
-import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { MOBILE_BREAKPOINT } from '@/constants/animation';
 
@@ -49,7 +48,7 @@ export default function FloatingShapes({
   return (
     <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
       {shapes.map((shape) => (
-        <motion.div
+        <div
           key={shape.id}
           className="absolute rounded-full"
           style={{
@@ -60,18 +59,8 @@ export default function FloatingShapes({
             background: color,
             filter: `blur(80px)`,
             opacity: 0.08,
-          }}
-          animate={{
-            x: [0, 30, -20, 0],
-            y: [0, -20, 30, 0],
-            borderRadius: ['50%', '40% 60% 50% 50%', '50% 40% 60% 50%', '50%'],
-            scale: [1, 1.1, 0.9, 1],
-          }}
-          transition={{
-            duration: shape.duration,
-            delay: shape.delay,
-            repeat: Infinity,
-            ease: 'linear',
+            willChange: 'transform',
+            animation: `floating-shape ${shape.duration}s linear ${shape.delay}s infinite`,
           }}
         />
       ))}

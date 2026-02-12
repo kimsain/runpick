@@ -21,16 +21,11 @@ function FeaturedBadge() {
       transition={{ duration: 0.5, delay: 0.3 }}
       className="inline-flex items-center gap-2 mb-8"
     >
-      <motion.div
+      <div
         className="featured-badge-pulse flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)]/20 to-[var(--color-asics-accent)]/20 border border-[var(--color-asics-accent)]/30"
-        animate={{
-          boxShadow: [
-            '0 0 0 0 var(--color-asics-accent)',
-            '0 0 20px 2px var(--color-asics-accent)',
-            '0 0 0 0 var(--color-asics-accent)',
-          ],
+        style={{
+          animation: 'featured-badge-pulse 3s ease-in-out infinite',
         }}
-        transition={{ duration: 3, repeat: Infinity }}
       >
         <motion.span
           animate={{ rotate: 360 }}
@@ -49,7 +44,7 @@ function FeaturedBadge() {
         >
           🔥
         </motion.span>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }

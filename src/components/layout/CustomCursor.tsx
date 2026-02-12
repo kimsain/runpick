@@ -214,7 +214,6 @@ export default function CustomCursor() {
           className="rounded-full border-2"
           style={{
             borderColor: 'var(--color-asics-accent)',
-            boxShadow: '0 0 20px var(--color-asics-accent)',
           }}
           animate={{
             width: cursorState === 'hover' ? 80 : cursorState === 'view' || cursorState === 'drag' ? 100 : isTextState ? 0 : 40,

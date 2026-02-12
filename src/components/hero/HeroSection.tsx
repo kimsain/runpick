@@ -30,18 +30,13 @@ function PulsingButton({ children, href, variant = 'primary', delay = 0 }: {
     >
       {/* Glow effect behind button */}
       {isPrimary && (
-        <motion.div
+        <div
           className="absolute inset-0 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)] hidden md:block"
-          animate={{
-            opacity: [0.4, 0.7, 0.4],
-            scale: [1, 1.08, 1],
+          style={{
+            filter: 'blur(18px)',
+            willChange: 'opacity, transform',
+            animation: 'button-glow 2s ease-in-out infinite',
           }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          style={{ filter: 'blur(18px)' }}
         />
       )}
       <Button href={href} size="lg" variant={variant === 'outline' ? 'outline' : undefined}>
@@ -94,24 +89,15 @@ export default function HeroSection() {
             transition={{ delay: 0.2, duration: 0.6 }}
             className="relative inline-block mb-6"
           >
-            <motion.span
+            <span
               className="hero-eyebrow-badge relative z-10 text-[11px] sm:text-sm font-medium tracking-wider uppercase px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[var(--color-asics-accent)]/30 bg-[var(--color-asics-accent)]/5 whitespace-nowrap"
-              animate={{
-                boxShadow: [
-                  '0 0 0 0 var(--color-asics-accent)',
-                  '0 0 20px 2px var(--color-asics-accent)',
-                  '0 0 0 0 var(--color-asics-accent)',
-                ],
+              style={{
+                color: 'var(--color-asics-accent)',
+                animation: 'badge-pulse 3s ease-in-out infinite',
               }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-              style={{ color: 'var(--color-asics-accent)' }}
             >
               Running Shoe Catalog & Recommendation
-            </motion.span>
+            </span>
           </motion.div>
 
           {/* Main headline with TextReveal */}
@@ -126,18 +112,10 @@ export default function HeroSection() {
             </TextReveal>
             <span className="block mt-2 relative">
               {/* Glow backdrop */}
-              <motion.span
+              <span
                 className="absolute inset-0 blur-2xl hidden md:block"
-                animate={{
-                  opacity: [0.3, 0.6, 0.3],
-                  scale: [1, 1.05, 1],
-                }}
-                transition={{
-                  duration: 2.5,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
                 style={{
+                  opacity: 0.4,
                   background: 'linear-gradient(90deg, var(--color-asics-blue), var(--color-asics-accent), var(--color-asics-blue))',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -145,7 +123,7 @@ export default function HeroSection() {
                 aria-hidden="true"
               >
                 러닝화를 찾아드립니다
-              </motion.span>
+              </span>
 
               <TextReveal
                 as="span"
@@ -153,23 +131,14 @@ export default function HeroSection() {
                 delay={0.7}
                 className="inline-block font-extrabold text-white relative"
               >
-                <motion.span
+                <span
                   className="inline-block hero-headline-glow"
-                  animate={{
-                    textShadow: [
-                      '0 0 10px rgba(0, 209, 255, 0.5), 0 0 20px rgba(0, 61, 165, 0.3)',
-                      '0 0 25px rgba(0, 209, 255, 0.8), 0 0 50px rgba(0, 61, 165, 0.5)',
-                      '0 0 10px rgba(0, 209, 255, 0.5), 0 0 20px rgba(0, 61, 165, 0.3)',
-                    ],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
+                  style={{
+                    textShadow: '0 0 15px rgba(0, 209, 255, 0.6), 0 0 30px rgba(0, 61, 165, 0.4)',
                   }}
                 >
                   러닝화를 찾아드립니다
-                </motion.span>
+                </span>
               </TextReveal>
             </span>
           </h1>

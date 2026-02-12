@@ -110,21 +110,13 @@ export default function Badge({
         }}
       />
 
-      {/* Subtle pulse animation for category badges */}
+      {/* Static glow for category badges */}
       {variant === 'category' && (
-        <motion.div
+        <div
           className="absolute inset-0 rounded-full"
           style={{
             background: `radial-gradient(circle, ${getGlowColor()}15, transparent)`,
-          }}
-          animate={{
-            opacity: [0.5, 0.8, 0.5],
-            scale: [1, 1.02, 1],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
+            opacity: 0.6,
           }}
         />
       )}
