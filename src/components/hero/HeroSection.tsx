@@ -158,7 +158,7 @@ export default function HeroSection() {
           </motion.div>
 
           {/* Main headline with TextReveal */}
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight" data-cursor="text">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-balance leading-[1.15]" data-cursor="text">
             <TextReveal
               as="span"
               mode="clip"
@@ -222,7 +222,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.6, ease: EASE_OUT_EXPO as unknown as number[] }}
-            className="mt-8 text-lg sm:text-xl text-[var(--color-foreground)]/60 max-w-2xl mx-auto"
+            className="mt-8 text-lg sm:text-xl text-[var(--color-foreground)]/60 max-w-2xl mx-auto text-pretty leading-relaxed"
           >
             Daily, Super Trainer, Racing 카테고리별로 정리된 러닝화 카탈로그와
             맞춤 추천 퀴즈로 완벽한 러닝화를 찾아보세요.

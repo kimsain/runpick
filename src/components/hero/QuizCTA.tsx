@@ -141,13 +141,13 @@ export default function QuizCTA() {
             <TextReveal
               as="h2"
               mode="clip"
-              className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-5 leading-tight"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-5 leading-tight text-balance"
             >
               어떤 러닝화가 나에게 맞을까?
             </TextReveal>
 
             <motion.p
-              className="text-base sm:text-lg text-white/50 max-w-lg mx-auto mb-10 leading-relaxed"
+              className="text-base sm:text-lg text-white/50 max-w-lg mx-auto mb-10 leading-relaxed text-pretty"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}

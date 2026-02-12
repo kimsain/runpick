@@ -289,13 +289,13 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
         {/* Content */}
         <div className="p-4" style={{ backfaceVisibility: 'hidden' }}>
           <motion.h3
-            className="text-lg font-bold text-[var(--color-foreground)] group-hover:text-gradient transition-all duration-300"
+            className="text-lg font-bold text-[var(--color-foreground)] group-hover:text-gradient transition-all duration-300 text-balance"
             animate={isHovered ? { x: [0, 2, 0] } : { x: 0 }}
             transition={{ duration: 0.3 }}
           >
             {shoe.name}
           </motion.h3>
-          <p className="mt-1 text-sm text-[var(--color-foreground)]/60 line-clamp-2">
+          <p className="mt-1 text-sm text-[var(--color-foreground)]/60 line-clamp-2 leading-relaxed">
             {shoe.shortDescription}
           </p>
 

@@ -37,11 +37,11 @@ export default function QuizQuestion({
 
   return (
     <div>
-      <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-foreground)] mb-2">
+      <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-foreground)] mb-2 text-balance leading-snug">
         {question.questionKo}
       </h2>
       {question.description && (
-        <p className="text-[var(--color-foreground)]/60 mb-8">{question.description}</p>
+        <p className="text-[var(--color-foreground)]/60 mb-8 text-pretty">{question.description}</p>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

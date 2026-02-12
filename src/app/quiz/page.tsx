@@ -102,14 +102,14 @@ export default function QuizPage() {
               >
                 {/* Header */}
                 <div className="text-center mb-8">
-                  <TextReveal as="h1" mode="clip" className="text-3xl font-bold text-gradient mb-2">
+                  <TextReveal as="h1" mode="clip" className="text-3xl font-bold text-gradient mb-2 text-balance leading-tight">
                     러닝화 추천 퀴즈
                   </TextReveal>
                   <motion.p
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="text-[var(--color-foreground)]/60"
+                    className="text-[var(--color-foreground)]/60 text-pretty"
                   >
                     5가지 질문으로 딱 맞는 러닝화를 찾아드려요
                   </motion.p>

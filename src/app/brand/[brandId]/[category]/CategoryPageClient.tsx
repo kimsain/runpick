@@ -99,13 +99,13 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
               <TextReveal
                 as="h1"
                 mode="clip"
-                className="text-4xl sm:text-5xl font-bold mb-4"
+                className="text-4xl sm:text-5xl font-bold mb-4 text-balance leading-tight"
               >
                 <span style={{ color: categoryData.color }}>
                   {categoryData.name}
                 </span>
               </TextReveal>
-              <p className="text-xl text-[var(--color-foreground)]/60 max-w-2xl mx-auto">
+              <p className="text-xl text-[var(--color-foreground)]/60 max-w-2xl mx-auto text-pretty leading-relaxed">
                 {categoryData.description}
               </p>
               <p className="mt-4 text-sm text-[var(--color-foreground)]/40">
@@ -182,10 +182,10 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                   const sub = subcategories.find((s) => s.id === selectedSubcategory);
                   return sub ? (
                     <>
-                      <h2 className="text-xl font-bold text-[var(--color-foreground)]">
+                      <h2 className="text-xl font-bold text-[var(--color-foreground)] text-balance">
                         {sub.name}
                       </h2>
-                      <p className="text-[var(--color-foreground)]/60">
+                      <p className="text-[var(--color-foreground)]/60 text-pretty leading-relaxed">
                         {sub.description}
                       </p>
                     </>

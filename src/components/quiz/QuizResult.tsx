@@ -136,7 +136,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           as="h1"
           mode="clip"
           delay={0.3}
-          className="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-4"
+          className="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-4 text-balance leading-snug"
         >
           당신에게 딱 맞는 러닝화를 찾았어요!
         </TextReveal>
@@ -177,7 +177,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.0 }}
-          className="text-[var(--color-foreground)]/60 max-w-2xl mx-auto"
+          className="text-[var(--color-foreground)]/60 max-w-2xl mx-auto text-pretty leading-relaxed"
         >
           {reasoning}
         </motion.p>
@@ -222,7 +222,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
               </Badge>
             </div>
 
-            <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-1">
+            <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-1 text-balance leading-tight">
               {primaryRecommendation.name}
             </h2>
             <div className="flex items-center gap-3 mb-4">
@@ -234,7 +234,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
               </span>
             </div>
 
-            <p className="text-[var(--color-foreground)]/80 mb-6 leading-relaxed">
+            <p className="text-[var(--color-foreground)]/80 mb-6 leading-relaxed text-pretty">
               {primaryRecommendation.shortDescription}
             </p>
 
@@ -268,7 +268,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           transition={{ delay: 0.7 }}
           className="mb-12"
         >
-          <h3 className="text-xl font-bold text-[var(--color-foreground)] mb-6">
+          <h3 className="text-lg font-bold text-[var(--color-foreground)] mb-6 text-balance">
             이런 선택지도 있어요
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

@@ -75,7 +75,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
               <TextReveal
                 as="h1"
                 mode="clip"
-                className="text-5xl sm:text-6xl font-bold"
+                className="text-5xl sm:text-6xl font-bold text-balance leading-tight"
               >
                 <span style={{ color: brand.color }}>{brand.name}</span>
               </TextReveal>
@@ -83,7 +83,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="mt-4 text-lg text-[var(--color-foreground)]/60 max-w-2xl mx-auto"
+                className="mt-4 text-lg text-[var(--color-foreground)]/60 max-w-2xl mx-auto text-pretty leading-relaxed"
               >
                 {brand.description}
               </motion.p>
@@ -151,7 +151,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-3xl">{category.icon}</span>
                       <h2
-                        className="text-2xl font-bold"
+                        className="text-2xl font-bold text-balance"
                         style={{ color: category.color }}
                       >
                         {category.name}
@@ -160,7 +160,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                         {category.nameKo}
                       </Badge>
                     </div>
-                    <p className="text-[var(--color-foreground)]/60">
+                    <p className="text-[var(--color-foreground)]/60 text-pretty leading-relaxed">
                       {category.description}
                     </p>
                   </motion.div>

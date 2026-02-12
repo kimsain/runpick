@@ -170,7 +170,7 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
 
               {/* Category name with glow on hover */}
               <motion.h3
-                className="text-2xl font-bold mb-2 transition-all duration-300"
+                className="text-2xl font-bold mb-2 transition-all duration-300 text-balance"
                 style={{
                   color: category.color,
                   textShadow: isHovered ? `0 0 20px ${category.color}80` : 'none',
@@ -187,7 +187,7 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
               </motion.p>
 
               <motion.p
-                className="text-sm text-[var(--color-foreground)]/50 line-clamp-2 max-w-xs"
+                className="text-sm text-[var(--color-foreground)]/50 line-clamp-2 max-w-xs leading-relaxed"
                 animate={{ opacity: isHovered ? 0.8 : 0.5 }}
               >
                 {category.description}
@@ -332,7 +332,7 @@ export default function CategoryNav() {
           <TextReveal
             as="h2"
             mode="clip"
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-foreground)]"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-foreground)] text-balance leading-tight"
           >
             <motion.span
               animate={{
@@ -352,7 +352,7 @@ export default function CategoryNav() {
           </TextReveal>
 
           <motion.p
-            className="mt-5 text-lg sm:text-xl text-[var(--color-foreground)]/60"
+            className="mt-5 text-lg sm:text-xl text-[var(--color-foreground)]/60 text-pretty"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}

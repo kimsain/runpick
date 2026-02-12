@@ -244,7 +244,7 @@ export default function FeaturedShoes() {
           <TextReveal
             as="h2"
             mode="clip"
-            className="text-3xl sm:text-4xl md:text-5xl font-bold"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-balance leading-tight"
           >
             <motion.span
               className="inline-block"
@@ -265,7 +265,7 @@ export default function FeaturedShoes() {
           </TextReveal>
 
           <motion.p
-            className="mt-5 text-lg sm:text-xl text-[var(--color-foreground)]/60"
+            className="mt-5 text-lg sm:text-xl text-[var(--color-foreground)]/60 text-pretty"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}

@@ -194,15 +194,15 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 <TextReveal
                   as="h1"
                   mode="clip"
-                  className="text-4xl sm:text-5xl font-bold text-[var(--color-foreground)] mb-2"
+                  className="text-4xl sm:text-5xl font-bold text-[var(--color-foreground)] mb-2 text-balance leading-tight"
                 >
                   {shoe.name}
                 </TextReveal>
-                <p className="text-xl text-[var(--color-foreground)]/60 mb-6">
+                <p className="text-xl text-[var(--color-foreground)]/60 mb-6 text-pretty">
                   {shoe.nameKo}
                 </p>
 
-                <p className="text-lg text-[var(--color-foreground)]/80 mb-8 leading-relaxed">
+                <p className="text-lg text-[var(--color-foreground)]/80 mb-8 leading-relaxed text-pretty">
                   {shoe.description}
                 </p>
 
@@ -285,7 +285,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: index * 0.1 }}
-                        className="flex items-start gap-2 text-[var(--color-foreground)]/80"
+                        className="flex items-start gap-2 text-[var(--color-foreground)]/80 leading-relaxed"
                       >
                         <span className="text-[var(--color-daily)] mt-1">•</span>
                         {pro}
@@ -310,7 +310,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: index * 0.1 }}
-                        className="flex items-start gap-2 text-[var(--color-foreground)]/80"
+                        className="flex items-start gap-2 text-[var(--color-foreground)]/80 leading-relaxed"
                       >
                         <span className="text-[var(--color-racing)] mt-1">•</span>
                         {con}
@@ -364,10 +364,10 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 viewport={{ once: true }}
                 className="mb-8"
               >
-                <h2 className="text-2xl font-bold text-[var(--color-foreground)]">
+                <h2 className="text-2xl font-bold text-[var(--color-foreground)] text-balance">
                   비슷한 러닝화
                 </h2>
-                <p className="text-[var(--color-foreground)]/60">
+                <p className="text-[var(--color-foreground)]/60 text-pretty">
                   같은 카테고리의 다른 모델도 살펴보세요
                 </p>
               </motion.div>
