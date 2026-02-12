@@ -69,7 +69,7 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
             onHoverEnd={() => setIsHovered(false)}
             whileHover={{ y: -12, scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="group relative h-56 sm:h-72 rounded-3xl overflow-hidden border border-[var(--color-border)] hover:border-transparent transition-all duration-500"
+            className="group relative h-64 sm:h-72 rounded-3xl overflow-hidden border border-[var(--color-border)] hover:border-transparent transition-all duration-500"
             style={{
               background: `linear-gradient(135deg, var(--color-card) 0%, var(--color-card-hover) 100%)`,
               transformStyle: 'preserve-3d',

@@ -138,7 +138,7 @@ export default function HeroSection() {
             className="relative inline-block mb-6"
           >
             <motion.span
-              className="hero-eyebrow-badge relative z-10 text-sm font-medium tracking-wider uppercase px-4 py-2 rounded-full border border-[var(--color-asics-accent)]/30 bg-[var(--color-asics-accent)]/5"
+              className="hero-eyebrow-badge relative z-10 text-[11px] sm:text-sm font-medium tracking-wider uppercase px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[var(--color-asics-accent)]/30 bg-[var(--color-asics-accent)]/5 whitespace-nowrap"
               animate={{
                 boxShadow: [
                   '0 0 0 0 var(--color-asics-accent)',

@@ -82,15 +82,15 @@ export default function QuizQuestion({
                 </motion.div>
               )}
 
-              {/* Icon */}
-              {option.icon && <span className="text-3xl mb-3 block">{option.icon}</span>}
-
-              {/* Label */}
-              <h3 className={`text-base sm:text-lg font-medium mb-1 ${
-                isSelected ? 'text-[var(--color-asics-accent)]' : 'text-[var(--color-foreground)]'
-              }`}>
-                {option.labelKo}
-              </h3>
+              {/* Icon + Label */}
+              <div className="flex items-center gap-3 mb-1">
+                {option.icon && <span className="text-2xl sm:text-3xl shrink-0">{option.icon}</span>}
+                <h3 className={`text-base sm:text-lg font-medium ${
+                  isSelected ? 'text-[var(--color-asics-accent)]' : 'text-[var(--color-foreground)]'
+                }`}>
+                  {option.labelKo}
+                </h3>
+              </div>
 
               {/* Description */}
               {option.description && (

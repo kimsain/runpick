@@ -16,7 +16,7 @@ export default function QuizProgress({ current, total }: QuizProgressProps) {
             {/* Step circle */}
             <div className="relative flex items-center justify-center">
               <motion.div
-                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2 transition-colors ${
+                className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium border-2 transition-colors ${
                   i < current
                     ? 'bg-[var(--color-asics-accent)] border-[var(--color-asics-accent)] text-white'
                     : i === current
@@ -59,7 +59,7 @@ export default function QuizProgress({ current, total }: QuizProgressProps) {
 
             {/* Connector line (not after last step) */}
             {i < total - 1 && (
-              <div className="relative w-12 sm:w-16 h-0.5 mx-1">
+              <div className="relative w-8 sm:w-16 h-0.5 mx-0.5 sm:mx-1">
                 <div className="absolute inset-0 bg-[var(--color-border)] rounded-full" />
                 {i < current && (
                   <motion.div
