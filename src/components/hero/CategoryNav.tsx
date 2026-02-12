@@ -256,55 +256,43 @@ export default function CategoryNav() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Header reveal animation
+      // Header reveal animation — play once, never reverse
       if (headerRef.current) {
         gsap.fromTo(
           headerRef.current,
-          {
-            opacity: 0,
-            y: 80,
-            scale: 0.9,
-          },
+          { opacity: 0, y: 40, scale: 0.95 },
           {
             opacity: 1,
             y: 0,
             scale: 1,
-            duration: 1,
+            duration: 0.8,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: headerRef.current,
               start: 'top 85%',
-              end: 'top 50%',
-              scrub: 1,
+              toggleActions: 'play none none none',
             },
           }
         );
       }
 
-      // Cards reveal with stagger
+      // Cards reveal with stagger — play once, never reverse
       if (cardsContainerRef.current) {
         const cards = cardsContainerRef.current.children;
         gsap.fromTo(
           cards,
-          {
-            opacity: 0,
-            y: 120,
-            rotateY: -5,
-            scale: 0.85,
-          },
+          { opacity: 0, y: 60, scale: 0.9 },
           {
             opacity: 1,
             y: 0,
-            rotateY: 0,
             scale: 1,
-            duration: 1,
-            stagger: 0.2,
+            duration: 0.7,
+            stagger: 0.15,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: cardsContainerRef.current,
               start: 'top 80%',
-              end: 'top 30%',
-              scrub: 1.5,
+              toggleActions: 'play none none none',
             },
           }
         );
