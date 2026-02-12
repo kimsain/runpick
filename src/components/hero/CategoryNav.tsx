@@ -377,10 +377,10 @@ export default function CategoryNav() {
                 className="w-2 h-2 rounded-full"
                 style={{
                   backgroundColor: i === 0
-                    ? '#4CAF50'
+                    ? 'var(--color-daily)'
                     : i === 1
-                      ? '#FF9800'
-                      : '#F44336',
+                      ? 'var(--color-super-trainer)'
+                      : 'var(--color-racing)',
                   animation: `dot-pulse 2s ease-in-out ${i * 0.3}s infinite`,
                 }}
               />
