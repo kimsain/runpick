@@ -22,7 +22,7 @@ npm run lint     # Run ESLint
 - **Tailwind CSS 4** with custom CSS properties
 - **Framer Motion** for component animations
 - **GSAP ScrollTrigger** for scroll-based animations
-- **Lenis** for smooth scrolling
+- **Lenis** for smooth scrolling (desktop only — disabled on mobile via `window.innerWidth < 768` guard)
 
 ## Architecture
 
@@ -72,6 +72,10 @@ Quiz matching algorithm (no manual shoeTraits — uses asics.json specs directly
 - `src/types/quiz.ts` - QuizResult (matchScore, matchReasons, alternatives with reasons), QuizAnswer (single-select)
 - `src/data/quiz-questions.ts` - 5 quiz questions with scoring weights per option
 - `src/components/layout/LayoutClient.tsx` - Animation wrappers (SmoothScroll, PageTransition, CustomCursor)
+- `src/constants/animation.ts` - Shared animation constants (easing, springs, `MOBILE_BREAKPOINT`)
+- `src/hooks/useIsDesktop.ts` - One-shot desktop check hook for GSAP guards (SSR-safe, no resize)
+- `src/components/effects/Sparkle.tsx` - Shared sparkle animation component (configurable size/opacity/duration)
+- `src/app/globals.css` - Includes mobile performance override block at EOF (`@media (max-width: 767px)`)
 
 ## Conventions
 
@@ -89,6 +93,17 @@ Quiz matching algorithm (no manual shoeTraits — uses asics.json specs directly
 - Prefer lab data (RunRepeat) over subjective reviews
 - Racing durability 2-4 = normal, Daily durability 7-9 = normal
 
+## Mobile Performance Strategy
+
+모바일(< 768px)은 CSS-first 오버라이드 방식으로 최적화. 데스크탑 코드는 100% 동일 유지.
+
+- **`useIsDesktop()` 훅**: 모든 GSAP/Lenis 가드에 표준화된 `useIsDesktop()` 훅 사용. `if (!isDesktop) return;` 패턴. (8곳: CategoryNav, QuizCTA, Footer, ShoeDetailClient, ShoeSpecChart, SmoothScroll, BrandPageClient, FeaturedShoes)
+- **CSS `!important` 오버라이드**: `globals.css` 끝 `@media (max-width: 767px)` 블록이 GSAP inline style(`opacity:0`, `transform`)을 강제 해제
+- **장식 요소**: `hidden md:block`으로 모바일에서 숨김 (Sparkle, glow, shimmer, pulse ring 등)
+- **ShoeSpecChart 바**: 모바일에서는 CSS 변수 `--target-scale`로 직접 표시, 데스크탑에서는 GSAP 애니메이션
+- **Framer Motion `whileInView`**: 네이티브 스크롤에서 안정적이므로 모바일에서도 유지
+- **ShoeCard 장식**: `ShoeCardDecorations` 서브컴포넌트로 분리. sparkle 생성에 `window.innerWidth >= 768` 가드
+
 ## Gotchas
 
 - **Description swap risk**: MEGABLAST/SUPERBLAST 2 descriptions were once swapped — always cross-verify shoe descriptions against official specs
@@ -97,6 +112,8 @@ Quiz matching algorithm (no manual shoeTraits — uses asics.json specs directly
 - **Linter + asics.json**: ESLint may auto-fix some Korean expressions in asics.json — accept if meaning is preserved
 - **`getAllShoes()` order**: Returns unmodified array order (not sorted) to preserve FeaturedShoes manual ordering
 - **Listing functions**: `getShoesByCategory()` etc. sort by `b.name.localeCompare(a.name)` (name descending)
+- **Mobile GSAP 추가 시**: 새 GSAP useEffect에는 반드시 `useIsDesktop()` 훅 + `if (!isDesktop) return;` 가드 추가, 대응 CSS 클래스를 `globals.css` 모바일 블록에 등록
+- **`hidden md:block` 주의**: 모바일에서 숨길 장식 요소에만 사용. 콘텐츠 요소에 실수로 적용하면 모바일에서 사라짐
 
 ## Static Export Notes
 

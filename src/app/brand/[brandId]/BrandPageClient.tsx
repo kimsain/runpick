@@ -16,6 +16,7 @@ import { getShoesByBrand, getShoesByCategory } from '@/utils/shoe-utils';
 import asicsData from '@/data/brands/asics.json';
 import Link from 'next/link';
 import { STAGGER_NORMAL } from '@/constants/animation';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 interface BrandPageClientProps {
   brandId: string;
@@ -25,8 +26,10 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
   const brand = asicsData.brand;
   const shoes = getShoesByBrand(brandId);
   const sectionsRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useIsDesktop();
 
   useEffect(() => {
+    if (!isDesktop) return;
     gsap.registerPlugin(ScrollTrigger);
     const triggers: ScrollTrigger[] = [];
 
@@ -60,7 +63,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
     return () => {
       triggers.forEach((t) => t.kill());
     };
-  }, []);
+  }, [isDesktop]);
 
   return (
     <>

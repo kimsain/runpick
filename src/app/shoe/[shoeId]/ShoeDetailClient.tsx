@@ -17,6 +17,7 @@ import { getShoeBySlug, getSimilarShoes } from '@/utils/shoe-utils';
 import { getCategoryById, getSubcategoryById } from '@/data/categories';
 import Link from 'next/link';
 import { SPRING_SNAPPY, STAGGER_NORMAL } from '@/constants/animation';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 interface ShoeDetailClientProps {
   shoeId: string;
@@ -26,9 +27,10 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
   const shoe = getShoeBySlug(shoeId);
   const prosRef = useRef<HTMLDivElement>(null);
   const consRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useIsDesktop();
 
   useEffect(() => {
-    if (window.innerWidth < 768) return;
+    if (!isDesktop) return;
     gsap.registerPlugin(ScrollTrigger);
     const triggers: ScrollTrigger[] = [];
 
@@ -77,7 +79,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
     return () => {
       triggers.forEach((t) => t.kill());
     };
-  }, []);
+  }, [isDesktop]);
 
   if (!shoe) {
     return (

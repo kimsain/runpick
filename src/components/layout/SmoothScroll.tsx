@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import Lenis from 'lenis';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 interface SmoothScrollProps {
   children: React.ReactNode;
@@ -9,9 +10,10 @@ interface SmoothScrollProps {
 
 export default function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null);
+  const isDesktop = useIsDesktop();
 
   useEffect(() => {
-    if (window.innerWidth < 768) return; // Mobile: use native scroll
+    if (!isDesktop) return; // Mobile: use native scroll
 
     const lenis = new Lenis({
       duration: 1.2,
@@ -34,7 +36,7 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
     return () => {
       lenis.destroy();
     };
-  }, []);
+  }, [isDesktop]);
 
   return <>{children}</>;
 }

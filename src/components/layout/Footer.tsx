@@ -8,14 +8,15 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { STAGGER_NORMAL } from '@/constants/animation';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const linksRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useIsDesktop();
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (window.innerWidth < 768) return;
+    if (!isDesktop) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -43,7 +44,7 @@ export default function Footer() {
     }, footerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isDesktop]);
 
   return (
     <footer ref={footerRef} className="relative bg-[var(--color-card)] border-t border-[var(--color-border)] overflow-hidden">

@@ -254,6 +254,12 @@ body {
     box-shadow: none !important;
   }
 
+  /* BrandPageClient shoe card visibility */
+  .shoe-card-wrapper {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
   /* ScrollProgress boxShadow remove */
   .scroll-progress-bar {
     box-shadow: none !important;

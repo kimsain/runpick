@@ -8,6 +8,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 // Particle effect for hover
 function HoverParticles({ isHovered, color }: { isHovered: boolean; color: string }) {
@@ -247,10 +248,10 @@ export default function CategoryNav() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useIsDesktop();
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (window.innerWidth < 768) return;
+    if (!isDesktop) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -311,7 +312,7 @@ export default function CategoryNav() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isDesktop]);
 
   return (
     <section ref={sectionRef} className="py-16 sm:py-28 bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]">

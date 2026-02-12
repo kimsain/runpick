@@ -7,37 +7,9 @@ import { getAllShoes } from '@/utils/shoe-utils';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
-import { EASE_OUT_EXPO, DUR_REVEAL, MOBILE_BREAKPOINT } from '@/constants/animation';
-
-// Animated star/sparkle component
-function Sparkle({ delay, x, y }: { delay: number; x: string; y: string }) {
-  return (
-    <motion.div
-      className="absolute pointer-events-none"
-      style={{ left: x, top: y }}
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{
-        opacity: [0, 1, 0],
-        scale: [0, 1, 0],
-        rotate: [0, 180],
-      }}
-      transition={{
-        duration: 2,
-        delay,
-        repeat: Infinity,
-        repeatDelay: 3,
-      }}
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z"
-          fill="var(--color-asics-accent)"
-          opacity="0.6"
-        />
-      </svg>
-    </motion.div>
-  );
-}
+import { EASE_OUT_EXPO, DUR_REVEAL } from '@/constants/animation';
+import Sparkle from '@/components/effects/Sparkle';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 // Featured badge component
 function FeaturedBadge() {
@@ -185,7 +157,6 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
 export default function FeaturedShoes() {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(true);
 
   const allShoes = getAllShoes();
   // 각 카테고리에서 인기 모델 Top 5
@@ -197,18 +168,11 @@ export default function FeaturedShoes() {
     allShoes.find((s) => s.id === 'magic-speed-5'),
   ].filter(Boolean);
 
-  // Mobile detection
-  useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
-    setIsMobile(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mql.addEventListener('change', handler);
-    return () => mql.removeEventListener('change', handler);
-  }, []);
+  const isDesktop = useIsDesktop();
 
   // Desktop: GSAP horizontal scroll with pin
   useEffect(() => {
-    if (typeof window === 'undefined' || isMobile) return;
+    if (!isDesktop) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -232,23 +196,23 @@ export default function FeaturedShoes() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [isMobile]);
+  }, [isDesktop]);
 
   return (
     <section ref={sectionRef} className="relative bg-[var(--color-background)] overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
         {/* Sparkles */}
-        <Sparkle delay={0} x="15%" y="20%" />
-        <Sparkle delay={1} x="85%" y="30%" />
-        <Sparkle delay={2} x="10%" y="70%" />
-        <Sparkle delay={1.5} x="90%" y="80%" />
-        <Sparkle delay={0.5} x="50%" y="10%" />
+        <Sparkle delay={0} x="15%" y="20%" size={16} opacity={0.6} duration={2} />
+        <Sparkle delay={1} x="85%" y="30%" size={16} opacity={0.6} duration={2} />
+        <Sparkle delay={2} x="10%" y="70%" size={16} opacity={0.6} duration={2} />
+        <Sparkle delay={1.5} x="90%" y="80%" size={16} opacity={0.6} duration={2} />
+        <Sparkle delay={0.5} x="50%" y="10%" size={16} opacity={0.6} duration={2} />
       </div>
 
       <div
         ref={scrollContainerRef}
-        className={`relative flex flex-col justify-center ${isMobile ? '' : 'min-h-screen'}`}
+        className={`relative flex flex-col justify-center ${!isDesktop ? '' : 'min-h-screen'}`}
         data-cursor="drag"
       >
         {/* Section header */}
@@ -292,7 +256,7 @@ export default function FeaturedShoes() {
         {/* Horizontal scrolling cards */}
         <div
           className={`horizontal-cards flex items-center gap-8 pl-[5vw] md:pl-[10vw] pr-[10vw] pb-20 ${
-            isMobile ? 'mobile-scroll-snap scrollbar-hide' : ''
+            !isDesktop ? 'mobile-scroll-snap scrollbar-hide' : ''
           }`}
         >
           {featuredShoes.map((shoe, index) => (

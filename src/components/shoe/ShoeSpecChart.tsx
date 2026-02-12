@@ -5,6 +5,7 @@ import { motion, useSpring, useTransform, useInView } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ShoeSpecs } from '@/types/shoe';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 interface ShoeSpecChartProps {
   specs: ShoeSpecs;
@@ -61,9 +62,10 @@ function SpecBar({ label, value, max = 10 }: SpecBarProps) {
 
 export default function ShoeSpecChart({ specs, animated = false }: ShoeSpecChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useIsDesktop();
 
   useEffect(() => {
-    if (window.innerWidth < 768) return;
+    if (!isDesktop) return;
     gsap.registerPlugin(ScrollTrigger);
 
     const bars = containerRef.current?.querySelectorAll('.spec-bar-fill');
@@ -110,7 +112,7 @@ export default function ShoeSpecChart({ specs, animated = false }: ShoeSpecChart
     return () => {
       triggers.forEach((t) => t.kill());
     };
-  }, [animated]);
+  }, [animated, isDesktop]);
 
   const specItems = [
     { label: '쿠셔닝', value: specs.cushioning },

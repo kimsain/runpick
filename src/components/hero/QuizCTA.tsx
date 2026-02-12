@@ -8,14 +8,15 @@ import MagneticElement from '@/components/effects/MagneticElement';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { EASE_OUT_EXPO } from '@/constants/animation';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 export default function QuizCTA() {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useIsDesktop();
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (window.innerWidth < 768) return;
+    if (!isDesktop) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -40,7 +41,7 @@ export default function QuizCTA() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isDesktop]);
 
   return (
     <section ref={sectionRef} className="py-16 sm:py-32 relative">

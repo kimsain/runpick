@@ -7,36 +7,7 @@ import TextReveal from '@/components/effects/TextReveal';
 import FloatingShapes from '@/components/effects/FloatingShapes';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { EASE_OUT_EXPO, STAGGER_NORMAL } from '@/constants/animation';
-
-// Animated star/sparkle component
-function Sparkle({ delay, x, y }: { delay: number; x: string; y: string }) {
-  return (
-    <motion.div
-      className="absolute pointer-events-none"
-      style={{ left: x, top: y }}
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{
-        opacity: [0, 0.6, 0],
-        scale: [0, 1, 0],
-        rotate: [0, 180],
-      }}
-      transition={{
-        duration: 2.5,
-        delay,
-        repeat: Infinity,
-        repeatDelay: 3,
-      }}
-    >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z"
-          fill="var(--color-asics-accent)"
-          opacity="0.5"
-        />
-      </svg>
-    </motion.div>
-  );
-}
+import Sparkle from '@/components/effects/Sparkle';
 
 // Pulsing CTA button wrapper
 function PulsingButton({ children, href, variant = 'primary', delay = 0 }: {
