@@ -250,6 +250,7 @@ export default function CategoryNav() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (window.innerWidth < 768) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -318,7 +319,7 @@ export default function CategoryNav() {
         {/* Animated section header */}
         <div
           ref={headerRef}
-          className="text-center mb-10 sm:mb-20"
+          className="text-center mb-10 sm:mb-20 category-nav-header"
         >
           {/* Decorative line */}
           <motion.div
@@ -363,7 +364,7 @@ export default function CategoryNav() {
 
           {/* Animated dots */}
           <motion.div
-            className="flex justify-center gap-2 mt-6"
+            className="hidden md:flex justify-center gap-2 mt-6"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}

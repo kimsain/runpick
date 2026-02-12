@@ -15,6 +15,7 @@ export default function QuizCTA() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (window.innerWidth < 768) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -46,7 +47,7 @@ export default function QuizCTA() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           ref={containerRef}
-          className="relative overflow-hidden rounded-[2rem]"
+          className="relative overflow-hidden rounded-[2rem] quiz-cta-container"
           style={{
             background: 'linear-gradient(135deg, #0a1628 0%, #0d2847 40%, #0a3a6b 70%, #084c8a 100%)',
           }}
@@ -62,7 +63,7 @@ export default function QuizCTA() {
 
           {/* Animated gradient orbs */}
           <motion.div
-            className="absolute -top-32 -right-32 w-80 h-80 rounded-full"
+            className="absolute -top-32 -right-32 w-80 h-80 rounded-full hidden md:block"
             style={{
               background: 'radial-gradient(circle, rgba(0,209,255,0.15) 0%, transparent 70%)',
             }}
@@ -74,7 +75,7 @@ export default function QuizCTA() {
             transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full"
+            className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full hidden md:block"
             style={{
               background: 'radial-gradient(circle, rgba(0,61,165,0.2) 0%, transparent 70%)',
             }}
@@ -88,7 +89,7 @@ export default function QuizCTA() {
 
           {/* Accent light streak */}
           <motion.div
-            className="absolute top-0 left-0 right-0 h-px"
+            className="absolute top-0 left-0 right-0 h-px hidden md:block"
             style={{
               background: 'linear-gradient(90deg, transparent 0%, var(--color-asics-accent) 50%, transparent 100%)',
             }}
@@ -204,7 +205,7 @@ export default function QuizCTA() {
 
             {/* Bottom decorative dots */}
             <motion.div
-              className="flex justify-center gap-1.5 mt-10"
+              className="hidden md:flex justify-center gap-1.5 mt-10"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}

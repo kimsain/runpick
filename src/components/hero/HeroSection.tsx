@@ -61,7 +61,7 @@ function PulsingButton({ children, href, variant = 'primary', delay = 0 }: {
       {/* Glow effect behind button */}
       {isPrimary && (
         <motion.div
-          className="absolute inset-0 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)]"
+          className="absolute inset-0 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)] hidden md:block"
           animate={{
             opacity: [0.4, 0.7, 0.4],
             scale: [1, 1.08, 1],
@@ -112,7 +112,7 @@ export default function HeroSection() {
       <FloatingShapes color="var(--color-asics-blue)" count={4} />
 
       {/* Subtle sparkles (keep 5) */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none hidden md:block">
         <Sparkle delay={0} x="12%" y="25%" />
         <Sparkle delay={1.2} x="88%" y="35%" />
         <Sparkle delay={2.4} x="8%" y="75%" />
@@ -122,7 +122,7 @@ export default function HeroSection() {
 
       {/* Content with parallax - 20% speed */}
       <motion.div
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+        className="hero-parallax-content relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
         style={{ y: contentY, opacity: contentOpacity, scale }}
       >
         <motion.div
@@ -138,7 +138,7 @@ export default function HeroSection() {
             className="relative inline-block mb-6"
           >
             <motion.span
-              className="relative z-10 text-sm font-medium tracking-wider uppercase px-4 py-2 rounded-full border border-[var(--color-asics-accent)]/30 bg-[var(--color-asics-accent)]/5"
+              className="hero-eyebrow-badge relative z-10 text-sm font-medium tracking-wider uppercase px-4 py-2 rounded-full border border-[var(--color-asics-accent)]/30 bg-[var(--color-asics-accent)]/5"
               animate={{
                 boxShadow: [
                   '0 0 0 0 var(--color-asics-accent)',
@@ -170,7 +170,7 @@ export default function HeroSection() {
             <span className="block mt-2 relative">
               {/* Glow backdrop */}
               <motion.span
-                className="absolute inset-0 blur-2xl"
+                className="absolute inset-0 blur-2xl hidden md:block"
                 animate={{
                   opacity: [0.3, 0.6, 0.3],
                   scale: [1, 1.05, 1],
@@ -197,7 +197,7 @@ export default function HeroSection() {
                 className="inline-block font-extrabold text-white relative"
               >
                 <motion.span
-                  className="inline-block"
+                  className="inline-block hero-headline-glow"
                   animate={{
                     textShadow: [
                       '0 0 10px rgba(0, 209, 255, 0.5), 0 0 20px rgba(0, 61, 165, 0.3)',

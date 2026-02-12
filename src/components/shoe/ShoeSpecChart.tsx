@@ -50,6 +50,7 @@ function SpecBar({ label, value, max = 10 }: SpecBarProps) {
             background: 'linear-gradient(90deg, var(--color-asics-blue), var(--color-asics-accent))',
             boxShadow: '0 0 8px var(--color-asics-accent), 0 0 16px rgba(0, 209, 255, 0.3)',
             transform: 'scaleX(0)',
+            ['--target-scale' as string]: value / max,
           }}
           data-value={value / max}
         />
@@ -62,6 +63,7 @@ export default function ShoeSpecChart({ specs, animated = false }: ShoeSpecChart
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (window.innerWidth < 768) return;
     gsap.registerPlugin(ScrollTrigger);
 
     const bars = containerRef.current?.querySelectorAll('.spec-bar-fill');

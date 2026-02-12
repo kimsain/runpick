@@ -15,6 +15,7 @@ export default function Footer() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (window.innerWidth < 768) return;
 
     gsap.registerPlugin(ScrollTrigger);
 

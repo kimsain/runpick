@@ -192,3 +192,70 @@ body {
 .mobile-scroll-snap > * {
   scroll-snap-align: center;
 }
+
+/* ========== MOBILE PERFORMANCE OVERRIDES ========== */
+@media (max-width: 767px) {
+  /* Hero: parallax opacity/scale disable */
+  .hero-parallax-content {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Hero: eyebrow badge boxShadow static */
+  .hero-eyebrow-badge {
+    box-shadow: none !important;
+  }
+
+  /* Hero: headline text-shadow static */
+  .hero-headline-glow {
+    text-shadow: 0 0 15px rgba(0, 209, 255, 0.5), 0 0 30px rgba(0, 61, 165, 0.3) !important;
+  }
+
+  /* Hero gradient wave lightweight */
+  .hero-gradient-wave {
+    animation: none !important;
+    opacity: 0.15 !important;
+  }
+
+  /* FeaturedShoes badge boxShadow static */
+  .featured-badge-pulse {
+    box-shadow: none !important;
+  }
+
+  /* CategoryNav header visibility */
+  .category-nav-header {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* QuizCTA container visibility */
+  .quiz-cta-container {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Footer link items visibility */
+  .footer-link-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* ShoeDetail pros/cons visibility */
+  .shoe-detail-pros,
+  .shoe-detail-cons {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* ShoeSpecChart bar mobile direct display */
+  .spec-bar-fill {
+    transform: scaleX(var(--target-scale, 0)) !important;
+    transition: transform 0.8s cubic-bezier(0.33, 1, 0.68, 1) !important;
+    box-shadow: none !important;
+  }
+
+  /* ScrollProgress boxShadow remove */
+  .scroll-progress-bar {
+    box-shadow: none !important;
+  }
+}

@@ -123,7 +123,7 @@ export default function Button({
         <>
           {/* Ambient glow */}
           <motion.div
-            className="absolute inset-0 rounded-full opacity-0"
+            className="absolute inset-0 rounded-full opacity-0 hidden md:block"
             style={{
               background: 'linear-gradient(90deg, var(--color-asics-blue), var(--color-asics-accent))',
               filter: 'blur(15px)',
@@ -139,7 +139,7 @@ export default function Button({
           />
           {/* Shimmer effect */}
           <motion.div
-            className="absolute inset-0"
+            className="absolute inset-0 hidden md:block"
             style={{
               background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
             }}

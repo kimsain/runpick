@@ -28,6 +28,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
   const consRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (window.innerWidth < 768) return;
     gsap.registerPlugin(ScrollTrigger);
     const triggers: ScrollTrigger[] = [];
 
@@ -272,7 +273,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 {/* Pros */}
                 <div
                   ref={prosRef}
-                  className="bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
+                  className="shoe-detail-pros bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
                 >
                   <h2 className="text-lg sm:text-xl font-bold text-[var(--color-daily)] mb-4 flex items-center gap-2">
                     <span>👍</span> 장점
@@ -297,7 +298,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 {/* Cons */}
                 <div
                   ref={consRef}
-                  className="bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
+                  className="shoe-detail-cons bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
                 >
                   <h2 className="text-lg sm:text-xl font-bold text-[var(--color-racing)] mb-4 flex items-center gap-2">
                     <span>👎</span> 단점

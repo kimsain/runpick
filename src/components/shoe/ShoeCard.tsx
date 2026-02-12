@@ -207,7 +207,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
         />
 
         {/* Sparkles container */}
-        <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden hidden md:block">
           <AnimatePresence>
             {sparkles.map((sparkle) => (
               <Sparkle key={sparkle.id} x={sparkle.x} y={sparkle.y} />
@@ -216,17 +216,19 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
         </div>
 
         {/* Pulse ring effect on hover */}
-        <AnimatePresence>
-          {isHovered && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: [0.5, 0], scale: [0.8, 1.2] }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.2, repeat: Infinity }}
-              className="absolute inset-0 rounded-2xl border-2 border-[var(--color-asics-accent)] pointer-events-none"
-            />
-          )}
-        </AnimatePresence>
+        <div className="hidden md:block">
+          <AnimatePresence>
+            {isHovered && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: [0.5, 0], scale: [0.8, 1.2] }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.2, repeat: Infinity }}
+                className="absolute inset-0 rounded-2xl border-2 border-[var(--color-asics-accent)] pointer-events-none"
+              />
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Image container with ImageDistortion */}
         <ImageDistortion variant="scan">
@@ -356,7 +358,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
 
         {/* Enhanced corner glow with color shift */}
         <motion.div
-          className="absolute -bottom-4 -right-4 w-32 h-32 blur-3xl pointer-events-none"
+          className="absolute -bottom-4 -right-4 w-32 h-32 blur-3xl pointer-events-none hidden md:block"
           style={{
             background: 'linear-gradient(135deg, var(--color-asics-accent), var(--color-asics-blue))',
           }}
@@ -373,7 +375,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
 
         {/* Top left corner glow */}
         <motion.div
-          className="absolute -top-4 -left-4 w-24 h-24 blur-2xl pointer-events-none"
+          className="absolute -top-4 -left-4 w-24 h-24 blur-2xl pointer-events-none hidden md:block"
           style={{
             background: 'var(--color-asics-accent)',
           }}
@@ -384,7 +386,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
 
         {/* Enhanced border glow with pulsing effect */}
         <motion.div
-          className="absolute inset-0 rounded-2xl pointer-events-none"
+          className="absolute inset-0 rounded-2xl pointer-events-none hidden md:block"
           initial={{ opacity: 0 }}
           animate={isHovered ? {
             opacity: 1,
@@ -404,7 +406,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
 
         {/* Ripple effect on card interaction */}
         <motion.div
-          className="absolute inset-0 bg-[var(--color-asics-accent)]/5 rounded-2xl pointer-events-none"
+          className="absolute inset-0 bg-[var(--color-asics-accent)]/5 rounded-2xl pointer-events-none hidden md:block"
           initial={{ opacity: 0 }}
           animate={isHovered ? {
             opacity: [0, 0.3, 0],

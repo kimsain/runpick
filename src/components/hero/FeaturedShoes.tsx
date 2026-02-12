@@ -50,7 +50,7 @@ function FeaturedBadge() {
       className="inline-flex items-center gap-2 mb-8"
     >
       <motion.div
-        className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)]/20 to-[var(--color-asics-accent)]/20 border border-[var(--color-asics-accent)]/30"
+        className="featured-badge-pulse flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)]/20 to-[var(--color-asics-accent)]/20 border border-[var(--color-asics-accent)]/30"
         animate={{
           boxShadow: [
             '0 0 0 0 var(--color-asics-accent)',
@@ -185,7 +185,7 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
 export default function FeaturedShoes() {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
 
   const allShoes = getAllShoes();
   // 각 카테고리에서 인기 모델 Top 5
@@ -237,7 +237,7 @@ export default function FeaturedShoes() {
   return (
     <section ref={sectionRef} className="relative bg-[var(--color-background)] overflow-hidden">
       {/* Background decorative elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
         {/* Sparkles */}
         <Sparkle delay={0} x="15%" y="20%" />
         <Sparkle delay={1} x="85%" y="30%" />
