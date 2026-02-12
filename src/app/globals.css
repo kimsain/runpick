@@ -167,6 +167,15 @@ body {
   display: inline-block;
 }
 
+/* Hero gradient wave - CSS animation for flicker-free rendering */
+.hero-gradient-wave {
+  background: linear-gradient(45deg, transparent 0%, var(--color-asics-blue) 25%, var(--color-asics-accent) 50%, var(--color-asics-blue) 75%, transparent 100%);
+  background-size: 400% 400%;
+  filter: blur(60px);
+  will-change: background-position;
+  animation: gradient-shift 15s linear infinite;
+}
+
 /* Horizontal scroll section */
 .horizontal-scroll-section {
   overflow: hidden;

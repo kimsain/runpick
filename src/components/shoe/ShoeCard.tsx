@@ -3,7 +3,7 @@
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence, useInView } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { RunningShoe } from '@/types/shoe';
+import { RunningShoe, ShoeSpecs } from '@/types/shoe';
 import Badge from '@/components/common/Badge';
 import { getCategoryById } from '@/data/categories';
 import { useRef, useState, useCallback, useEffect } from 'react';
@@ -60,6 +60,49 @@ function Sparkle({ x, y }: { x: number; y: number }) {
   );
 }
 
+const SPEC_LABELS: Record<string, string> = {
+  cushioning: '쿠셔닝',
+  responsiveness: '반발력',
+  stability: '안정성',
+  durability: '내구성',
+};
+
+function getTopSpecs(specs: ShoeSpecs): { key: string; label: string; value: number }[] {
+  const entries = [
+    { key: 'cushioning', value: specs.cushioning },
+    { key: 'responsiveness', value: specs.responsiveness },
+    { key: 'stability', value: specs.stability },
+    { key: 'durability', value: specs.durability },
+  ];
+  return entries
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 2)
+    .map((e) => ({ ...e, label: SPEC_LABELS[e.key] }));
+}
+
+function SpecDotBar({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="text-[10px] text-[var(--color-foreground)]/50 w-8 shrink-0">{label}</span>
+      <div className="flex gap-[2px]">
+        {Array.from({ length: 10 }, (_, i) => (
+          <div
+            key={i}
+            className="w-[6px] h-[6px] rounded-[1px]"
+            style={{
+              background: i < value
+                ? 'var(--color-asics-accent)'
+                : 'var(--color-border)',
+              opacity: i < value ? 1 : 0.4,
+            }}
+          />
+        ))}
+      </div>
+      <span className="text-[10px] font-medium text-[var(--color-foreground)]/60 w-4 text-right">{value}</span>
+    </div>
+  );
+}
+
 export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
   const category = getCategoryById(shoe.categoryId);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -77,9 +120,9 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
   const mouseXSpring = useSpring(x, { stiffness: 400, damping: 25 });
   const mouseYSpring = useSpring(y, { stiffness: 400, damping: 25 });
 
-  // Enhanced tilt range
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['15deg', '-15deg']);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-15deg', '15deg']);
+  // Subtle tilt range (reduced to keep text sharp)
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['6deg', '-6deg']);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-6deg', '6deg']);
 
   // Glow position follows mouse
   const glowX = useTransform(mouseXSpring, [-0.5, 0.5], ['0%', '100%']);
@@ -147,7 +190,6 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
         style={{
           rotateX,
           rotateY,
-          transformStyle: 'preserve-3d',
           filter: isHovered
             ? 'drop-shadow(0 25px 50px rgba(0, 209, 255, 0.15))'
             : 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1))',
@@ -191,7 +233,8 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
           <div className="relative aspect-[4/3] bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] overflow-hidden">
             <motion.div
               className="absolute inset-0 flex items-center justify-center p-4"
-              style={{ transform: 'translateZ(50px)' }}
+              animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             >
               {/* Product image with bounce effect */}
               <motion.div
@@ -244,7 +287,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
         </ImageDistortion>
 
         {/* Content */}
-        <div className="p-4" style={{ transform: 'translateZ(20px)' }}>
+        <div className="p-4" style={{ backfaceVisibility: 'hidden' }}>
           <motion.h3
             className="text-lg font-bold text-[var(--color-foreground)] group-hover:text-gradient transition-all duration-300"
             animate={isHovered ? { x: [0, 2, 0] } : { x: 0 }}
@@ -283,6 +326,13 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
               <CountUp value={shoe.specs.drop} suffix="mm" />
             </span>
           </motion.div>
+
+          {/* Top 2 spec scores */}
+          <div className="mt-2 flex flex-col gap-1">
+            {getTopSpecs(shoe.specs).map((spec) => (
+              <SpecDotBar key={spec.key} label={spec.label} value={spec.value} />
+            ))}
+          </div>
 
           {/* Price */}
           <div className="mt-3 pt-3 border-t border-[var(--color-border)] flex items-center justify-between">

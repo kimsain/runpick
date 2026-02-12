@@ -193,7 +193,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           stiffness: 200,
           damping: 20,
         }}
-        className="relative bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] rounded-3xl overflow-hidden border border-[var(--color-asics-accent)]/30 mb-12"
+        className="relative bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] rounded-3xl overflow-hidden border border-[var(--color-asics-accent)]/30 mb-8"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-asics-blue)]/5 to-[var(--color-asics-accent)]/10" />
 
@@ -222,26 +222,21 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
               </Badge>
             </div>
 
-            <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-2">
+            <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-1">
               {primaryRecommendation.name}
             </h2>
-            <p className="text-[var(--color-foreground)]/60 mb-4">
-              {primaryRecommendation.nameKo}
-            </p>
-
-            <p className="text-[var(--color-foreground)]/80 mb-6 leading-relaxed">
-              {primaryRecommendation.shortDescription}
-            </p>
-
-            <div className="mb-6">
-              <span className="text-3xl font-bold text-gradient">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-[var(--color-foreground)]/60">
+                {primaryRecommendation.nameKo}
+              </span>
+              <span className="text-2xl font-bold text-gradient">
                 {primaryRecommendation.priceFormatted}
               </span>
             </div>
 
-            <div className="mb-6 p-4 bg-[var(--color-background)] rounded-xl">
-              <ShoeSpecChart specs={primaryRecommendation.specs} />
-            </div>
+            <p className="text-[var(--color-foreground)]/80 mb-6 leading-relaxed">
+              {primaryRecommendation.shortDescription}
+            </p>
 
             <div className="flex items-center gap-4">
               <Button href={`/shoe/${primaryRecommendation.slug}`} size="lg">
@@ -250,6 +245,19 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
             </div>
           </div>
         </div>
+      </motion.div>
+
+      {/* Spec Analysis Section - separated from primary card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+        className="mb-12 p-6 bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)]"
+      >
+        <h3 className="text-lg font-bold text-[var(--color-foreground)] mb-4">
+          스펙 분석
+        </h3>
+        <ShoeSpecChart specs={primaryRecommendation.specs} animated />
       </motion.div>
 
       {/* Alternatives — 3 custom cards */}
@@ -264,40 +272,57 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
             이런 선택지도 있어요
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {alternatives.map(({ shoe, reason }, index) => (
-              <motion.div
-                key={shoe.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 + index * 0.1 }}
-              >
-                <Link
-                  href={`/shoe/${shoe.slug}`}
-                  className="block bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-all hover:-translate-y-1 overflow-hidden"
+            {alternatives.map(({ shoe, reason }, index) => {
+              const topSpec = [
+                { label: '쿠셔닝', value: shoe.specs.cushioning },
+                { label: '반발력', value: shoe.specs.responsiveness },
+                { label: '안정성', value: shoe.specs.stability },
+                { label: '내구성', value: shoe.specs.durability },
+              ].sort((a, b) => b.value - a.value)[0];
+
+              return (
+                <motion.div
+                  key={shoe.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 + index * 0.1 }}
                 >
-                  <div className="relative aspect-[4/3] bg-[var(--color-background)]">
-                    <Image
-                      src={shoe.imageUrl}
-                      alt={shoe.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 33vw"
-                      className="object-contain p-4"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h4 className="font-semibold text-[var(--color-foreground)] mb-1">
-                      {shoe.name}
-                    </h4>
-                    <p className="text-xs text-[var(--color-foreground)]/50 mb-2">
-                      {shoe.nameKo}
-                    </p>
-                    <p className="text-sm text-[var(--color-asics-accent)] leading-snug">
-                      {reason}
-                    </p>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+                  <Link
+                    href={`/shoe/${shoe.slug}`}
+                    className="block bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-all hover:-translate-y-1 overflow-hidden"
+                  >
+                    <div className="relative aspect-[4/3] bg-[var(--color-background)]">
+                      <Image
+                        src={shoe.imageUrl}
+                        alt={shoe.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 33vw"
+                        className="object-contain p-4"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-semibold text-[var(--color-foreground)] mb-1">
+                        {shoe.name}
+                      </h4>
+                      <p className="text-xs text-[var(--color-foreground)]/50 mb-2">
+                        {shoe.nameKo}
+                      </p>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[var(--color-asics-accent)]/10 text-[var(--color-asics-accent)] border border-[var(--color-asics-accent)]/20">
+                          {topSpec.label} {topSpec.value}/10
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[var(--color-foreground)]/5 text-[var(--color-foreground)]/60 border border-[var(--color-border)]">
+                          {shoe.specs.weight}g
+                        </span>
+                      </div>
+                      <p className="text-sm text-[var(--color-asics-accent)] leading-snug">
+                        {reason}
+                      </p>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       )}

@@ -8,6 +8,7 @@ import { ShoeSpecs } from '@/types/shoe';
 
 interface ShoeSpecChartProps {
   specs: ShoeSpecs;
+  animated?: boolean;
 }
 
 interface SpecBarProps {
@@ -57,7 +58,7 @@ function SpecBar({ label, value, max = 10 }: SpecBarProps) {
   );
 }
 
-export default function ShoeSpecChart({ specs }: ShoeSpecChartProps) {
+export default function ShoeSpecChart({ specs, animated = false }: ShoeSpecChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,30 +69,46 @@ export default function ShoeSpecChart({ specs }: ShoeSpecChartProps) {
 
     bars?.forEach((bar) => {
       const targetScale = (bar as HTMLElement).dataset.value || '1';
-      const tl = gsap.fromTo(
-        bar,
-        { scaleX: 0 },
-        {
-          scaleX: parseFloat(targetScale),
-          duration: 1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: bar,
-            start: 'top 90%',
-            end: 'top 60%',
-            scrub: 1,
-          },
+
+      if (animated) {
+        // Immediate animation without ScrollTrigger (for quiz results already in viewport)
+        gsap.fromTo(
+          bar,
+          { scaleX: 0 },
+          {
+            scaleX: parseFloat(targetScale),
+            duration: 1,
+            delay: 0.3,
+            ease: 'power2.out',
+          }
+        );
+      } else {
+        // ScrollTrigger-based animation (for detail pages)
+        const tl = gsap.fromTo(
+          bar,
+          { scaleX: 0 },
+          {
+            scaleX: parseFloat(targetScale),
+            duration: 1,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: bar,
+              start: 'top 90%',
+              end: 'top 60%',
+              scrub: 1,
+            },
+          }
+        );
+        if (tl.scrollTrigger) {
+          triggers.push(tl.scrollTrigger);
         }
-      );
-      if (tl.scrollTrigger) {
-        triggers.push(tl.scrollTrigger);
       }
     });
 
     return () => {
       triggers.forEach((t) => t.kill());
     };
-  }, []);
+  }, [animated]);
 
   const specItems = [
     { label: '쿠셔닝', value: specs.cushioning },

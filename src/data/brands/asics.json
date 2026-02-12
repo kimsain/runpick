@@ -24,9 +24,9 @@
         "weight": 283,
         "drop": 8,
         "cushioning": 10,
-        "responsiveness": 5,
-        "stability": 6,
-        "durability": 8,
+        "responsiveness": 3,
+        "stability": 7,
+        "durability": 7,
         "stackHeight": {
           "heel": 43.5,
           "forefoot": 35.5
@@ -67,9 +67,9 @@
         "weight": 261,
         "drop": 6,
         "cushioning": 9,
-        "responsiveness": 6,
+        "responsiveness": 4,
         "stability": 7,
-        "durability": 8,
+        "durability": 7,
         "stackHeight": {
           "heel": 46,
           "forefoot": 40
@@ -115,8 +115,8 @@
       "specs": {
         "weight": 300,
         "drop": 8,
-        "cushioning": 8,
-        "responsiveness": 5,
+        "cushioning": 7,
+        "responsiveness": 3,
         "stability": 10,
         "durability": 9,
         "stackHeight": {
@@ -159,9 +159,9 @@
         "weight": 255,
         "drop": 8,
         "cushioning": 8,
-        "responsiveness": 8,
-        "stability": 5,
-        "durability": 7,
+        "responsiveness": 6,
+        "stability": 6,
+        "durability": 8,
         "stackHeight": {
           "heel": 41.5,
           "forefoot": 33.5
@@ -201,10 +201,10 @@
       "specs": {
         "weight": 252,
         "drop": 8,
-        "cushioning": 9,
-        "responsiveness": 10,
-        "stability": 5,
-        "durability": 6,
+        "cushioning": 8,
+        "responsiveness": 7,
+        "stability": 8,
+        "durability": 9,
         "stackHeight": {
           "heel": 45,
           "forefoot": 37
@@ -217,7 +217,7 @@
       ],
       "cons": [
         "빠른 페이스에서 반응성이 부족하고 다소 둔탁한 느낌",
-        "구하기 어렵고 가격이 비싼편"
+        "구하기 어렵고 가격이 비쌈"
       ],
       "bestFor": [
         "데일리 트레이닝 및 롱런",
@@ -248,10 +248,10 @@
       "specs": {
         "weight": 230,
         "drop": 8,
-        "cushioning": 10,
-        "responsiveness": 9,
-        "stability": 7,
-        "durability": 7,
+        "cushioning": 9,
+        "responsiveness": 8,
+        "stability": 6,
+        "durability": 6,
         "stackHeight": {
           "heel": 46,
           "forefoot": 38
@@ -291,10 +291,10 @@
       "specs": {
         "weight": 255,
         "drop": 8,
-        "cushioning": 8,
-        "responsiveness": 9,
-        "stability": 5,
-        "durability": 5,
+        "cushioning": 7,
+        "responsiveness": 7,
+        "stability": 6,
+        "durability": 6,
         "stackHeight": {
           "heel": 46,
           "forefoot": 38
@@ -334,9 +334,9 @@
       "specs": {
         "weight": 193,
         "drop": 7,
-        "cushioning": 7,
-        "responsiveness": 10,
-        "stability": 5,
+        "cushioning": 5,
+        "responsiveness": 7,
+        "stability": 6,
         "durability": 5,
         "stackHeight": {
           "heel": 37.5,
@@ -382,10 +382,10 @@
       "specs": {
         "weight": 129,
         "drop": 5,
-        "cushioning": 6,
+        "cushioning": 7,
         "responsiveness": 10,
-        "stability": 4,
-        "durability": 3,
+        "stability": 1,
+        "durability": 2,
         "stackHeight": {
           "heel": 39.5,
           "forefoot": 34.5
@@ -425,10 +425,10 @@
       "specs": {
         "weight": 229,
         "drop": 6,
-        "cushioning": 7,
-        "responsiveness": 10,
-        "stability": 4,
-        "durability": 3,
+        "cushioning": 6,
+        "responsiveness": 7,
+        "stability": 8,
+        "durability": 6,
         "stackHeight": {
           "heel": 40,
           "forefoot": 34
@@ -473,8 +473,8 @@
       "specs": {
         "weight": 170,
         "drop": 5,
-        "cushioning": 8,
-        "responsiveness": 10,
+        "cushioning": 7,
+        "responsiveness": 9,
         "stability": 4,
         "durability": 3,
         "stackHeight": {
@@ -522,7 +522,7 @@
         "weight": 170,
         "drop": 5,
         "cushioning": 7,
-        "responsiveness": 10,
+        "responsiveness": 9,
         "stability": 4,
         "durability": 3,
         "stackHeight": {

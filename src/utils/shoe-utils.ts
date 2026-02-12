@@ -14,15 +14,21 @@ export function getShoeBySlug(slug: string): RunningShoe | undefined {
 }
 
 export function getShoesByCategory(categoryId: CategoryId): RunningShoe[] {
-  return getAllShoes().filter((shoe) => shoe.categoryId === categoryId);
+  return getAllShoes()
+    .filter((shoe) => shoe.categoryId === categoryId)
+    .sort((a, b) => b.name.localeCompare(a.name));
 }
 
 export function getShoesBySubcategory(subcategoryId: SubcategoryId): RunningShoe[] {
-  return getAllShoes().filter((shoe) => shoe.subcategoryId === subcategoryId);
+  return getAllShoes()
+    .filter((shoe) => shoe.subcategoryId === subcategoryId)
+    .sort((a, b) => b.name.localeCompare(a.name));
 }
 
 export function getShoesByBrand(brandId: string): RunningShoe[] {
-  return getAllShoes().filter((shoe) => shoe.brandId === brandId);
+  return getAllShoes()
+    .filter((shoe) => shoe.brandId === brandId)
+    .sort((a, b) => b.name.localeCompare(a.name));
 }
 
 export function getSimilarShoes(shoe: RunningShoe, limit: number = 3): RunningShoe[] {

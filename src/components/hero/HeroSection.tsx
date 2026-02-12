@@ -90,36 +90,21 @@ export default function HeroSection() {
     offset: ["start start", "end start"]
   });
 
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "60%"]);
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.9]);
 
   return (
     <section ref={sectionRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background gradient with parallax - 60% speed */}
-      <motion.div
+      {/* Background gradient - static to prevent flicker */}
+      <div
         className="absolute inset-0 bg-gradient-to-br from-[var(--color-background)] via-[var(--color-background)] to-[var(--color-asics-blue)]/10"
-        style={{ y: backgroundY }}
       />
 
-      {/* Animated gradient wave background */}
+      {/* Animated gradient wave background - CSS animation to avoid JS/scroll conflicts */}
       <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          animate={{
-            backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: 'linear',
-          }}
-          className="absolute inset-0 opacity-30"
-          style={{
-            background: 'linear-gradient(45deg, transparent 0%, var(--color-asics-blue) 25%, var(--color-asics-accent) 50%, var(--color-asics-blue) 75%, transparent 100%)',
-            backgroundSize: '400% 400%',
-            filter: 'blur(100px)',
-          }}
+        <div
+          className="absolute inset-0 opacity-30 hero-gradient-wave"
         />
       </div>
 
