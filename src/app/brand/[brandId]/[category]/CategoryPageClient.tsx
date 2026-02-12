@@ -162,13 +162,17 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
 
               {subcategories.map((sub) => {
                 const count = getShoesBySubcategory(sub.id).length;
+                const isEmpty = count === 0;
                 return (
                   <button
                     key={sub.id}
-                    onClick={() => setSelectedSubcategory(sub.id)}
-                    className="relative px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                    onClick={() => !isEmpty && setSelectedSubcategory(sub.id)}
+                    disabled={isEmpty}
+                    className={`relative px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                      isEmpty ? 'opacity-40 cursor-not-allowed' : ''
+                    }`}
                   >
-                    {selectedSubcategory === sub.id && (
+                    {selectedSubcategory === sub.id && !isEmpty && (
                       <motion.div
                         layoutId="subcategory-indicator"
                         className="absolute inset-0 rounded-full"

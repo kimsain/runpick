@@ -135,7 +135,7 @@ export default function QuizCTA() {
                 >
                   🎯
                 </motion.span>
-                7개 질문 &middot; 1분 소요
+                5개 질문 &middot; 1분 소요
               </span>
             </motion.div>
 

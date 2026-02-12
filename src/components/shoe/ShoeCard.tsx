@@ -1,41 +1,17 @@
 'use client';
 
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence, useInView } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { RunningShoe, ShoeSpecs } from '@/types/shoe';
 import Badge from '@/components/common/Badge';
 import { getCategoryById } from '@/data/categories';
-import { useRef, useState, useCallback, useEffect } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import ImageDistortion from '@/components/effects/ImageDistortion';
 
 interface ShoeCardProps {
   shoe: RunningShoe;
   index?: number;
-}
-
-// Count-up display for spec numbers
-function CountUp({ value, suffix }: { value: number; suffix: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true });
-  const spring = useSpring(0, { stiffness: 100, damping: 30 });
-  const display = useTransform(spring, (v) => Math.round(v));
-  const [num, setNum] = useState(0);
-
-  useEffect(() => {
-    if (isInView) spring.set(value);
-  }, [isInView, spring, value]);
-
-  useEffect(() => {
-    const unsub = display.on('change', (v) => setNum(v));
-    return unsub;
-  }, [display]);
-
-  return (
-    <span ref={ref}>
-      {num}{suffix}
-    </span>
-  );
 }
 
 // Sparkle component for shimmer effect
@@ -382,7 +358,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
               >
                 ⚖
               </motion.span>
-              <CountUp value={shoe.specs.weight} suffix="g" />
+              <span>{shoe.specs.weight}g</span>
             </span>
             <span className="flex items-center gap-1">
               <motion.span
@@ -392,7 +368,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
               >
                 ↕
               </motion.span>
-              <CountUp value={shoe.specs.drop} suffix="mm" />
+              <span>{shoe.specs.drop}mm</span>
             </span>
           </motion.div>
 
