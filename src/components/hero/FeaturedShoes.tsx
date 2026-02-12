@@ -6,6 +6,8 @@ import ShoeCard from '@/components/shoe/ShoeCard';
 import { getAllShoes } from '@/utils/shoe-utils';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import TextReveal from '@/components/effects/TextReveal';
+import { EASE_OUT_EXPO, DUR_REVEAL } from '@/constants/animation';
 
 // Animated star/sparkle component
 function Sparkle({ delay, x, y }: { delay: number; x: string; y: string }) {
@@ -85,16 +87,8 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40, scale: 0.95 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{
-        duration: 0.6,
-        delay: 0.2 + index * 0.15,
-        ease: [0.215, 0.61, 0.355, 1],
-      }}
-      className="relative"
+    <div
+      className="relative flex-shrink-0 w-[80vw] md:w-[33vw] px-4"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -114,7 +108,7 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
 
       {/* Ranking badge */}
       <motion.div
-        className="absolute -top-3 -left-3 z-20 w-10 h-10 rounded-full flex items-center justify-center font-bold text-white"
+        className="absolute -top-3 -left-1 z-20 w-10 h-10 rounded-full flex items-center justify-center font-bold text-white"
         style={{
           background: `linear-gradient(135deg, var(--color-asics-blue), var(--color-asics-accent))`,
           boxShadow: '0 4px 15px var(--color-asics-blue)',
@@ -136,7 +130,7 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
       {/* Popular tag for first item */}
       {index === 0 && (
         <motion.div
-          className="absolute -top-3 -right-3 z-20 px-3 py-1 rounded-full text-xs font-bold text-white"
+          className="absolute -top-3 right-5 z-20 px-3 py-1 rounded-full text-xs font-bold text-white"
           style={{
             background: 'linear-gradient(135deg, #FF6B6B, #FF8E53)',
             boxShadow: '0 4px 15px rgba(255, 107, 107, 0.4)',
@@ -184,14 +178,13 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
         }}
         transition={{ duration: 0.3 }}
       />
-    </motion.div>
+    </div>
   );
 }
 
 export default function FeaturedShoes() {
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const allShoes = getAllShoes();
   // 각 카테고리에서 인기 모델 선택
@@ -207,60 +200,22 @@ export default function FeaturedShoes() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Title animation with scale and opacity
-      if (titleRef.current) {
-        gsap.fromTo(
-          titleRef.current,
-          {
-            opacity: 0,
-            y: 100,
-            scale: 0.8,
+      // Horizontal scroll gallery
+      const container = scrollContainerRef.current;
+      const cards = container?.querySelector('.horizontal-cards') as HTMLElement | null;
+      if (cards && container) {
+        gsap.to(cards, {
+          x: () => -(cards.scrollWidth - window.innerWidth + 100),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top top',
+            end: () => `+=${cards.scrollWidth}`,
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
           },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 1,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: titleRef.current,
-              start: 'top 85%',
-              end: 'top 50%',
-              scrub: 1,
-            },
-          }
-        );
-      }
-
-      // Card stagger animation with 3D rotation
-      if (cardsRef.current) {
-        const cards = cardsRef.current.children;
-        gsap.fromTo(
-          cards,
-          {
-            opacity: 0,
-            y: 150,
-            rotateX: 45,
-            rotateY: -15,
-            scale: 0.8,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            rotateX: 0,
-            rotateY: 0,
-            scale: 1,
-            duration: 1.2,
-            stagger: 0.15,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: cardsRef.current,
-              start: 'top 80%',
-              end: 'top 30%',
-              scrub: 1.2,
-            },
-          }
-        );
+        });
       }
     }, sectionRef);
 
@@ -268,33 +223,9 @@ export default function FeaturedShoes() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-28 bg-[var(--color-background)] overflow-hidden">
+    <section ref={sectionRef} className="relative bg-[var(--color-background)] overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Subtle gradient orbs */}
-        <motion.div
-          className="absolute top-0 right-0 w-96 h-96 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, var(--color-asics-blue)10 0%, transparent 70%)',
-          }}
-          animate={{
-            x: [0, 30, 0],
-            y: [0, -20, 0],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute bottom-0 left-0 w-80 h-80 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, var(--color-asics-accent)10 0%, transparent 70%)',
-          }}
-          animate={{
-            x: [0, -20, 0],
-            y: [0, 30, 0],
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-        />
-
         {/* Sparkles */}
         <Sparkle delay={0} x="15%" y="20%" />
         <Sparkle delay={1} x="85%" y="30%" />
@@ -303,21 +234,15 @@ export default function FeaturedShoes() {
         <Sparkle delay={0.5} x="50%" y="10%" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Animated section header */}
-        <div
-          ref={titleRef}
-          className="text-center mb-16"
-        >
+      <div ref={scrollContainerRef} className="relative min-h-screen flex flex-col justify-center" data-cursor="drag">
+        {/* Section header */}
+        <div className="text-center pt-20 pb-12 px-4">
           <FeaturedBadge />
 
-          {/* Main title with gradient animation */}
-          <motion.h2
+          <TextReveal
+            as="h2"
+            mode="clip"
             className="text-3xl sm:text-4xl md:text-5xl font-bold"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
           >
             <motion.span
               className="inline-block"
@@ -335,45 +260,21 @@ export default function FeaturedShoes() {
             >
               인기 러닝화
             </motion.span>
-
-            {/* Animated fire emoji */}
-            <motion.span
-              className="inline-block ml-3"
-              animate={{
-                y: [0, -5, 0],
-                rotate: [-5, 5, -5],
-              }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              🏆
-            </motion.span>
-          </motion.h2>
+          </TextReveal>
 
           <motion.p
             className="mt-5 text-lg sm:text-xl text-[var(--color-foreground)]/60"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: DUR_REVEAL, delay: 0.2, ease: EASE_OUT_EXPO as unknown as number[] }}
           >
             러너들이 가장 사랑하는 모델들
           </motion.p>
-
-          {/* Decorative underline */}
-          <motion.div
-            className="mt-6 mx-auto h-1 rounded-full"
-            style={{
-              background: 'linear-gradient(90deg, transparent, var(--color-asics-blue), var(--color-asics-accent), transparent)',
-            }}
-            initial={{ width: 0 }}
-            whileInView={{ width: 120 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          />
         </div>
 
-        {/* Shoe cards grid */}
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10" style={{ perspective: '1000px' }}>
+        {/* Horizontal scrolling cards */}
+        <div className="horizontal-cards flex items-center gap-8 pl-[10vw] pr-[10vw] pb-20">
           {featuredShoes.map((shoe, index) => (
             shoe && <SpotlightShoeCard key={shoe.id} shoe={shoe} index={index} />
           ))}

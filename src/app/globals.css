@@ -155,3 +155,19 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Cursor attribute utilities */
+[data-cursor] {
+  cursor: none;
+}
+
+/* Text reveal clip utility */
+.text-reveal-clip {
+  overflow: hidden;
+  display: inline-block;
+}
+
+/* Horizontal scroll section */
+.horizontal-scroll-section {
+  overflow: hidden;
+}

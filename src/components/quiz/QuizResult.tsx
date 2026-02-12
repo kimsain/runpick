@@ -1,12 +1,16 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { QuizResult as QuizResultType } from '@/types/quiz';
 import ShoeCard from '@/components/shoe/ShoeCard';
 import Button from '@/components/common/Button';
 import ShoeSpecChart from '@/components/shoe/ShoeSpecChart';
 import { getCategoryById } from '@/data/categories';
 import Badge from '@/components/common/Badge';
+import TextReveal from '@/components/effects/TextReveal';
+import ImageDistortion from '@/components/effects/ImageDistortion';
+import FloatingShapes from '@/components/effects/FloatingShapes';
 
 interface QuizResultProps {
   result: QuizResultType;
@@ -22,63 +26,95 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
+      className="relative"
     >
-      {/* Hero Result */}
-      <div className="text-center mb-12">
+      {/* Floating shapes background */}
+      <FloatingShapes count={4} />
+
+      {/* Hero Result - particle burst + TextReveal */}
+      <div className="relative text-center mb-12">
+        {/* Particle burst */}
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', delay: 0.2 }}
-          className="inline-block mb-6"
+          className="inline-block mb-6 relative"
         >
           <span className="text-6xl">🎉</span>
+          {/* Burst particles */}
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 rounded-full"
+              style={{
+                background: 'var(--color-asics-accent)',
+                left: '50%',
+                top: '50%',
+              }}
+              initial={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+              animate={{
+                opacity: 0,
+                scale: 0,
+                x: Math.cos((i * Math.PI * 2) / 6) * 60,
+                y: Math.sin((i * Math.PI * 2) / 6) * 60,
+              }}
+              transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+            />
+          ))}
         </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+        <TextReveal
+          as="h1"
+          mode="clip"
+          delay={0.3}
           className="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-4"
         >
           당신에게 딱 맞는 러닝화를 찾았어요!
-        </motion.h1>
+        </TextReveal>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+          transition={{ delay: 0.6 }}
           className="text-[var(--color-foreground)]/60 max-w-2xl mx-auto"
         >
           {reasoning}
         </motion.p>
       </div>
 
-      {/* Primary Recommendation */}
+      {/* Primary Recommendation with spring entrance */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{
+          delay: 0.5,
+          type: 'spring',
+          stiffness: 200,
+          damping: 20,
+        }}
         className="relative bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] rounded-3xl overflow-hidden border border-[var(--color-asics-accent)]/30 mb-12"
       >
         {/* Glow */}
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-asics-blue)]/5 to-[var(--color-asics-accent)]/10" />
 
         <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
-          {/* Image */}
-          <div className="relative aspect-square bg-[var(--color-background)] rounded-2xl flex items-center justify-center">
-            <motion.span
-              className="text-[10rem] opacity-30"
-              animate={{ y: [-10, 10, -10] }}
-              transition={{ duration: 4, repeat: Infinity }}
-            >
-              👟
-            </motion.span>
-            <div className="absolute top-4 left-4">
-              <Badge variant="category" categoryId={primaryRecommendation.categoryId}>
-                {category?.icon} 1순위 추천
-              </Badge>
+          {/* Image with ImageDistortion glow */}
+          <ImageDistortion variant="glow">
+            <div className="relative aspect-square bg-[var(--color-background)] rounded-2xl overflow-hidden">
+              <Image
+                src={primaryRecommendation.imageUrl}
+                alt={primaryRecommendation.name}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-contain p-8"
+              />
+              <div className="absolute top-4 left-4">
+                <Badge variant="category" categoryId={primaryRecommendation.categoryId}>
+                  {category?.icon} 1순위 추천
+                </Badge>
+              </div>
             </div>
-          </div>
+          </ImageDistortion>
 
           {/* Info */}
           <div className="flex flex-col justify-center">
@@ -120,7 +156,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
         </div>
       </motion.div>
 
-      {/* Alternatives */}
+      {/* Alternatives - horizontal scroll */}
       {alternatives.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -131,9 +167,14 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           <h3 className="text-xl font-bold text-[var(--color-foreground)] mb-6">
             이런 선택지도 있어요
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div
+            className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide"
+            data-cursor="drag"
+          >
             {alternatives.map((shoe, index) => (
-              <ShoeCard key={shoe.id} shoe={shoe} index={index} />
+              <div key={shoe.id} className="min-w-[280px] sm:min-w-[320px] flex-shrink-0">
+                <ShoeCard shoe={shoe} index={index} />
+              </div>
             ))}
           </div>
         </motion.div>

@@ -1,17 +1,49 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 import Button from '@/components/common/Button';
+import TextReveal from '@/components/effects/TextReveal';
+import FloatingShapes from '@/components/effects/FloatingShapes';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 export default function QuizCTA() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      if (containerRef.current) {
+        gsap.fromTo(
+          containerRef.current,
+          { scale: 0.9 },
+          {
+            scale: 1,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top 85%',
+              end: 'top 40%',
+              scrub: 1,
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-24 bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]">
+    <section ref={sectionRef} className="py-24 bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+        <div
+          ref={containerRef}
           className="relative overflow-hidden rounded-3xl"
         >
           {/* Background */}
@@ -29,21 +61,8 @@ export default function QuizCTA() {
             />
           </div>
 
-          {/* Floating elements */}
-          <motion.div
-            animate={{ y: [-10, 10, -10], rotate: [0, 5, 0] }}
-            transition={{ duration: 6, repeat: Infinity }}
-            className="absolute top-8 left-8 text-6xl opacity-30"
-          >
-            🏃
-          </motion.div>
-          <motion.div
-            animate={{ y: [10, -10, 10], rotate: [0, -5, 0] }}
-            transition={{ duration: 5, repeat: Infinity }}
-            className="absolute bottom-8 right-8 text-5xl opacity-30"
-          >
-            👟
-          </motion.div>
+          {/* FloatingShapes replacing static floating emojis */}
+          <FloatingShapes color="rgba(255,255,255,0.15)" count={3} />
 
           {/* Content */}
           <div className="relative py-16 px-8 sm:py-20 sm:px-16 text-center">
@@ -57,14 +76,24 @@ export default function QuizCTA() {
               7개 질문으로 찾는 나의 러닝화
             </motion.span>
 
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            <TextReveal
+              as="h2"
+              mode="clip"
+              className="text-3xl sm:text-4xl font-bold text-white mb-4"
+            >
               어떤 러닝화가 나에게 맞을까?
-            </h2>
-            <p className="text-lg text-white/80 max-w-xl mx-auto mb-8">
+            </TextReveal>
+            <motion.p
+              className="text-lg text-white/80 max-w-xl mx-auto mb-8"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            >
               러닝 스타일, 목표, 발 유형을 분석해서
               <br className="hidden sm:block" />
               딱 맞는 러닝화를 추천해드려요.
-            </p>
+            </motion.p>
 
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -80,7 +109,7 @@ export default function QuizCTA() {
               </Button>
             </motion.div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

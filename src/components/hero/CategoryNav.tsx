@@ -6,6 +6,8 @@ import { useState, useEffect, useRef } from 'react';
 import { categories } from '@/data/categories';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import TextReveal from '@/components/effects/TextReveal';
+import MagneticElement from '@/components/effects/MagneticElement';
 
 // Particle effect for hover
 function HoverParticles({ isHovered, color }: { isHovered: boolean; color: string }) {
@@ -60,180 +62,183 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
       }}
       style={{ perspective: '1000px' }}
     >
-      <Link href={`/brand/asics/${category.id}`}>
-        <motion.div
-          onHoverStart={() => setIsHovered(true)}
-          onHoverEnd={() => setIsHovered(false)}
-          whileHover={{ y: -12, scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          className="group relative h-72 rounded-3xl overflow-hidden border border-[var(--color-border)] hover:border-transparent transition-all duration-500"
-          style={{
-            background: `linear-gradient(135deg, var(--color-card) 0%, var(--color-card-hover) 100%)`,
-            transformStyle: 'preserve-3d',
-          }}
-        >
-          {/* Animated background gradient */}
+      <MagneticElement strength={0.15}>
+        <Link href={`/brand/asics/${category.id}`}>
           <motion.div
-            className="absolute inset-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isHovered ? 1 : 0 }}
-            transition={{ duration: 0.4 }}
+            onHoverStart={() => setIsHovered(true)}
+            onHoverEnd={() => setIsHovered(false)}
+            whileHover={{ y: -12, scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="group relative h-72 rounded-3xl overflow-hidden border border-[var(--color-border)] hover:border-transparent transition-all duration-500"
             style={{
-              background: `radial-gradient(circle at 50% 100%, ${category.color}30 0%, transparent 60%)`,
+              background: `linear-gradient(135deg, var(--color-card) 0%, var(--color-card-hover) 100%)`,
+              transformStyle: 'preserve-3d',
             }}
-          />
-
-          {/* Animated color sweep on hover */}
-          <motion.div
-            className="absolute inset-0"
-            initial={{ x: '-100%', opacity: 0 }}
-            animate={{
-              x: isHovered ? '100%' : '-100%',
-              opacity: isHovered ? 0.3 : 0,
-            }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            style={{
-              background: `linear-gradient(90deg, transparent, ${category.color}40, transparent)`,
-            }}
-          />
-
-          {/* Particle effects on hover */}
-          <HoverParticles isHovered={isHovered} color={category.color} />
-
-          {/* Glowing border effect */}
-          <motion.div
-            className="absolute inset-0 rounded-3xl"
-            animate={{
-              boxShadow: isHovered
-                ? `inset 0 0 0 2px ${category.color}, 0 0 40px ${category.color}40, 0 20px 40px ${category.color}20`
-                : `inset 0 0 0 0px transparent, 0 0 0px transparent`,
-            }}
-            transition={{ duration: 0.4 }}
-          />
-
-          {/* Top accent line */}
-          <motion.div
-            className="absolute top-0 left-0 right-0 h-1"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: isHovered ? 1 : 0 }}
-            transition={{ duration: 0.4 }}
-            style={{
-              background: `linear-gradient(90deg, transparent, ${category.color}, transparent)`,
-              transformOrigin: 'center',
-            }}
-          />
-
-          {/* Content */}
-          <div className="relative h-full flex flex-col items-center justify-center p-8 text-center">
-            {/* Floating/breathing icon */}
+            data-cursor="view"
+          >
+            {/* Animated background gradient */}
             <motion.div
-              className="relative mb-6"
+              className="absolute inset-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isHovered ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+              style={{
+                background: `radial-gradient(circle at 50% 100%, ${category.color}30 0%, transparent 60%)`,
+              }}
+            />
+
+            {/* Animated color sweep on hover */}
+            <motion.div
+              className="absolute inset-0"
+              initial={{ x: '-100%', opacity: 0 }}
               animate={{
-                y: [0, -5, 0],
-                scale: isHovered ? 1.2 : [1, 1.05, 1],
+                x: isHovered ? '100%' : '-100%',
+                opacity: isHovered ? 0.3 : 0,
               }}
-              transition={{
-                y: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
-                scale: { duration: 0.3 },
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+              style={{
+                background: `linear-gradient(90deg, transparent, ${category.color}40, transparent)`,
               }}
-            >
-              {/* Icon glow effect */}
+            />
+
+            {/* Particle effects on hover */}
+            <HoverParticles isHovered={isHovered} color={category.color} />
+
+            {/* Glowing border effect */}
+            <motion.div
+              className="absolute inset-0 rounded-3xl"
+              animate={{
+                boxShadow: isHovered
+                  ? `inset 0 0 0 2px ${category.color}, 0 0 40px ${category.color}40, 0 20px 40px ${category.color}20`
+                  : `inset 0 0 0 0px transparent, 0 0 0px transparent`,
+              }}
+              transition={{ duration: 0.4 }}
+            />
+
+            {/* Top accent line */}
+            <motion.div
+              className="absolute top-0 left-0 right-0 h-1"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: isHovered ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+              style={{
+                background: `linear-gradient(90deg, transparent, ${category.color}, transparent)`,
+                transformOrigin: 'center',
+              }}
+            />
+
+            {/* Content */}
+            <div className="relative h-full flex flex-col items-center justify-center p-8 text-center">
+              {/* Floating/breathing icon */}
               <motion.div
-                className="absolute inset-0 rounded-full"
+                className="relative mb-6"
                 animate={{
-                  boxShadow: isHovered
-                    ? `0 0 30px ${category.color}60`
-                    : `0 0 0px transparent`,
-                }}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.span
-                className="text-6xl relative z-10 block"
-                animate={{
-                  rotate: isHovered ? [0, -10, 10, 0] : 0,
-                  filter: isHovered
-                    ? `drop-shadow(0 0 20px ${category.color})`
-                    : 'drop-shadow(0 0 0px transparent)',
+                  y: [0, -5, 0],
+                  scale: isHovered ? 1.2 : [1, 1.05, 1],
                 }}
                 transition={{
-                  rotate: { duration: 0.5 },
-                  filter: { duration: 0.3 },
+                  y: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
+                  scale: { duration: 0.3 },
                 }}
               >
-                {category.icon}
-              </motion.span>
-            </motion.div>
+                {/* Icon glow effect */}
+                <motion.div
+                  className="absolute inset-0 rounded-full"
+                  animate={{
+                    boxShadow: isHovered
+                      ? `0 0 30px ${category.color}60`
+                      : `0 0 0px transparent`,
+                  }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.span
+                  className="text-6xl relative z-10 block"
+                  animate={{
+                    rotate: isHovered ? [0, -10, 10, 0] : 0,
+                    filter: isHovered
+                      ? `drop-shadow(0 0 20px ${category.color})`
+                      : 'drop-shadow(0 0 0px transparent)',
+                  }}
+                  transition={{
+                    rotate: { duration: 0.5 },
+                    filter: { duration: 0.3 },
+                  }}
+                >
+                  {category.icon}
+                </motion.span>
+              </motion.div>
 
-            {/* Category name with glow on hover */}
-            <motion.h3
-              className="text-2xl font-bold mb-2 transition-all duration-300"
-              style={{
-                color: category.color,
-                textShadow: isHovered ? `0 0 20px ${category.color}80` : 'none',
-              }}
-            >
-              {category.name}
-            </motion.h3>
-
-            <motion.p
-              className="text-sm text-[var(--color-foreground)]/60 mb-2"
-              animate={{ opacity: isHovered ? 0.9 : 0.6 }}
-            >
-              {category.nameKo}
-            </motion.p>
-
-            <motion.p
-              className="text-sm text-[var(--color-foreground)]/50 line-clamp-2 max-w-xs"
-              animate={{ opacity: isHovered ? 0.8 : 0.5 }}
-            >
-              {category.description}
-            </motion.p>
-
-            {/* Subcategory badge */}
-            <motion.div
-              className="mt-5 flex items-center gap-2"
-              animate={{
-                y: isHovered ? 0 : 5,
-                opacity: isHovered ? 1 : 0.7,
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              <motion.span
-                className="text-xs px-3 py-1.5 rounded-full font-medium"
+              {/* Category name with glow on hover */}
+              <motion.h3
+                className="text-2xl font-bold mb-2 transition-all duration-300"
                 style={{
-                  backgroundColor: `${category.color}20`,
                   color: category.color,
-                  border: `1px solid ${category.color}40`,
+                  textShadow: isHovered ? `0 0 20px ${category.color}80` : 'none',
                 }}
-                whileHover={{ scale: 1.05 }}
               >
-                {category.subcategories.length}개 서브카테고리
-              </motion.span>
-            </motion.div>
+                {category.name}
+              </motion.h3>
 
-            {/* Animated arrow */}
-            <motion.div
-              className="absolute bottom-5 right-5"
-              animate={{
-                x: isHovered ? 5 : 0,
-                opacity: isHovered ? 1 : 0.4,
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              <motion.span
-                className="text-xl"
-                style={{ color: isHovered ? category.color : 'var(--color-foreground)' }}
-                animate={{
-                  x: isHovered ? [0, 5, 0] : 0,
-                }}
-                transition={{ duration: 0.8, repeat: isHovered ? Infinity : 0 }}
+              <motion.p
+                className="text-sm text-[var(--color-foreground)]/60 mb-2"
+                animate={{ opacity: isHovered ? 0.9 : 0.6 }}
               >
-                →
-              </motion.span>
-            </motion.div>
-          </div>
-        </motion.div>
-      </Link>
+                {category.nameKo}
+              </motion.p>
+
+              <motion.p
+                className="text-sm text-[var(--color-foreground)]/50 line-clamp-2 max-w-xs"
+                animate={{ opacity: isHovered ? 0.8 : 0.5 }}
+              >
+                {category.description}
+              </motion.p>
+
+              {/* Subcategory badge */}
+              <motion.div
+                className="mt-5 flex items-center gap-2"
+                animate={{
+                  y: isHovered ? 0 : 5,
+                  opacity: isHovered ? 1 : 0.7,
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.span
+                  className="text-xs px-3 py-1.5 rounded-full font-medium"
+                  style={{
+                    backgroundColor: `${category.color}20`,
+                    color: category.color,
+                    border: `1px solid ${category.color}40`,
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  {category.subcategories.length}개 서브카테고리
+                </motion.span>
+              </motion.div>
+
+              {/* Animated arrow */}
+              <motion.div
+                className="absolute bottom-5 right-5"
+                animate={{
+                  x: isHovered ? 5 : 0,
+                  opacity: isHovered ? 1 : 0.4,
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.span
+                  className="text-xl"
+                  style={{ color: isHovered ? category.color : 'var(--color-foreground)' }}
+                  animate={{
+                    x: isHovered ? [0, 5, 0] : 0,
+                  }}
+                  transition={{ duration: 0.8, repeat: isHovered ? Infinity : 0 }}
+                >
+                  →
+                </motion.span>
+              </motion.div>
+            </div>
+          </motion.div>
+        </Link>
+      </MagneticElement>
     </motion.div>
   );
 }
@@ -324,12 +329,10 @@ export default function CategoryNav() {
             className="w-20 h-1 mx-auto mb-6 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)]"
           />
 
-          <motion.h2
+          <TextReveal
+            as="h2"
+            mode="clip"
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-foreground)]"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
           >
             <motion.span
               animate={{
@@ -346,7 +349,7 @@ export default function CategoryNav() {
             >
               러닝화 카테고리
             </motion.span>
-          </motion.h2>
+          </TextReveal>
 
           <motion.p
             className="mt-5 text-lg sm:text-xl text-[var(--color-foreground)]/60"

@@ -1,16 +1,22 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
 import ShoeSpecChart from '@/components/shoe/ShoeSpecChart';
 import Badge from '@/components/common/Badge';
 import Button from '@/components/common/Button';
+import TextReveal from '@/components/effects/TextReveal';
+import ImageDistortion from '@/components/effects/ImageDistortion';
 import { getShoeBySlug, getSimilarShoes } from '@/utils/shoe-utils';
 import { getCategoryById, getSubcategoryById } from '@/data/categories';
 import Link from 'next/link';
+import { SPRING_SNAPPY, STAGGER_NORMAL } from '@/constants/animation';
 
 interface ShoeDetailClientProps {
   shoeId: string;
@@ -18,6 +24,59 @@ interface ShoeDetailClientProps {
 
 export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
   const shoe = getShoeBySlug(shoeId);
+  const prosRef = useRef<HTMLDivElement>(null);
+  const consRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const triggers: ScrollTrigger[] = [];
+
+    // Pros slide-in from left
+    if (prosRef.current) {
+      const tween = gsap.fromTo(
+        prosRef.current,
+        { x: -60, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: prosRef.current,
+            start: 'top 85%',
+            end: 'top 50%',
+            scrub: 1,
+          },
+        }
+      );
+      if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
+    }
+
+    // Cons slide-in from right
+    if (consRef.current) {
+      const tween = gsap.fromTo(
+        consRef.current,
+        { x: 60, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: consRef.current,
+            start: 'top 85%',
+            end: 'top 50%',
+            scrub: 1,
+          },
+        }
+      );
+      if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
+    }
+
+    return () => {
+      triggers.forEach((t) => t.kill());
+    };
+  }, []);
 
   if (!shoe) {
     return (
@@ -74,42 +133,49 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
         <section className="py-12 bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* Image */}
+              {/* Image with ImageDistortion glow */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="relative aspect-square bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] rounded-3xl overflow-hidden border border-[var(--color-border)]"
+                className="relative aspect-square rounded-3xl overflow-hidden border border-[var(--color-border)]"
               >
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center p-8"
-                  animate={{ y: [-5, 5, -5] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <Image
-                    src={shoe.imageUrl}
-                    alt={shoe.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-contain drop-shadow-2xl p-8"
-                    priority
-                  />
-                </motion.div>
+                <ImageDistortion variant="glow">
+                  <div
+                    className="relative aspect-square bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)]"
+                    data-cursor="view"
+                  >
+                    <motion.div
+                      className="absolute inset-0 flex items-center justify-center p-8"
+                      animate={{ y: [-5, 5, -5] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <Image
+                        src={shoe.imageUrl}
+                        alt={shoe.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-contain drop-shadow-2xl p-8"
+                        priority
+                      />
+                    </motion.div>
 
-                {/* Category badge */}
-                <div className="absolute top-6 left-6 z-10">
-                  <Badge variant="category" categoryId={shoe.categoryId}>
-                    {category?.icon} {category?.name}
-                  </Badge>
-                </div>
+                    {/* Category badge */}
+                    <div className="absolute top-6 left-6 z-10">
+                      <Badge variant="category" categoryId={shoe.categoryId}>
+                        {category?.icon} {category?.name}
+                      </Badge>
+                    </div>
 
-                {/* Upcoming badge */}
-                {shoe.isUpcoming && (
-                  <div className="absolute top-6 right-6 z-10">
-                    <span className="px-3 py-1.5 bg-orange-500/90 text-white text-xs font-bold rounded-full">
-                      {shoe.upcomingNote || 'Coming Soon'}
-                    </span>
+                    {/* Upcoming badge */}
+                    {shoe.isUpcoming && (
+                      <div className="absolute top-6 right-6 z-10">
+                        <span className="px-3 py-1.5 bg-orange-500/90 text-white text-xs font-bold rounded-full">
+                          {shoe.upcomingNote || 'Coming Soon'}
+                        </span>
+                      </div>
+                    )}
                   </div>
-                )}
+                </ImageDistortion>
               </motion.div>
 
               {/* Info */}
@@ -125,9 +191,13 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                   <Badge>{shoe.releaseYear}</Badge>
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl font-bold text-[var(--color-foreground)] mb-2">
+                <TextReveal
+                  as="h1"
+                  mode="clip"
+                  className="text-4xl sm:text-5xl font-bold text-[var(--color-foreground)] mb-2"
+                >
                   {shoe.name}
-                </h1>
+                </TextReveal>
                 <p className="text-xl text-[var(--color-foreground)]/60 mb-6">
                   {shoe.nameKo}
                 </p>
@@ -143,16 +213,27 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                   </span>
                 </div>
 
-                {/* Technologies */}
+                {/* Technologies with spring cascade */}
                 <div className="mb-8">
                   <h3 className="text-sm font-medium text-[var(--color-foreground)]/60 mb-3">
                     탑재 기술
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {shoe.technologies.map((tech) => (
-                      <Badge key={tech} variant="spec">
-                        {tech}
-                      </Badge>
+                    {shoe.technologies.map((tech, i) => (
+                      <motion.div
+                        key={tech}
+                        initial={{ opacity: 0, scale: 0.5, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{
+                          type: 'spring',
+                          ...SPRING_SNAPPY,
+                          delay: 0.4 + i * STAGGER_NORMAL,
+                        }}
+                      >
+                        <Badge variant="spec">
+                          {tech}
+                        </Badge>
+                      </motion.div>
                     ))}
                   </div>
                 </div>
@@ -186,16 +267,13 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 <ShoeSpecChart specs={shoe.specs} />
               </motion.div>
 
-              {/* Pros & Cons */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6"
-              >
+              {/* Pros & Cons with GSAP scrub slide-in */}
+              <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Pros */}
-                <div className="bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]">
+                <div
+                  ref={prosRef}
+                  className="bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
+                >
                   <h2 className="text-xl font-bold text-[var(--color-daily)] mb-4 flex items-center gap-2">
                     <span>👍</span> 장점
                   </h2>
@@ -217,7 +295,10 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 </div>
 
                 {/* Cons */}
-                <div className="bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]">
+                <div
+                  ref={consRef}
+                  className="bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
+                >
                   <h2 className="text-xl font-bold text-[var(--color-racing)] mb-4 flex items-center gap-2">
                     <span>👎</span> 단점
                   </h2>
@@ -237,10 +318,10 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                     ))}
                   </ul>
                 </div>
-              </motion.div>
+              </div>
             </div>
 
-            {/* Best For */}
+            {/* Best For - wave stagger animation */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -254,10 +335,15 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 {shoe.bestFor.map((item, index) => (
                   <motion.span
                     key={index}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
+                    transition={{
+                      delay: index * 0.08,
+                      type: 'spring',
+                      stiffness: 300,
+                      damping: 20,
+                    }}
                     className="px-4 py-2 bg-[var(--color-card)] rounded-full text-sm text-[var(--color-foreground)]/80 border border-[var(--color-border)]"
                   >
                     {item}
@@ -268,7 +354,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
           </div>
         </section>
 
-        {/* Similar Shoes */}
+        {/* Similar Shoes - horizontal scroll carousel */}
         {similarShoes.length > 0 && (
           <section className="py-16 bg-[var(--color-card)]">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -286,9 +372,14 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 </p>
               </motion.div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div
+                className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide"
+                data-cursor="drag"
+              >
                 {similarShoes.map((similarShoe, index) => (
-                  <ShoeCard key={similarShoe.id} shoe={similarShoe} index={index} />
+                  <div key={similarShoe.id} className="min-w-[300px] sm:min-w-[340px] flex-shrink-0">
+                    <ShoeCard shoe={similarShoe} index={index} />
+                  </div>
                 ))}
               </div>
             </div>

@@ -12,6 +12,7 @@ interface BadgeProps {
   categoryId?: CategoryId;
   className?: string;
   interactive?: boolean;
+  'data-cursor'?: string;
 }
 
 const categoryColors: Record<CategoryId, { bg: string; text: string; border: string; glow: string }> = {
@@ -41,6 +42,7 @@ export default function Badge({
   categoryId,
   className = '',
   interactive = true,
+  'data-cursor': dataCursor,
 }: BadgeProps) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -85,6 +87,7 @@ export default function Badge({
       whileTap={interactive ? { scale: 0.95 } : undefined}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
+      data-cursor={dataCursor}
       className={`${baseStyles} ${getVariantStyles()} ${className} cursor-default`}
       style={{
         boxShadow: isHovered

@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+import { DUR_TRANSITION, EASE_IN_OUT_QUART } from '@/constants/animation';
 
 interface PageTransitionProps {
   children: React.ReactNode;
@@ -9,48 +10,35 @@ interface PageTransitionProps {
 
 const pageVariants = {
   initial: {
+    clipPath: 'circle(0% at 50% 50%)',
     opacity: 0,
-    y: 20,
-    scale: 0.98,
   },
   enter: {
+    clipPath: 'circle(100% at 50% 50%)',
     opacity: 1,
-    y: 0,
-    scale: 1,
     transition: {
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1],
-      when: 'beforeChildren',
+      clipPath: {
+        duration: DUR_TRANSITION,
+        ease: EASE_IN_OUT_QUART as unknown as number[],
+      },
+      opacity: {
+        duration: 0.3,
+      },
     },
   },
   exit: {
+    clipPath: 'circle(0% at 50% 50%)',
     opacity: 0,
-    y: -20,
-    scale: 0.98,
     transition: {
-      duration: 0.3,
-      ease: [0.22, 1, 0.36, 1],
+      clipPath: {
+        duration: DUR_TRANSITION,
+        ease: EASE_IN_OUT_QUART as unknown as number[],
+      },
+      opacity: {
+        duration: 0.3,
+        delay: DUR_TRANSITION - 0.3,
+      },
     },
-  },
-};
-
-// Wipe transition overlay
-const wipeVariants = {
-  initial: {
-    scaleX: 0,
-    transformOrigin: 'left',
-  },
-  animate: {
-    scaleX: [0, 1, 1, 0],
-    transformOrigin: ['left', 'left', 'right', 'right'],
-    transition: {
-      duration: 0.8,
-      times: [0, 0.4, 0.6, 1],
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-  exit: {
-    scaleX: 0,
   },
 };
 
@@ -66,18 +54,6 @@ export default function PageTransition({ children }: PageTransitionProps) {
         exit="exit"
         variants={pageVariants}
       >
-        {/* Wipe overlay effect */}
-        <motion.div
-          className="fixed inset-0 z-50 pointer-events-none"
-          style={{
-            background: 'linear-gradient(135deg, var(--color-asics-blue) 0%, var(--color-asics-accent) 100%)',
-          }}
-          initial="initial"
-          animate="animate"
-          exit="exit"
-          variants={wipeVariants}
-        />
-
         {children}
       </motion.div>
     </AnimatePresence>

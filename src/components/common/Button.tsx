@@ -3,6 +3,7 @@
 import { motion, HTMLMotionProps, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useState, useCallback, useRef } from 'react';
+import MagneticElement from '@/components/effects/MagneticElement';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -173,55 +174,61 @@ export default function Button({
 
   if (href) {
     return (
-      <Link href={href}>
-        <motion.span
-          whileHover={{
-            scale: 1.05,
-            boxShadow: variant === 'primary'
-              ? '0 10px 30px -10px var(--color-asics-accent)'
-              : '0 5px 15px -5px rgba(0,0,0,0.2)',
-          }}
-          whileTap={{
-            scale: 0.95,
-          }}
-          transition={{
-            type: 'spring',
-            stiffness: 400,
-            damping: 17,
-          }}
-          className={combinedClassName}
-        >
-          {buttonContent}
-        </motion.span>
-      </Link>
+      <MagneticElement>
+        <Link href={href}>
+          <motion.span
+            data-cursor="hover"
+            whileHover={{
+              scale: 1.05,
+              boxShadow: variant === 'primary'
+                ? '0 10px 30px -10px var(--color-asics-accent)'
+                : '0 5px 15px -5px rgba(0,0,0,0.2)',
+            }}
+            whileTap={{
+              scale: 0.95,
+            }}
+            transition={{
+              type: 'spring',
+              stiffness: 400,
+              damping: 17,
+            }}
+            className={combinedClassName}
+          >
+            {buttonContent}
+          </motion.span>
+        </Link>
+      </MagneticElement>
     );
   }
 
   return (
-    <motion.button
-      ref={buttonRef}
-      whileHover={{
-        scale: 1.05,
-        boxShadow: variant === 'primary'
-          ? '0 10px 30px -10px var(--color-asics-accent)'
-          : '0 5px 15px -5px rgba(0,0,0,0.2)',
-      }}
-      whileTap={{
-        scale: 0.92,
-      }}
-      animate={isPressed ? {
-        scale: [1, 0.95, 1.02, 1],
-      } : {}}
-      transition={{
-        type: 'spring',
-        stiffness: 400,
-        damping: 17,
-      }}
-      className={combinedClassName}
-      onClick={handleClick}
-      {...props}
-    >
-      {buttonContent}
-    </motion.button>
+    <MagneticElement>
+      <motion.button
+        ref={buttonRef}
+        data-cursor="hover"
+        whileHover={{
+          scale: 1.05,
+          boxShadow: variant === 'primary'
+            ? '0 10px 30px -10px var(--color-asics-accent)'
+            : '0 5px 15px -5px rgba(0,0,0,0.2)',
+        }}
+        whileTap={{
+          scale: 0.92,
+        }}
+        animate={isPressed ? {
+          scale: [1, 0.95, 1.02, 1],
+        } : {}}
+        transition={{
+          type: 'spring',
+          stiffness: 400,
+          damping: 17,
+        }}
+        className={combinedClassName}
+        onClick={handleClick}
+        {...props}
+      >
+        {buttonContent}
+      </motion.button>
+    </MagneticElement>
   );
 }

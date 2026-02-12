@@ -8,6 +8,8 @@ import QuizProgress from '@/components/quiz/QuizProgress';
 import QuizQuestionComponent from '@/components/quiz/QuizQuestion';
 import QuizResult from '@/components/quiz/QuizResult';
 import Button from '@/components/common/Button';
+import TextReveal from '@/components/effects/TextReveal';
+import FloatingShapes from '@/components/effects/FloatingShapes';
 import { quizQuestions } from '@/data/quiz-questions';
 import { QuizAnswer, QuizResult as QuizResultType } from '@/types/quiz';
 import { calculateQuizResult } from '@/utils/quiz-logic';
@@ -75,8 +77,11 @@ export default function QuizPage() {
   return (
     <>
       <Header />
-      <main className="pt-20 min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="pt-20 min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)] relative overflow-hidden">
+        {/* Floating shapes background */}
+        <FloatingShapes count={4} />
+
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <AnimatePresence mode="wait">
             {!isComplete ? (
               <motion.div
@@ -86,18 +91,23 @@ export default function QuizPage() {
                 exit={{ opacity: 0 }}
               >
                 {/* Header */}
-                <motion.div
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-center mb-8"
-                >
-                  <h1 className="text-3xl font-bold text-gradient mb-2">
+                <div className="text-center mb-8">
+                  <TextReveal
+                    as="h1"
+                    mode="clip"
+                    className="text-3xl font-bold text-gradient mb-2"
+                  >
                     러닝화 추천 퀴즈
-                  </h1>
-                  <p className="text-[var(--color-foreground)]/60">
+                  </TextReveal>
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-[var(--color-foreground)]/60"
+                  >
                     몇 가지 질문에 답하면 딱 맞는 러닝화를 찾아드려요
-                  </p>
-                </motion.div>
+                  </motion.p>
+                </div>
 
                 {/* Progress */}
                 <QuizProgress
@@ -105,13 +115,23 @@ export default function QuizPage() {
                   total={quizQuestions.length}
                 />
 
-                {/* Question */}
+                {/* Question with clipPath reveal */}
                 <div className="bg-[var(--color-card)] rounded-3xl p-6 sm:p-8 border border-[var(--color-border)]">
-                  <QuizQuestionComponent
-                    question={currentQuestion}
-                    selectedOptions={selectedOptions}
-                    onSelectOption={handleSelectOption}
-                  />
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentIndex}
+                      initial={{ clipPath: 'inset(0 100% 0 0)', opacity: 0 }}
+                      animate={{ clipPath: 'inset(0 0% 0 0)', opacity: 1 }}
+                      exit={{ clipPath: 'inset(0 0 0 100%)', opacity: 0 }}
+                      transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
+                    >
+                      <QuizQuestionComponent
+                        question={currentQuestion}
+                        selectedOptions={selectedOptions}
+                        onSelectOption={handleSelectOption}
+                      />
+                    </motion.div>
+                  </AnimatePresence>
 
                   {/* Navigation */}
                   <div className="flex items-center justify-between mt-8 pt-6 border-t border-[var(--color-border)]">

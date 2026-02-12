@@ -1,16 +1,41 @@
 'use client';
 
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence, useInView } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { RunningShoe } from '@/types/shoe';
 import Badge from '@/components/common/Badge';
 import { getCategoryById } from '@/data/categories';
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
+import ImageDistortion from '@/components/effects/ImageDistortion';
 
 interface ShoeCardProps {
   shoe: RunningShoe;
   index?: number;
+}
+
+// Count-up display for spec numbers
+function CountUp({ value, suffix }: { value: number; suffix: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true });
+  const spring = useSpring(0, { stiffness: 100, damping: 30 });
+  const display = useTransform(spring, (v) => Math.round(v));
+  const [num, setNum] = useState(0);
+
+  useEffect(() => {
+    if (isInView) spring.set(value);
+  }, [isInView, spring, value]);
+
+  useEffect(() => {
+    const unsub = display.on('change', (v) => setNum(v));
+    return unsub;
+  }, [display]);
+
+  return (
+    <span ref={ref}>
+      {num}{suffix}
+    </span>
+  );
 }
 
 // Sparkle component for shimmer effect
@@ -103,6 +128,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
     <Link href={`/shoe/${shoe.slug}`}>
       <motion.div
         ref={cardRef}
+        data-cursor="view"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: index * 0.1 }}
@@ -122,6 +148,9 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
           rotateX,
           rotateY,
           transformStyle: 'preserve-3d',
+          filter: isHovered
+            ? 'drop-shadow(0 25px 50px rgba(0, 209, 255, 0.15))'
+            : 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1))',
         }}
         className="group relative bg-[var(--color-card)] rounded-2xl overflow-hidden border border-[var(--color-border)] hover:border-[var(--color-asics-accent)]/60 transition-colors duration-300 cursor-pointer"
       >
@@ -157,60 +186,62 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
           )}
         </AnimatePresence>
 
-        {/* Image container */}
-        <div className="relative aspect-[4/3] bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] overflow-hidden">
-          <motion.div
-            className="absolute inset-0 flex items-center justify-center p-4"
-            style={{ transform: 'translateZ(50px)' }}
-          >
-            {/* Product image with bounce effect */}
+        {/* Image container with ImageDistortion */}
+        <ImageDistortion variant="scan">
+          <div className="relative aspect-[4/3] bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] overflow-hidden">
             <motion.div
-              className="relative w-full h-full"
-              animate={isHovered ? {
-                scale: [1, 1.15, 1.1],
-                rotate: [0, -3, 3, 0],
-              } : { scale: 1, rotate: 0 }}
-              transition={{
-                duration: 0.5,
-                type: 'spring',
-                stiffness: 300,
-                damping: 15,
-              }}
+              className="absolute inset-0 flex items-center justify-center p-4"
+              style={{ transform: 'translateZ(50px)' }}
             >
-              <Image
-                src={shoe.imageUrl}
-                alt={shoe.name}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-contain drop-shadow-2xl"
-                priority={index < 3}
-              />
+              {/* Product image with bounce effect */}
+              <motion.div
+                className="relative w-full h-full"
+                animate={isHovered ? {
+                  scale: [1, 1.15, 1.1],
+                  rotate: [0, -3, 3, 0],
+                } : { scale: 1, rotate: 0 }}
+                transition={{
+                  duration: 0.5,
+                  type: 'spring',
+                  stiffness: 300,
+                  damping: 15,
+                }}
+              >
+                <Image
+                  src={shoe.imageUrl}
+                  alt={shoe.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-contain drop-shadow-2xl"
+                  priority={index < 3}
+                />
+              </motion.div>
             </motion.div>
-          </motion.div>
 
-          {/* Category badge */}
-          <div className="absolute top-3 left-3 z-10">
-            <Badge variant="category" categoryId={shoe.categoryId}>
-              {category?.icon} {category?.name}
-            </Badge>
+            {/* Category badge */}
+            <div className="absolute top-3 left-3 z-10">
+              <Badge variant="category" categoryId={shoe.categoryId}>
+                {category?.icon} {category?.name}
+              </Badge>
+            </div>
+
+            {/* Enhanced shimmer effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+              initial={{ x: '-100%' }}
+              animate={isHovered ? { x: '100%' } : { x: '-100%' }}
+              transition={{ duration: 0.8, ease: 'easeInOut' }}
+            />
+
+            {/* Secondary diagonal shimmer */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-br from-transparent via-[var(--color-asics-accent)]/5 to-transparent"
+              initial={{ opacity: 0 }}
+              animate={isHovered ? { opacity: [0, 1, 0] } : { opacity: 0 }}
+              transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}
+            />
           </div>
-
-          {/* Enhanced shimmer effect */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-            initial={{ x: '-100%' }}
-            animate={isHovered ? { x: '100%' } : { x: '-100%' }}
-            transition={{ duration: 0.8, ease: 'easeInOut' }}
-          />
-
-          {/* Secondary diagonal shimmer */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-transparent via-[var(--color-asics-accent)]/5 to-transparent"
-            initial={{ opacity: 0 }}
-            animate={isHovered ? { opacity: [0, 1, 0] } : { opacity: 0 }}
-            transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}
-          />
-        </div>
+        </ImageDistortion>
 
         {/* Content */}
         <div className="p-4" style={{ transform: 'translateZ(20px)' }}>
@@ -225,7 +256,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
             {shoe.shortDescription}
           </p>
 
-          {/* Specs preview with subtle animation */}
+          {/* Specs preview with count-up animation */}
           <motion.div
             className="mt-3 flex items-center gap-4 text-xs text-[var(--color-foreground)]/50"
             animate={isHovered ? { x: [0, 3, 0] } : { x: 0 }}
@@ -239,7 +270,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
               >
                 ⚖
               </motion.span>
-              {shoe.specs.weight}g
+              <CountUp value={shoe.specs.weight} suffix="g" />
             </span>
             <span className="flex items-center gap-1">
               <motion.span
@@ -249,7 +280,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
               >
                 ↕
               </motion.span>
-              {shoe.specs.drop}mm
+              <CountUp value={shoe.specs.drop} suffix="mm" />
             </span>
           </motion.div>
 

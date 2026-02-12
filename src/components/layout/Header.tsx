@@ -2,17 +2,24 @@
 
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import MagneticElement from '@/components/effects/MagneticElement';
+import { DUR_FAST } from '@/constants/animation';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const currentY = window.scrollY;
+      setScrollDirection(currentY > lastScrollY.current ? 'down' : 'up');
+      lastScrollY.current = currentY;
+      setScrolled(currentY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -28,12 +35,14 @@ export default function Header() {
     };
   }, [mobileMenuOpen]);
 
+  const isHidden = scrollDirection === 'down' && scrolled && !mobileMenuOpen;
+
   return (
     <>
       <motion.header
         initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
+        animate={{ y: isHidden ? -100 : 0 }}
+        transition={{ duration: DUR_FAST, ease: 'easeOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled || mobileMenuOpen
             ? 'glass shadow-lg shadow-[var(--color-asics-blue)]/10 backdrop-blur-xl'
@@ -72,8 +81,12 @@ export default function Header() {
 
             {/* Desktop Navigation - Right aligned */}
             <div className="hidden md:flex items-center gap-8">
-              <NavLink href="/brand/asics">Catalog</NavLink>
-              <NavLink href="/quiz">Quiz</NavLink>
+              <MagneticElement strength={0.15}>
+                <NavLink href="/brand/asics">Catalog</NavLink>
+              </MagneticElement>
+              <MagneticElement strength={0.15}>
+                <NavLink href="/quiz">Quiz</NavLink>
+              </MagneticElement>
             </div>
 
             {/* Mobile Menu Button - Right */}
@@ -179,15 +192,13 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
         transition={{ duration: 0.2 }}
       >
         {children}
-        {/* Animated underline */}
+        {/* Animated underline using clip-path reveal */}
         <motion.span
-          className="absolute -bottom-0 left-1/2 h-0.5 bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)] rounded-full"
-          initial={{ width: 0, x: '-50%' }}
-          animate={{
-            width: isHovered ? '80%' : 0,
-            x: '-50%',
+          className="absolute -bottom-0 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)] rounded-full"
+          style={{
+            clipPath: isHovered ? 'inset(0 0% 0 0)' : 'inset(0 100% 0 0)',
+            transition: 'clip-path 0.3s ease-out',
           }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
         />
         {/* Subtle glow on hover */}
         <motion.span

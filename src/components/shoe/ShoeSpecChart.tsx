@@ -1,6 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useSpring, useTransform, useInView } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ShoeSpecs } from '@/types/shoe';
 
 interface ShoeSpecChartProps {
@@ -11,26 +14,43 @@ interface SpecBarProps {
   label: string;
   value: number;
   max?: number;
-  delay?: number;
 }
 
-function SpecBar({ label, value, max = 10, delay = 0 }: SpecBarProps) {
-  const percentage = (value / max) * 100;
+function SpecBar({ label, value, max = 10 }: SpecBarProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-10%' });
+  const springValue = useSpring(0, { stiffness: 100, damping: 30 });
+  const display = useTransform(springValue, (v) => Math.round(v));
+  const [displayNum, setDisplayNum] = useState(0);
+
+  useEffect(() => {
+    if (isInView) {
+      springValue.set(value);
+    }
+  }, [isInView, springValue, value]);
+
+  useEffect(() => {
+    const unsubscribe = display.on('change', (v) => setDisplayNum(v));
+    return unsubscribe;
+  }, [display]);
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1" ref={ref}>
       <div className="flex items-center justify-between text-sm">
         <span className="text-[var(--color-foreground)]/70">{label}</span>
         <span className="font-medium text-[var(--color-foreground)]">
-          {value}/{max}
+          {displayNum}/{max}
         </span>
       </div>
-      <div className="h-2 bg-[var(--color-card)] rounded-full overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.8, delay, ease: 'easeOut' }}
-          className="h-full rounded-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)]"
+      <div className="h-2.5 bg-[var(--color-card)] rounded-full overflow-hidden">
+        <div
+          className="spec-bar-fill h-full rounded-full origin-left"
+          style={{
+            background: 'linear-gradient(90deg, var(--color-asics-blue), var(--color-asics-accent))',
+            boxShadow: '0 0 8px var(--color-asics-accent), 0 0 16px rgba(0, 209, 255, 0.3)',
+            transform: 'scaleX(0)',
+          }}
+          data-value={value / max}
         />
       </div>
     </div>
@@ -38,6 +58,41 @@ function SpecBar({ label, value, max = 10, delay = 0 }: SpecBarProps) {
 }
 
 export default function ShoeSpecChart({ specs }: ShoeSpecChartProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const bars = containerRef.current?.querySelectorAll('.spec-bar-fill');
+    const triggers: ScrollTrigger[] = [];
+
+    bars?.forEach((bar) => {
+      const targetScale = (bar as HTMLElement).dataset.value || '1';
+      const tl = gsap.fromTo(
+        bar,
+        { scaleX: 0 },
+        {
+          scaleX: parseFloat(targetScale),
+          duration: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: bar,
+            start: 'top 90%',
+            end: 'top 60%',
+            scrub: 1,
+          },
+        }
+      );
+      if (tl.scrollTrigger) {
+        triggers.push(tl.scrollTrigger);
+      }
+    });
+
+    return () => {
+      triggers.forEach((t) => t.kill());
+    };
+  }, []);
+
   const specItems = [
     { label: '쿠셔닝', value: specs.cushioning },
     { label: '반발력', value: specs.responsiveness },
@@ -46,15 +101,14 @@ export default function ShoeSpecChart({ specs }: ShoeSpecChartProps) {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" ref={containerRef}>
       {/* Spec bars */}
       <div className="space-y-4">
-        {specItems.map((item, index) => (
+        {specItems.map((item) => (
           <SpecBar
             key={item.label}
             label={item.label}
             value={item.value}
-            delay={index * 0.1}
           />
         ))}
       </div>
@@ -76,7 +130,8 @@ function QuickStat({ label, value }: { label: string; value: string }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
       className="text-center"
     >
       <p className="text-xs text-[var(--color-foreground)]/50">{label}</p>

@@ -1,10 +1,12 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
+import TextReveal from '@/components/effects/TextReveal';
+import FloatingShapes from '@/components/effects/FloatingShapes';
 import { getCategoryById, getSubcategoriesByCategory } from '@/data/categories';
 import { getShoesByCategory, getShoesBySubcategory } from '@/utils/shoe-utils';
 import { CategoryId, SubcategoryId } from '@/types/shoe';
@@ -62,6 +64,9 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
             background: `linear-gradient(135deg, var(--color-card) 0%, var(--color-background) 100%)`,
           }}
         >
+          {/* Floating shapes background */}
+          <FloatingShapes color={categoryData.color} />
+
           {/* Glow effect */}
           <div
             className="absolute inset-0 opacity-20"
@@ -91,12 +96,15 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                 {categoryData.icon}
               </motion.span>
 
-              <h1
+              <TextReveal
+                as="h1"
+                mode="clip"
                 className="text-4xl sm:text-5xl font-bold mb-4"
-                style={{ color: categoryData.color }}
               >
-                {categoryData.name}
-              </h1>
+                <span style={{ color: categoryData.color }}>
+                  {categoryData.name}
+                </span>
+              </TextReveal>
               <p className="text-xl text-[var(--color-foreground)]/60 max-w-2xl mx-auto">
                 {categoryData.description}
               </p>
@@ -107,51 +115,61 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
           </div>
         </section>
 
-        {/* Subcategory Tabs */}
+        {/* Subcategory Tabs with sliding indicator */}
         <section className="py-6 border-b border-[var(--color-border)] sticky top-16 bg-[var(--color-background)]/95 backdrop-blur-sm z-40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <button
                 onClick={() => setSelectedSubcategory('all')}
-                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                  selectedSubcategory === 'all'
-                    ? 'bg-[var(--color-foreground)] text-[var(--color-background)]'
-                    : 'bg-[var(--color-card)] text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)]'
-                }`}
+                className="relative px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
               >
-                전체 ({allCategoryShoes.length})
-              </motion.button>
+                {selectedSubcategory === 'all' && (
+                  <motion.div
+                    layoutId="subcategory-indicator"
+                    className="absolute inset-0 rounded-full bg-[var(--color-foreground)]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className={`relative z-10 ${
+                  selectedSubcategory === 'all'
+                    ? 'text-[var(--color-background)]'
+                    : 'text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)]'
+                }`}>
+                  전체 ({allCategoryShoes.length})
+                </span>
+              </button>
 
               {subcategories.map((sub) => {
                 const count = getShoesBySubcategory(sub.id).length;
                 return (
-                  <motion.button
+                  <button
                     key={sub.id}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
                     onClick={() => setSelectedSubcategory(sub.id)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                    className="relative px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                  >
+                    {selectedSubcategory === sub.id && (
+                      <motion.div
+                        layoutId="subcategory-indicator"
+                        className="absolute inset-0 rounded-full"
+                        style={{ backgroundColor: categoryData.color }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      />
+                    )}
+                    <span className={`relative z-10 ${
                       selectedSubcategory === sub.id
                         ? 'text-[var(--color-background)]'
-                        : 'bg-[var(--color-card)] text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)]'
-                    }`}
-                    style={
-                      selectedSubcategory === sub.id
-                        ? { backgroundColor: categoryData.color }
-                        : {}
-                    }
-                  >
-                    {sub.nameKo} ({count})
-                  </motion.button>
+                        : 'text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)]'
+                    }`}>
+                      {sub.nameKo} ({count})
+                    </span>
+                  </button>
                 );
               })}
             </div>
           </div>
         </section>
 
-        {/* Shoes Grid */}
+        {/* Shoes Grid with AnimatePresence layout */}
         <section className="py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {selectedSubcategory !== 'all' && (
@@ -180,9 +198,20 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
               layout
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {displayedShoes.map((shoe, index) => (
-                <ShoeCard key={shoe.id} shoe={shoe} index={index} />
-              ))}
+              <AnimatePresence mode="popLayout">
+                {displayedShoes.map((shoe, index) => (
+                  <motion.div
+                    key={shoe.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                  >
+                    <ShoeCard shoe={shoe} index={0} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </motion.div>
 
             {displayedShoes.length === 0 && (
