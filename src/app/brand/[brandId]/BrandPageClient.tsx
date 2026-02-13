@@ -131,16 +131,16 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-3 py-1.5 sm:px-6 sm:py-3 rounded-full border border-[var(--color-border)] hover:border-transparent transition-all cursor-pointer"
+                      className="px-2.5 py-1.5 sm:px-6 sm:py-3 rounded-full border border-[var(--color-border)] hover:border-transparent transition-all cursor-pointer whitespace-nowrap"
                       style={{
                         background: `linear-gradient(135deg, transparent, ${category.color}10)`,
                       }}
                     >
                       <span className="mr-1 sm:mr-2">{category.icon}</span>
-                      <span style={{ color: category.color }} className="text-sm sm:text-base font-medium">
+                      <span style={{ color: category.color }} className="text-xs sm:text-base font-medium">
                         {category.name}
                       </span>
-                      <span className="ml-1 sm:ml-2 text-xs sm:text-sm text-[var(--color-foreground)]/40">
+                      <span className="ml-0.5 sm:ml-2 text-[10px] sm:text-sm text-[var(--color-foreground)]/40">
                         {getShoesByCategory(category.id).length}
                       </span>
                     </motion.div>
