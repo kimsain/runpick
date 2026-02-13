@@ -42,12 +42,18 @@
 /* Base styles */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
+:root {
+  --scroll-anchor-offset: 5.5rem;
 }
 
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
+  font-synthesis: none;
   line-height: 1.68;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -107,6 +113,10 @@ body {
   font-weight: 800;
   line-height: 1.14;
   letter-spacing: -0.017em;
+}
+
+:target {
+  scroll-margin-top: var(--scroll-anchor-offset);
 }
 
 .type-h2 {

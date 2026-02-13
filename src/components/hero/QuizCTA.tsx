@@ -5,8 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
 import { EASE_OUT_EXPO } from '@/constants/animation';
 import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
@@ -19,8 +18,7 @@ export default function QuizCTA() {
 
   useEffect(() => {
     if (!isEnabled) return;
-
-    gsap.registerPlugin(ScrollTrigger);
+    ensureScrollTriggerRegistration();
 
     const ctx = gsap.context(() => {
       if (containerRef.current) {

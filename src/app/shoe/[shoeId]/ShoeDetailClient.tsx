@@ -6,8 +6,7 @@
 
 import { useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
@@ -40,7 +39,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
 
   useEffect(() => {
     if (!isDesktop || !animateEnabled) return;
-    gsap.registerPlugin(ScrollTrigger);
+    ensureScrollTriggerRegistration();
     const triggers: ScrollTrigger[] = [];
 
     // Pros slide-in from left

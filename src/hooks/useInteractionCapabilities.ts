@@ -40,12 +40,24 @@ export interface InteractionCapabilities {
 export function useInteractionCapabilities(): InteractionCapabilities {
   const isDesktop = useIsDesktop();
   const reduceMotion = useReducedMotion();
-  const [isPointerRestricted, setIsPointerRestricted] = useState(true);
-  const [isSaveDataEnabled, setIsSaveDataEnabled] = useState(false);
+  const [isPointerRestricted, setIsPointerRestricted] = useState(() =>
+    getPointerRestriction()
+  );
+  const [isSaveDataEnabled, setIsSaveDataEnabled] = useState(() => {
+    if (typeof navigator === 'undefined') return false;
+    return getConnectionSaveData((navigator as NavigatorWithConnection).connection);
+  });
 
   useEffect(() => {
     const navConnection = (navigator as NavigatorWithConnection).connection;
     const pointerMediaQuery = window.matchMedia(COARSE_POINTER_QUERY);
+    const addQueryListener = pointerMediaQuery.addEventListener
+      ? (listener: EventListenerOrEventListenerObject) => pointerMediaQuery.addEventListener('change', listener)
+      : (listener: EventListenerOrEventListenerObject) => pointerMediaQuery.addListener(listener as () => void);
+    const removeQueryListener = pointerMediaQuery.removeEventListener
+      ? (listener: EventListenerOrEventListenerObject) => pointerMediaQuery.removeEventListener('change', listener)
+      : (listener: EventListenerOrEventListenerObject) =>
+        pointerMediaQuery.removeListener(listener as () => void);
 
     const evaluate = () => {
       const nextPointer = getPointerRestriction();
@@ -56,13 +68,13 @@ export function useInteractionCapabilities(): InteractionCapabilities {
     };
 
     evaluate();
-    pointerMediaQuery.addEventListener?.('change', evaluate);
+    addQueryListener(evaluate);
     window.addEventListener('orientationchange', evaluate);
     navConnection?.addEventListener?.('change', evaluate);
     navConnection?.addEventListener?.('typechange', evaluate);
 
     return () => {
-      pointerMediaQuery.removeEventListener?.('change', evaluate);
+      removeQueryListener(evaluate);
       window.removeEventListener('orientationchange', evaluate);
       navConnection?.removeEventListener?.('change', evaluate);
       navConnection?.removeEventListener?.('typechange', evaluate);

@@ -9,8 +9,7 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { categories } from '@/data/categories';
 import { getAllBrandIds } from '@/utils/shoe-utils';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
@@ -177,8 +176,7 @@ export default function CategoryNav() {
 
   useEffect(() => {
     if (!isEnabled) return;
-
-    gsap.registerPlugin(ScrollTrigger);
+    ensureScrollTriggerRegistration();
 
     const ctx = gsap.context(() => {
       // Header reveal animation — play once, never reverse

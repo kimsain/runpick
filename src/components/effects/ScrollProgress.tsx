@@ -1,9 +1,8 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
+import { gsap, ScrollTrigger, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
 
 export default function ScrollProgress() {
   const barRef = useRef<HTMLDivElement>(null);
@@ -13,7 +12,7 @@ export default function ScrollProgress() {
 
   useEffect(() => {
     if (!isEnabled) return;
-    gsap.registerPlugin(ScrollTrigger);
+    ensureScrollTriggerRegistration();
     const bar = barRef.current;
     if (!bar) return;
 

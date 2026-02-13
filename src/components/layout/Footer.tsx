@@ -3,8 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollTrigger, gsap, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
 import TextReveal from '@/components/effects/TextReveal';
 import { STAGGER_NORMAL } from '@/constants/animation';
 import { getAllBrands } from '@/utils/shoe-utils';
@@ -19,8 +18,7 @@ export default function Footer() {
 
   useEffect(() => {
     if (!isEnabled) return;
-
-    gsap.registerPlugin(ScrollTrigger);
+    ensureScrollTriggerRegistration();
 
     const ctx = gsap.context(() => {
       if (linksRef.current) {

@@ -5,8 +5,7 @@
 // Mobile: CSS fallback driven by --target-scale variable.
 
 import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
 import { ShoeSpecs } from '@/types/shoe';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
@@ -52,7 +51,7 @@ export default function ShoeSpecChart({ specs, animated = false }: ShoeSpecChart
 
   useEffect(() => {
     if (!isDesktop || !containerRef.current) return;
-    gsap.registerPlugin(ScrollTrigger);
+    ensureScrollTriggerRegistration();
 
     const bars = Array.from(containerRef.current.querySelectorAll('.spec-bar-fill')) as HTMLDivElement[];
     const triggers: ScrollTrigger[] = [];

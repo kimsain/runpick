@@ -8,8 +8,7 @@
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Lenis from 'lenis';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
 import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 interface SmoothScrollProps {
@@ -25,7 +24,7 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
   useEffect(() => {
     if (!isEnabled) return; // Mobile or reduced-motion: native scroll
 
-    gsap.registerPlugin(ScrollTrigger);
+    ensureScrollTriggerRegistration();
 
     const lenis = new Lenis({
       duration: 1.2,
