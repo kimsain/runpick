@@ -62,40 +62,23 @@ export default function QuizCTA() {
             }}
           />
 
-          {/* Animated gradient orbs */}
-          <motion.div
+          {/* Static gradient orbs */}
+          <div
             className="absolute -top-32 -right-32 w-80 h-80 rounded-full hidden md:block"
-            style={{
-              background: 'radial-gradient(circle, rgba(0,209,255,0.15) 0%, transparent 70%)',
-            }}
-            animate={{
-              x: [0, 20, 0],
-              y: [0, -15, 0],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ background: 'radial-gradient(circle, rgba(0,209,255,0.15) 0%, transparent 70%)' }}
           />
-          <motion.div
+          <div
             className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full hidden md:block"
-            style={{
-              background: 'radial-gradient(circle, rgba(0,61,165,0.2) 0%, transparent 70%)',
-            }}
-            animate={{
-              x: [0, -15, 0],
-              y: [0, 20, 0],
-              scale: [1, 1.15, 1],
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ background: 'radial-gradient(circle, rgba(0,61,165,0.2) 0%, transparent 70%)' }}
           />
 
           {/* Accent light streak */}
-          <motion.div
+          <div
             className="absolute top-0 left-0 right-0 h-px hidden md:block"
             style={{
               background: 'linear-gradient(90deg, transparent 0%, var(--color-asics-accent) 50%, transparent 100%)',
+              opacity: 0.5,
             }}
-            animate={{ opacity: [0.3, 0.7, 0.3] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           />
 
           {/* Grid pattern */}
@@ -128,13 +111,7 @@ export default function QuizCTA() {
                   color: 'var(--color-asics-accent)',
                 }}
               >
-                <motion.span
-                  className="inline-block mr-2"
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                >
-                  🎯
-                </motion.span>
+                <span className="inline-block mr-2">🎯</span>
                 5개 질문 &middot; 1분 소요
               </span>
             </motion.div>
@@ -182,51 +159,19 @@ export default function QuizCTA() {
                     whileTap={{ scale: 0.97 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                   >
-                    {/* Shimmer on hover */}
-                    <motion.span
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100"
-                      style={{
-                        background: 'linear-gradient(90deg, transparent, rgba(0,209,255,0.08), transparent)',
-                      }}
-                      animate={{ x: ['-100%', '200%'] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                    />
                     <span className="relative z-10">추천 퀴즈 시작하기</span>
-                    <motion.span
-                      className="relative z-10"
-                      animate={{ x: [0, 3, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                    >
-                      →
-                    </motion.span>
+                    <span className="relative z-10">→</span>
                   </motion.span>
                 </Link>
               </MagneticElement>
             </motion.div>
 
             {/* Bottom decorative dots */}
-            <motion.div
-              className="hidden md:flex justify-center gap-1.5 mt-10"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6 }}
-            >
+            <div className="hidden md:flex justify-center gap-1.5 mt-10">
               {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  className="w-1 h-1 rounded-full bg-white/20"
-                  animate={{
-                    opacity: [0.2, 0.6, 0.2],
-                  }}
-                  transition={{
-                    duration: 2,
-                    delay: i * 0.3,
-                    repeat: Infinity,
-                  }}
-                />
+                <div key={i} className="w-1 h-1 rounded-full bg-white/30" />
               ))}
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
