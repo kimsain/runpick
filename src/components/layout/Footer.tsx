@@ -22,10 +22,7 @@ export default function Footer() {
     const ctx = gsap.context(() => {
       if (linksRef.current) {
         const items = linksRef.current.querySelectorAll('.footer-link-item');
-        gsap.fromTo(
-          items,
-          { opacity: 0, y: 20 },
-          {
+        gsap.to(items, {
             opacity: 1,
             y: 0,
             duration: 0.6,
@@ -36,8 +33,7 @@ export default function Footer() {
               start: 'top 90%',
               toggleActions: 'play none none none',
             },
-          }
-        );
+          });
       }
     }, footerRef);
 

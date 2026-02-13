@@ -55,10 +55,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
       if (cards.length === 0) return;
 
       cards.forEach((card, i) => {
-        const tween = gsap.fromTo(
-          card,
-          { opacity: 0, y: 40 },
-          {
+        const tween = gsap.to(card, {
             opacity: 1,
             y: 0,
             duration: 0.6,
@@ -69,8 +66,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
               toggleActions: 'play none none none',
             },
             delay: i * STAGGER_NORMAL,
-          }
-        );
+          });
         if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
       });
     });

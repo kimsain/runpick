@@ -36,10 +36,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
 
     // Pros slide-in from left
     if (prosRef.current) {
-      const tween = gsap.fromTo(
-        prosRef.current,
-        { x: -60, opacity: 0 },
-        {
+      const tween = gsap.to(prosRef.current, {
           x: 0,
           opacity: 1,
           duration: 1,
@@ -49,17 +46,13 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
             start: 'top 85%',
             toggleActions: 'play none none none',
           },
-        }
-      );
+        });
       if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
     }
 
     // Cons slide-in from right
     if (consRef.current) {
-      const tween = gsap.fromTo(
-        consRef.current,
-        { x: 60, opacity: 0 },
-        {
+      const tween = gsap.to(consRef.current, {
           x: 0,
           opacity: 1,
           duration: 1,
@@ -69,8 +62,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
             start: 'top 85%',
             toggleActions: 'play none none none',
           },
-        }
-      );
+        });
       if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
     }
 

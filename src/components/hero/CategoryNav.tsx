@@ -251,10 +251,7 @@ export default function CategoryNav() {
     const ctx = gsap.context(() => {
       // Header reveal animation — play once, never reverse
       if (headerRef.current) {
-        gsap.fromTo(
-          headerRef.current,
-          { opacity: 0, y: 40, scale: 0.95 },
-          {
+        gsap.to(headerRef.current, {
             opacity: 1,
             y: 0,
             scale: 1,
@@ -265,8 +262,7 @@ export default function CategoryNav() {
               start: 'top 85%',
               toggleActions: 'play none none none',
             },
-          }
-        );
+          });
       }
     }, sectionRef);
 

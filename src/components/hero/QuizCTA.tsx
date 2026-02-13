@@ -22,10 +22,7 @@ export default function QuizCTA() {
 
     const ctx = gsap.context(() => {
       if (containerRef.current) {
-        gsap.fromTo(
-          containerRef.current,
-          { scale: 0.92, opacity: 0.8 },
-          {
+        gsap.to(containerRef.current, {
             scale: 1,
             opacity: 1,
             duration: 0.8,
@@ -35,8 +32,7 @@ export default function QuizCTA() {
               start: 'top 85%',
               toggleActions: 'play none none none',
             },
-          }
-        );
+          });
       }
     }, sectionRef);
 

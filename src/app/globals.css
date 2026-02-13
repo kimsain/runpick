@@ -141,19 +141,38 @@ body {
   scroll-snap-align: center;
 }
 
-/* Default visible state — GSAP inline styles override on desktop */
-.category-nav-header,
-.quiz-cta-container,
-.footer-link-item,
-.shoe-detail-pros,
-.shoe-detail-cons,
-.shoe-card-wrapper {
-  opacity: 1;
-  transform: none;
-}
-
+/* Default visible state (서버 렌더링 / JS 비활성화 fallback) */
 .spec-bar-fill {
   transform: scaleX(var(--target-scale, 0));
+}
+
+/* Desktop: GSAP 초기 상태를 CSS로 선언 (fromTo 플래시 방지)
+   GSAP .to()가 이 상태에서 최종 상태로 애니메이션 */
+@media (min-width: 768px) {
+  .category-nav-header {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  .quiz-cta-container {
+    opacity: 0.8;
+    transform: scale(0.92);
+  }
+  .footer-link-item {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .shoe-detail-pros {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  .shoe-detail-cons {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  .shoe-card-wrapper {
+    opacity: 0;
+    transform: translateY(40px);
+  }
 }
 
 /* ========== MOBILE PERFORMANCE OVERRIDES ========== */
