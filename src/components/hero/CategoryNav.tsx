@@ -14,17 +14,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
-
-type NavigatorWithConnection = Navigator & {
-  connection?: {
-    saveData?: boolean;
-    effectiveType?: string;
-    addEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
-    removeEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
-  };
-};
-
-const LOW_POWER_CONNECTION_TYPES = new Set(['slow-2g', '2g']);
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 // Category card component — 6 core hover effects only
 function CategoryCard({
@@ -182,28 +172,8 @@ export default function CategoryNav() {
   const isDesktop = useIsDesktop();
   const animateEnabled = !useReducedMotion();
   const [preferredBrandId, setPreferredBrandId] = useState<string | null>(null);
-  const [isEnabled, setIsEnabled] = useState(false);
-
-  useEffect(() => {
-    const conn = (navigator as NavigatorWithConnection).connection;
-    const checkEnabled = () => {
-      const isCoarsePointer =
-        window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
-      const isSaveData = Boolean(conn?.saveData) ||
-        (conn?.effectiveType ? LOW_POWER_CONNECTION_TYPES.has(conn.effectiveType) : false);
-
-      setIsEnabled(!isDesktop || !animateEnabled ? false : !isCoarsePointer && !isSaveData);
-    };
-
-    checkEnabled();
-    window.addEventListener('resize', checkEnabled);
-    conn?.addEventListener?.('change', checkEnabled);
-
-    return () => {
-      window.removeEventListener('resize', checkEnabled);
-      conn?.removeEventListener?.('change', checkEnabled);
-    };
-  }, [isDesktop, animateEnabled]);
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const isEnabled = isDesktop && hasMotionBudget && animateEnabled;
 
   useEffect(() => {
     if (!isEnabled) return;
@@ -239,6 +209,7 @@ export default function CategoryNav() {
 
   return (
     <section
+      id="category-nav"
       ref={sectionRef}
       className="section-space bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]"
     >

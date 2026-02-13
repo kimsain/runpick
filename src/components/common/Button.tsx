@@ -4,6 +4,7 @@ import { motion, useReducedMotion, HTMLMotionProps, AnimatePresence } from 'fram
 import Link from 'next/link';
 import { useState, useCallback, useRef } from 'react';
 import MagneticElement from '@/components/effects/MagneticElement';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -69,6 +70,8 @@ export default function Button({
   const rippleIdRef = useRef(0);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const animateEnabled = !useReducedMotion();
+  const isDesktop = useIsDesktop();
+  const enableRichMotion = animateEnabled && isDesktop;
 
   const baseStyles = `
     inline-flex items-center justify-center gap-2
@@ -83,7 +86,7 @@ export default function Button({
   const isDisabled = Boolean(props.disabled);
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    if (animateEnabled) {
+    if (enableRichMotion) {
       const rect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
@@ -102,13 +105,13 @@ export default function Button({
     if (onClick) {
       onClick(e);
     }
-  }, [animateEnabled, onClick]);
+  }, [enableRichMotion, onClick]);
 
   const removeRipple = useCallback((id: number) => {
     setRipples((prev) => prev.filter((ripple) => ripple.id !== id));
   }, []);
 
-  const hoverTransition = animateEnabled
+  const hoverTransition = enableRichMotion
     ? {
       type: 'spring' as const,
       stiffness: 400,
@@ -116,7 +119,7 @@ export default function Button({
     }
     : undefined;
 
-  const hoverAnimation = animateEnabled
+  const hoverAnimation = enableRichMotion
     ? {
       scale: 1.05,
       boxShadow:
@@ -129,7 +132,7 @@ export default function Button({
   const buttonContent = (
     <>
       <AnimatePresence>
-        {animateEnabled &&
+        {enableRichMotion &&
           ripples.map((ripple) => (
             <Ripple
               key={ripple.id}
@@ -143,7 +146,7 @@ export default function Button({
       <motion.div
         className="absolute inset-0 rounded-full pointer-events-none"
         initial={animateEnabled ? { opacity: 0 } : { opacity: 0 }}
-        whileHover={animateEnabled ? { opacity: 1 } : undefined}
+        whileHover={enableRichMotion ? { opacity: 1 } : undefined}
         style={{
           background: variant === 'primary'
             ? 'radial-gradient(circle at center, rgba(255,255,255,0.15), transparent 70%)'
@@ -165,7 +168,7 @@ export default function Button({
             target="_blank"
             rel="noopener noreferrer"
             whileHover={hoverAnimation}
-            whileTap={animateEnabled ? { scale: 0.95 } : undefined}
+            whileTap={enableRichMotion ? { scale: 0.95 } : undefined}
             transition={hoverTransition}
             className={combinedClassName}
           >
@@ -181,7 +184,7 @@ export default function Button({
           <motion.span
             data-cursor="hover"
             whileHover={hoverAnimation}
-            whileTap={animateEnabled ? { scale: 0.95 } : undefined}
+            whileTap={enableRichMotion ? { scale: 0.95 } : undefined}
             transition={hoverTransition}
             className={combinedClassName}
           >
@@ -198,7 +201,7 @@ export default function Button({
         ref={buttonRef}
         data-cursor="hover"
         whileHover={isDisabled ? undefined : hoverAnimation}
-        whileTap={isDisabled || !animateEnabled ? undefined : { scale: 0.92 }}
+        whileTap={isDisabled || !enableRichMotion ? undefined : { scale: 0.92 }}
         animate={animateEnabled && isPressed ? { scale: [1, 0.95, 1.02, 1] } : {}}
         transition={hoverTransition}
         className={combinedClassName}

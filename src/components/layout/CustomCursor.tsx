@@ -9,34 +9,15 @@ import {
   useReducedMotion,
 } from 'framer-motion';
 import { SPRING_SNAPPY } from '@/constants/animation';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 type CursorState = 'default' | 'hover' | 'text' | 'view' | 'drag';
-
-type NavigatorWithConnection = Navigator & {
-  connection?: {
-    saveData?: boolean;
-    effectiveType?: string;
-    addEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
-    removeEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
-  };
-};
-
-const LOW_POWER_CONNECTION_TYPES = new Set(['slow-2g', '2g']);
-
-function getSaveDataPreference(): boolean {
-  const connection = (navigator as NavigatorWithConnection).connection;
-  if (!connection) return false;
-
-  return Boolean(connection.saveData) ||
-    !!(connection.effectiveType && LOW_POWER_CONNECTION_TYPES.has(connection.effectiveType));
-}
 
 export default function CustomCursor() {
   const animateEnabled = !useReducedMotion();
   const [cursorState, setCursorState] = useState<CursorState>('default');
   const [isVisible, setIsVisible] = useState(false);
-  const [isPointerRestricted, setIsPointerRestricted] = useState(true);
-  const [isSaveData, setIsSaveData] = useState(false);
+  const { hasMotionBudget } = useInteractionCapabilities();
   const cursorStateRef = useRef<CursorState>('default');
 
   const cursorX = useMotionValue(-100);
@@ -62,37 +43,7 @@ export default function CustomCursor() {
   );
 
   useEffect(() => {
-    const nav = navigator as NavigatorWithConnection;
-    const connection = nav.connection;
-
-    const checkEnv = () => {
-      const pointerRestricted =
-        window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
-      const saveDataEnabled = getSaveDataPreference();
-
-      setIsPointerRestricted((prev) => (prev === pointerRestricted ? prev : pointerRestricted));
-      setIsSaveData((prev) => (prev === saveDataEnabled ? prev : saveDataEnabled));
-    };
-
-    const handleConnectionChange = () => {
-      const saveDataEnabled = getSaveDataPreference();
-      setIsSaveData((prev) => (prev === saveDataEnabled ? prev : saveDataEnabled));
-    };
-
-    checkEnv();
-    window.addEventListener('resize', checkEnv);
-    connection?.addEventListener?.('change', handleConnectionChange);
-    connection?.addEventListener?.('typechange', handleConnectionChange);
-
-    const shouldRenderCursor = animateEnabled && !isPointerRestricted && !isSaveData;
-    if (!shouldRenderCursor) {
-      return () => {
-        window.removeEventListener('resize', checkEnv);
-        connection?.removeEventListener?.('change', handleConnectionChange);
-        connection?.removeEventListener?.('typechange', handleConnectionChange);
-      };
-    }
-
+    if (!animateEnabled || !hasMotionBudget) return;
     window.addEventListener('mousemove', moveCursor, { passive: true });
 
     const handleMouseOver = (e: MouseEvent) => {
@@ -174,17 +125,14 @@ export default function CustomCursor() {
 
     return () => {
       window.removeEventListener('mousemove', moveCursor);
-      window.removeEventListener('resize', checkEnv);
-      connection?.removeEventListener?.('change', handleConnectionChange);
-      connection?.removeEventListener?.('typechange', handleConnectionChange);
       document.removeEventListener('mouseover', handleMouseOver);
       document.removeEventListener('mouseout', handleMouseOut);
       document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
       document.documentElement.removeEventListener('mouseenter', handleMouseEnter);
     };
-  }, [animateEnabled, isPointerRestricted, isSaveData, moveCursor, updateCursorState]);
+  }, [animateEnabled, hasMotionBudget, moveCursor, updateCursorState]);
 
-  if (!animateEnabled || isPointerRestricted || isSaveData) return null;
+  if (!animateEnabled || !hasMotionBudget) return null;
 
   const getCursorSize = () => {
     switch (cursorState) {

@@ -192,30 +192,38 @@ export default function HeroSection() {
 function ScrollIndicator({ animateEnabled = true }: { animateEnabled?: boolean }) {
   return (
     <motion.div
-      className="flex flex-col items-center gap-3 cursor-pointer group"
+      className="flex flex-col items-center gap-3 group"
       whileHover={animateEnabled ? { scale: 1.1 } : undefined}
       data-cursor="pointer"
     >
-      <span className="text-xs tracking-wider uppercase font-medium text-[var(--color-foreground)]/50 group-hover:text-[var(--color-asics-accent)] transition-colors">
-        Scroll to explore
-      </span>
-
-      <div className="relative scroll-indicator-mouse">
-        <div className="w-6 h-10 rounded-full border-2 border-[var(--color-foreground)]/30 group-hover:border-[var(--color-asics-accent)]/50 transition-colors flex items-start justify-center p-1.5">
-          <div className="w-1.5 h-3 rounded-full bg-gradient-to-b from-[var(--color-asics-accent)] to-[var(--color-asics-blue)] scroll-indicator-dot" />
-        </div>
-      </div>
-
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        className="text-[var(--color-foreground)]/40 group-hover:text-[var(--color-asics-accent)] transition-colors"
+      <a
+        href="#category-nav"
+        aria-label="카테고리 섹션으로 이동"
+        className="flex flex-col items-center gap-3"
       >
-        <path d="M7 13l5 5 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M7 7l5 5 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
-      </svg>
+        <span className="text-xs tracking-wider uppercase font-medium text-[var(--color-foreground)]/50 group-hover:text-[var(--color-asics-accent)] transition-colors">
+          카테고리로 이동
+        </span>
+
+        <span className="relative scroll-indicator-mouse block">
+          <div className="w-6 h-10 rounded-full border-2 border-[var(--color-foreground)]/30 group-hover:border-[var(--color-asics-accent)]/50 transition-colors flex items-start justify-center p-1.5">
+            <div className="w-1.5 h-3 rounded-full bg-gradient-to-b from-[var(--color-asics-accent)] to-[var(--color-asics-blue)] scroll-indicator-dot" />
+          </div>
+        </span>
+
+        <span className="text-[var(--color-foreground)]/40 group-hover:text-[var(--color-asics-accent)] transition-colors">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path d="M7 13l5 5 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M7 7l5 5 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+          </svg>
+        </span>
+      </a>
     </motion.div>
   );
 }

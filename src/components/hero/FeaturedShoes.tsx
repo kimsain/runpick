@@ -14,17 +14,7 @@ import TextReveal from '@/components/effects/TextReveal';
 import { EASE_OUT_EXPO, DUR_REVEAL } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { useReducedMotion } from 'framer-motion';
-
-type NavigatorWithConnection = Navigator & {
-  connection?: {
-    saveData?: boolean;
-    effectiveType?: string;
-    addEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
-    removeEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
-  };
-};
-
-const LOW_POWER_CONNECTION_TYPES = new Set(['slow-2g', '2g']);
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 // Featured badge component
 function FeaturedBadge({ animateEnabled }: { animateEnabled: boolean }) {
@@ -171,7 +161,7 @@ export default function FeaturedShoes() {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const animateEnabled = !useReducedMotion();
-  const [isEnabled, setIsEnabled] = useState(false);
+  const { hasMotionBudget } = useInteractionCapabilities();
 
   const allShoes = useMemo(() => getAllShoes(), []);
   // 각 카테고리에서 인기 모델 Top 5
@@ -189,29 +179,7 @@ export default function FeaturedShoes() {
 
   // GSAP pin needs wider viewport (1024px+) — at 768px cards are too narrow
   const isPinDesktop = useIsDesktop(1024);
-
-  useEffect(() => {
-    const conn = (navigator as NavigatorWithConnection).connection;
-
-    const checkEnabled = () => {
-      const isPointerRestricted =
-        window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
-      const isSaveData = Boolean(conn?.saveData) ||
-        !!(conn?.effectiveType && LOW_POWER_CONNECTION_TYPES.has(conn.effectiveType));
-
-      const nextEnabled = isPinDesktop && animateEnabled && !isPointerRestricted && !isSaveData;
-      setIsEnabled((prev) => (prev === nextEnabled ? prev : nextEnabled));
-    };
-
-    checkEnabled();
-    window.addEventListener('resize', checkEnabled);
-    conn?.addEventListener?.('change', checkEnabled);
-
-    return () => {
-      window.removeEventListener('resize', checkEnabled);
-      conn?.removeEventListener?.('change', checkEnabled);
-    };
-  }, [isPinDesktop, animateEnabled]);
+  const isEnabled = isPinDesktop && animateEnabled && hasMotionBudget;
 
   // Desktop: GSAP horizontal scroll with pin
   useEffect(() => {

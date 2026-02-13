@@ -8,49 +8,14 @@ import MagneticElement from '@/components/effects/MagneticElement';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { EASE_OUT_EXPO } from '@/constants/animation';
-import { useIsDesktop } from '@/hooks/useIsDesktop';
-
-type NavigatorWithConnection = Navigator & {
-  connection?: {
-    saveData?: boolean;
-    effectiveType?: string;
-    addEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
-    removeEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
-  };
-};
-
-const LOW_POWER_CONNECTION_TYPES = new Set(['slow-2g', '2g']);
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 export default function QuizCTA() {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isDesktop = useIsDesktop();
   const animateEnabled = !useReducedMotion();
-  const [isEnabled, setIsEnabled] = useState(false);
-
-  useEffect(() => {
-    const conn = (navigator as NavigatorWithConnection).connection;
-
-    const checkEnabled = () => {
-      const isCoarsePointer =
-        window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
-      const isSaveData = !!(
-        conn?.saveData ||
-        (conn?.effectiveType && LOW_POWER_CONNECTION_TYPES.has(conn.effectiveType))
-      );
-      const nextEnabled = isDesktop && animateEnabled && !isCoarsePointer && !isSaveData;
-      setIsEnabled((prev) => (prev === nextEnabled ? prev : nextEnabled));
-    };
-
-    checkEnabled();
-    window.addEventListener('resize', checkEnabled);
-    conn?.addEventListener?.('change', checkEnabled);
-
-    return () => {
-      window.removeEventListener('resize', checkEnabled);
-      conn?.removeEventListener?.('change', checkEnabled);
-    };
-  }, [isDesktop, animateEnabled]);
+  const { isDesktop, hasMotionBudget } = useInteractionCapabilities();
+  const isEnabled = isDesktop && hasMotionBudget && animateEnabled;
 
   useEffect(() => {
     if (!isEnabled) return;
