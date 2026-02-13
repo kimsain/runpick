@@ -187,16 +187,13 @@ export default function QuizPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <button
                       onClick={() => setPreferredBrandId('all')}
-                      className={`rounded-2xl border p-4 text-left transition-all ${
+                      className={`rounded-2xl border p-4 text-left min-h-24 sm:min-h-24 flex flex-col justify-center transition-all ${
                         preferredBrandId === 'all'
                           ? 'border-[var(--color-asics-accent)] bg-[var(--color-asics-accent)]/10'
                           : 'border-[var(--color-border)] hover:border-[var(--color-border-hover)]'
                       }`}
                     >
                       <p className="type-body font-semibold text-[var(--color-foreground)]">전체 브랜드</p>
-                      <p className="mt-1 type-body text-[var(--color-foreground)]/60">
-                        ASICS, NIKE, ADIDAS 전체에서 최적 추천
-                      </p>
                     </button>
 
                     {brands.map((brand) => {
@@ -205,7 +202,7 @@ export default function QuizPage() {
                         <button
                           key={brand.id}
                           onClick={() => setPreferredBrandId(brand.id)}
-                          className={`rounded-2xl border p-4 text-left transition-all ${
+                          className={`rounded-2xl border p-4 text-left min-h-24 sm:min-h-24 flex flex-col justify-center transition-all ${
                             active
                               ? 'border-[var(--color-asics-accent)] bg-[var(--color-asics-accent)]/10'
                               : 'border-[var(--color-border)] hover:border-[var(--color-border-hover)]'
