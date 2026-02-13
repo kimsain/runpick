@@ -130,8 +130,12 @@ export default function QuizPage() {
       const top = quizCardRef.current?.getBoundingClientRect().top;
       if (typeof top !== 'number') return;
 
-      const headerBottom = document.getElementById('site-header')?.getBoundingClientRect().bottom ?? 0;
-      const offset = Math.max(0, Math.ceil(headerBottom)) + (isDesktop ? 32 : 24);
+      const fallbackHeaderBottom = isDesktop ? 64 : 56;
+      const headerBottom = document
+        .getElementById('site-header')
+        ?.getBoundingClientRect()
+        .bottom ?? fallbackHeaderBottom;
+      const offset = Math.max(Math.ceil(headerBottom), fallbackHeaderBottom) + (isDesktop ? 24 : 18);
       const targetY = window.scrollY + top - offset;
       window.scrollTo({ top: Math.max(targetY, 0), behavior: 'smooth' });
     });

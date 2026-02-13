@@ -45,6 +45,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
   const { hasMotionBudget } = useInteractionCapabilities();
   const animateEnabled = !useReducedMotion() && hasMotionBudget;
   const { isHidden: headerHidden } = useScrollVisibility({ enabled: isDesktop });
+  const navSpacerClass = isDesktop && headerHidden ? 'h-0' : 'h-16 sm:h-12';
 
   useEffect(() => {
     if (brandId) {
@@ -133,9 +134,9 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                   <MagneticElement key={category.id} strength={0.2} radius={120}>
                     <Link href={`/brand/${brandId}/${category.id}`}>
                       <motion.div
-                      whileHover={animateEnabled ? { scale: 1.05 } : undefined}
-                      whileTap={animateEnabled ? { scale: 0.95 } : undefined}
-                      className="px-3.5 py-2 min-h-11 sm:px-6 sm:py-3 rounded-full border border-[var(--color-border)] hover:border-transparent transition-all cursor-pointer whitespace-nowrap shrink-0 snap-start"
+                        whileHover={animateEnabled ? { scale: 1.05, zIndex: 20 } : undefined}
+                        whileTap={animateEnabled ? { scale: 0.95 } : undefined}
+                        className="px-3.5 py-2 min-h-11 sm:px-6 sm:py-3 rounded-full border border-[var(--color-border)] hover:border-transparent transition-all cursor-pointer whitespace-nowrap shrink-0 snap-start"
                       style={{
                         background: `linear-gradient(135deg, transparent, ${category.color}10)`,
                       }}
@@ -156,7 +157,9 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
         </motion.section>
 
         {/* Spacer for fixed category nav */}
-        <div className="h-16 sm:h-12" />
+        <div
+          className={`${navSpacerClass} transition-[height] duration-200`}
+        />
 
         {/* All Shoes by Category */}
         <div ref={sectionsRef}>

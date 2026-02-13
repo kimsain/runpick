@@ -101,6 +101,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
     () => getBrandThemeVars(brandId, brand?.color),
     [brandId, brand?.color]
   );
+  const navSpacerClass = isDesktop && headerHidden ? 'h-0' : 'h-16 sm:h-12';
 
   const handleSelectSubcategory = (next: SubcategoryId | 'all') => {
     setSelectedSubcategory(next);
@@ -111,8 +112,10 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
         if (typeof top !== 'number') return;
 
         const navBottom = subcategoryNavRef.current?.getBoundingClientRect().bottom;
-
-        const targetOffset = Math.max(0, Math.ceil(navBottom ?? 0));
+        const targetOffset = Math.max(
+          isDesktop ? 0 : 64,
+          Math.ceil(navBottom ?? Number.NEGATIVE_INFINITY)
+        );
         const targetY = window.scrollY + top - targetOffset;
 
         window.scrollTo({ top: Math.max(targetY, 0), behavior: 'smooth' });
@@ -250,7 +253,9 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
         </motion.section>
 
         {/* Spacer for fixed subcategory nav */}
-        <div className="h-16 sm:h-12" />
+        <div
+          className={`${navSpacerClass} transition-[height] duration-200`}
+        />
 
         {/* Shoes Grid with AnimatePresence layout */}
         <section ref={listSectionRef} className="py-10">
