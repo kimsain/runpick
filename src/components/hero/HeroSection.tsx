@@ -169,19 +169,11 @@ function ScrollIndicator() {
         Scroll to explore
       </span>
 
-      <motion.div
-        animate={{ y: [0, 6, 0] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-        className="relative"
-      >
+      <div className="relative scroll-indicator-mouse">
         <div className="w-6 h-10 rounded-full border-2 border-[var(--color-foreground)]/30 group-hover:border-[var(--color-asics-accent)]/50 transition-colors flex items-start justify-center p-1.5">
-          <motion.div
-            animate={{ y: [0, 8, 0], opacity: [1, 0.3, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-1.5 h-3 rounded-full bg-gradient-to-b from-[var(--color-asics-accent)] to-[var(--color-asics-blue)]"
-          />
+          <div className="w-1.5 h-3 rounded-full bg-gradient-to-b from-[var(--color-asics-accent)] to-[var(--color-asics-blue)] scroll-indicator-dot" />
         </div>
-      </motion.div>
+      </div>
 
       <svg
         width="20"
