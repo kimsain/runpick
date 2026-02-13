@@ -2,11 +2,10 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
-import MagneticElement from '@/components/effects/MagneticElement';
 import { STAGGER_NORMAL } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
@@ -126,44 +125,17 @@ function FloatingShoe() {
 }
 
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <li>
-      <MagneticElement strength={0.1}>
-        <Link href={href}>
-          <motion.span
-            className="text-sm text-[var(--color-foreground)]/60 hover:text-[var(--color-foreground)] transition-colors inline-flex items-center gap-2 relative min-h-[44px]"
-            onHoverStart={() => setIsHovered(true)}
-            onHoverEnd={() => setIsHovered(false)}
-            whileHover={{ x: 4 }}
-            transition={{ duration: 0.2 }}
-          >
-            {/* Arrow indicator */}
-            <motion.span
-              className="text-[var(--color-asics-accent)]"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{
-                opacity: isHovered ? 1 : 0,
-                x: isHovered ? 0 : -10,
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              &rarr;
-            </motion.span>
-            <span className="relative">
-              {children}
-              {/* Underline effect */}
-              <motion.span
-                className="absolute -bottom-0.5 left-0 h-px bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)]"
-                initial={{ width: 0 }}
-                animate={{ width: isHovered ? '100%' : 0 }}
-                transition={{ duration: 0.2 }}
-              />
-            </span>
-          </motion.span>
-        </Link>
-      </MagneticElement>
+      <Link href={href}>
+        <motion.span
+          className="text-sm text-[var(--color-foreground)]/60 hover:text-[var(--color-foreground)] transition-colors inline-flex items-center gap-2 relative min-h-[44px]"
+          whileHover={{ x: 4 }}
+          transition={{ duration: 0.2 }}
+        >
+          {children}
+        </motion.span>
+      </Link>
     </li>
   );
 }
