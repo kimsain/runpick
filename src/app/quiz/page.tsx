@@ -341,12 +341,12 @@ export default function QuizPage() {
 
                 {/* Analysis text */}
                 <AnimatePresence mode="wait">
-                  <motion.p
+                <motion.p
                     key={analysisStep}
                     initial={animateEnabled ? { opacity: 0, y: 10 } : false}
                     animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
                     exit={animateEnabled ? { opacity: 0, y: -10 } : undefined}
-                    className="text-lg text-[var(--color-foreground)]/80 mb-6"
+                    className="type-h3 text-[var(--color-foreground)]/80 mb-6"
                   >
                     {analysisTexts[analysisStep]}
                   </motion.p>

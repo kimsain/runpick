@@ -103,7 +103,7 @@ function SpotlightShoeCard({
       {/* Popular tag for first item */}
       {index === 0 && (
         <motion.div
-          className="absolute -top-3 right-5 z-20 px-3 py-1 rounded-full text-xs font-bold text-white"
+          className="absolute -top-3 right-5 z-20 px-3 py-1 rounded-full type-caption font-bold text-white"
           style={{
             background: 'linear-gradient(135deg, #FF6B6B, #FF8E53)',
             boxShadow: '0 4px 15px rgba(255, 107, 107, 0.4)',
