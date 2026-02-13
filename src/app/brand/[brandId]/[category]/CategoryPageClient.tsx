@@ -75,7 +75,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
       <main className="pt-20">
         {/* Hero Section */}
         <section
-          className="py-12 sm:py-20 relative overflow-hidden"
+          className="py-8 sm:py-14 relative overflow-hidden"
           style={{
             background: `linear-gradient(135deg, var(--color-card) 0%, var(--color-background) 100%)`,
           }}
@@ -156,19 +156,15 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                 </span>
               </button>
 
-              {subcategories.map((sub) => {
+              {subcategories.filter((sub) => getShoesBySubcategory(sub.id).length > 0).map((sub) => {
                 const count = getShoesBySubcategory(sub.id).length;
-                const isEmpty = count === 0;
                 return (
                   <button
                     key={sub.id}
-                    onClick={() => !isEmpty && setSelectedSubcategory(sub.id)}
-                    disabled={isEmpty}
-                    className={`relative px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                      isEmpty ? 'opacity-40 cursor-not-allowed' : ''
-                    }`}
+                    onClick={() => setSelectedSubcategory(sub.id)}
+                    className="relative px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
                   >
-                    {selectedSubcategory === sub.id && !isEmpty && (
+                    {selectedSubcategory === sub.id && (
                       <motion.div
                         layoutId="subcategory-indicator"
                         className="absolute inset-0 rounded-full"
@@ -191,10 +187,10 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
         </motion.section>
 
         {/* Spacer for fixed subcategory nav */}
-        <div className="h-14" />
+        <div className="h-12" />
 
         {/* Shoes Grid with AnimatePresence layout */}
-        <section className="py-16">
+        <section className="py-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {selectedSubcategory !== 'all' && (
               <motion.div

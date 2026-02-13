@@ -1,5 +1,9 @@
 'use client';
 
+// Single quiz question with option grid. Single-select only.
+// Auto-advance: 0.5s after click -> onAutoAdvance callback.
+// Re-selecting cancels pending timer and restarts.
+
 import { motion } from 'framer-motion';
 import { QuizQuestion as QuizQuestionType } from '@/types/quiz';
 import { useRef } from 'react';

@@ -1,3 +1,7 @@
+// Quiz scoring algorithm. Uses shoe.specs directly from asics.json (no manual shoeTraits).
+// Scoring: 40% attribute match + 40% category match + 20% experience bonus.
+// Match score clamped to 60-98%. Returns primary + 3 alternatives with comparison reasons.
+
 import { QuizAnswer, QuizResult, ScoringCategory } from '@/types/quiz';
 import { RunningShoe } from '@/types/shoe';
 import { quizQuestions } from '@/data/quiz-questions';

@@ -1,9 +1,11 @@
 'use client';
 
+// Standard GSAP/Lenis guard hook. One-shot check, no resize listener, SSR-safe.
+// Used in 11+ components. Pattern: if (!isDesktop) return; in useEffect.
+// See mobile-optimization skill for full checklist.
+
 import { useState, useEffect } from 'react';
 import { MOBILE_BREAKPOINT } from '@/constants/animation';
-
-/** One-shot desktop check. GSAP guard용 (resize 미반응, 기존 동작과 동일). */
 export function useIsDesktop(breakpoint = MOBILE_BREAKPOINT): boolean {
   const [isDesktop, setIsDesktop] = useState(false);
   useEffect(() => {

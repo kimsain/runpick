@@ -1,3 +1,7 @@
+// Data access helpers for asics.json. Single source of truth for all shoe queries.
+// getAllShoes() preserves array order (for FeaturedShoes manual ordering).
+// Listing functions (getShoesByCategory, etc.) sort by b.name.localeCompare(a.name).
+
 import { RunningShoe, CategoryId, SubcategoryId } from '@/types/shoe';
 import asicsData from '@/data/brands/asics.json';
 

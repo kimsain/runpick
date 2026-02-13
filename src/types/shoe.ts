@@ -1,3 +1,7 @@
+// Core type definitions for shoes, categories, and specs.
+// Used by: asics.json (data), shoe-utils.ts (access), all shoe components.
+// CategoryId/SubcategoryId must stay in sync with categories.ts definitions.
+
 export type CategoryId = 'daily' | 'super-trainer' | 'racing';
 
 export type SubcategoryId =

@@ -1,5 +1,9 @@
 'use client';
 
+// Home page hero section. Static background (no parallax — causes flickering).
+// Contains: eyebrow badge, headline with TextReveal, subtitle, CTA buttons,
+// and ScrollIndicator (desktop only, CSS @keyframes animation).
+
 import { motion } from 'framer-motion';
 import Button from '@/components/common/Button';
 import TextReveal from '@/components/effects/TextReveal';

@@ -1,3 +1,7 @@
+// Quiz type definitions: questions, answers, scoring, results.
+// QuizAnswer is single-select (selectedOptionId: string, not array).
+// ScoringCategory includes both spec axes and category preferences.
+
 import { RunningShoe } from './shoe';
 
 export type QuestionId =

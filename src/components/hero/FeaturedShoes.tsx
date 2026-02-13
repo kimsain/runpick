@@ -1,5 +1,9 @@
 'use client';
 
+// Featured shoes horizontal scroll section. Manual shoe order (not sorted).
+// Desktop (1024px+): GSAP pin + horizontal scrub scroll.
+// Mobile/Tablet: CSS scroll-snap carousel. Uses isPinDesktop(1024), not 768.
+
 import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import ShoeCard from '@/components/shoe/ShoeCard';

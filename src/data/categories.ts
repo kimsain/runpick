@@ -1,3 +1,7 @@
+// Category & subcategory definitions with colors and icons.
+// 3 categories (daily, super-trainer, racing), 10 subcategories.
+// Colors use CSS custom properties: var(--color-daily), etc.
+
 import { Category, Subcategory, CategoryId } from '@/types/shoe';
 
 export const subcategories: Subcategory[] = [

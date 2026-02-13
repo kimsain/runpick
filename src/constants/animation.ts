@@ -1,3 +1,7 @@
+// Shared animation constants for Framer Motion and GSAP.
+// Import from @/constants/animation — never hardcode easing/duration values.
+// MOBILE_BREAKPOINT (768) is used by useIsDesktop() hook.
+
 // Easing curves for Framer Motion
 export const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
 export const EASE_OUT_CUBIC = [0.33, 1, 0.68, 1] as const;

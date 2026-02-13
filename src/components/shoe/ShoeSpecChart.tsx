@@ -1,5 +1,9 @@
 'use client';
 
+// Spec bar chart (cushioning, responsiveness, stability, durability).
+// Desktop: GSAP scaleX animation via ScrollTrigger or immediate (animated prop).
+// Mobile: CSS --target-scale variable for direct display (no GSAP).
+
 import { useEffect, useRef, useState } from 'react';
 import { motion, useSpring, useTransform, useInView } from 'framer-motion';
 import gsap from 'gsap';

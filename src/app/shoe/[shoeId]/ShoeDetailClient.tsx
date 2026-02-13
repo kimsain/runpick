@@ -1,5 +1,9 @@
 'use client';
 
+// Shoe detail page client component. Sections: hero image, info, specs, pros/cons, bestFor, similar shoes.
+// GSAP: pros slide-in from left, cons from right (desktop only).
+// CSS initial state: .shoe-detail-pros/.shoe-detail-cons in globals.css.
+
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -130,11 +134,11 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="relative aspect-square rounded-3xl overflow-hidden border border-[var(--color-border)]"
+                className="relative aspect-[4/3] lg:aspect-square rounded-3xl overflow-hidden border border-[var(--color-border)]"
               >
                 <ImageDistortion variant="glow">
                   <div
-                    className="relative aspect-square bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)]"
+                    className="relative aspect-[4/3] lg:aspect-square bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)]"
                     data-cursor="view"
                   >
                     <div className="absolute inset-0 flex items-center justify-center p-8">
@@ -261,7 +265,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 {/* Pros */}
                 <div
                   ref={prosRef}
-                  className="shoe-detail-pros bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
+                  className="shoe-detail-pros h-full flex flex-col bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
                 >
                   <h2 className="text-lg sm:text-xl font-bold text-[var(--color-daily)] mb-4 flex items-center gap-2">
                     <span>👍</span> 장점
@@ -286,7 +290,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 {/* Cons */}
                 <div
                   ref={consRef}
-                  className="shoe-detail-cons bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
+                  className="shoe-detail-cons h-full flex flex-col bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
                 >
                   <h2 className="text-lg sm:text-xl font-bold text-[var(--color-racing)] mb-4 flex items-center gap-2">
                     <span>👎</span> 단점

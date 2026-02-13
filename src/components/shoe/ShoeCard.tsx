@@ -1,5 +1,9 @@
 'use client';
 
+// Reusable shoe card with 3D tilt effect (desktop only, max 6deg).
+// Shows: image, category badge, name, shortDescription, top 2 specs, price.
+// Desktop: ImageDistortion + mouse-follow glow. Mobile: static card.
+
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';

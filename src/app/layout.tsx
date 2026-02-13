@@ -1,3 +1,7 @@
+// Root layout (Server Component). Sets metadata, fonts (Pretendard + Inter),
+// and wraps children in LayoutClient for animations/smooth scroll.
+// lang="ko" for Korean content. Fonts loaded via CDN, not next/font.
+
 import type { Metadata } from "next";
 import "./globals.css";
 import LayoutClient from "@/components/layout/LayoutClient";

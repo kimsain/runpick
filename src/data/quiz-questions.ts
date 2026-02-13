@@ -1,3 +1,7 @@
+// 5 quiz questions with per-option scoring weights.
+// Each option.scores maps to ScoringCategory (cushioning, lightweight, etc.).
+// Score values typically 1-5. Higher = stronger signal for that category.
+
 import { QuizQuestion } from '@/types/quiz';
 
 export const quizQuestions: QuizQuestion[] = [

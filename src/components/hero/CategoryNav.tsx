@@ -1,5 +1,9 @@
 'use client';
 
+// Category navigation grid (daily, super-trainer, racing).
+// 6 core hover effects per card. GSAP header reveal (desktop only).
+// Links to /brand/asics/{categoryId}. Colors from categories.ts.
+
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';

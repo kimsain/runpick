@@ -62,7 +62,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
             ease: 'power2.out',
             scrollTrigger: {
               trigger: card,
-              start: 'top 90%',
+              start: 'top 95%',
               toggleActions: 'play none none none',
             },
             delay: i * STAGGER_NORMAL,
@@ -81,7 +81,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
       <Header />
       <main className="pt-20">
         {/* Hero Section */}
-        <section className="py-10 sm:py-16 bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)] relative overflow-hidden">
+        <section className="py-8 sm:py-12 bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)] relative overflow-hidden">
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <TextReveal
@@ -146,7 +146,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
         </motion.section>
 
         {/* Spacer for fixed category nav */}
-        <div className="h-16" />
+        <div className="h-12" />
 
         {/* All Shoes by Category */}
         <div ref={sectionsRef}>
@@ -157,7 +157,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
             return (
               <section
                 key={category.id}
-                className="category-section py-16"
+                className="category-section py-10"
                 id={category.id}
               >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

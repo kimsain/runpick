@@ -1,5 +1,9 @@
 'use client';
 
+// Root client wrapper. Composes global effects: grain overlay, scroll progress,
+// custom cursor, Lenis smooth scroll, and page transitions.
+// Mounted in layout.tsx (Server Component) -> LayoutClient (Client Component).
+
 import { usePathname } from 'next/navigation';
 import SmoothScroll from './SmoothScroll';
 import CustomCursor from './CustomCursor';

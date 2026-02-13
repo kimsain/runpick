@@ -1,5 +1,9 @@
 'use client';
 
+// Lenis smooth scroll wrapper. Desktop only (useIsDesktop guard).
+// Syncs with GSAP ticker for frame-perfect ScrollTrigger compatibility.
+// Mobile uses native scroll — this component renders children only.
+
 import { useEffect, useRef } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';

@@ -1,3 +1,7 @@
+// Home page (Server Component). Composes 5 sections in order:
+// Header -> HeroSection -> CategoryNav -> FeaturedShoes -> QuizCTA -> Footer.
+// No data fetching needed — all child components access asics.json directly.
+
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import HeroSection from '@/components/hero/HeroSection';
