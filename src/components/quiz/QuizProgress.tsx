@@ -23,22 +23,7 @@ export default function QuizProgress({ current, total }: QuizProgressProps) {
                       ? 'border-[var(--color-asics-accent)] text-[var(--color-asics-accent)] bg-[var(--color-asics-accent)]/10'
                       : 'border-[var(--color-border)] text-[var(--color-foreground)]/30 bg-[var(--color-card)]'
                 }`}
-                animate={
-                  i === current
-                    ? {
-                        boxShadow: [
-                          '0 0 0px rgba(0, 209, 255, 0)',
-                          '0 0 12px rgba(0, 209, 255, 0.4)',
-                          '0 0 0px rgba(0, 209, 255, 0)',
-                        ],
-                      }
-                    : {}
-                }
-                transition={
-                  i === current
-                    ? { duration: 2, repeat: Infinity, ease: 'easeInOut' }
-                    : {}
-                }
+                style={i === current ? { boxShadow: '0 0 8px rgba(0, 209, 255, 0.3)' } : undefined}
               >
                 {i < current ? (
                   <motion.svg

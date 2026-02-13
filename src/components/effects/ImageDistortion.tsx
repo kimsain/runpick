@@ -50,8 +50,8 @@ export default function ImageDistortion({
         <motion.div
           className="absolute inset-0 pointer-events-none"
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0.3, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          animate={{ opacity: 0.2 }}
+          transition={{ duration: 0.3 }}
           style={{
             background: 'radial-gradient(circle at center, var(--color-asics-accent)30, transparent 70%)',
           }}

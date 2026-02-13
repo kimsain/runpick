@@ -31,7 +31,6 @@ export default function ScrollProgress() {
       className="scroll-progress-bar fixed top-0 left-0 right-0 h-[2px] z-[9991] origin-left hidden md:block"
       style={{
         background: 'linear-gradient(90deg, var(--color-asics-blue), var(--color-asics-accent))',
-        willChange: 'transform',
       }}
     />
   );

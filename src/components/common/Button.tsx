@@ -118,43 +118,6 @@ export default function Button({
         ))}
       </AnimatePresence>
 
-      {/* Glow animation for primary buttons */}
-      {variant === 'primary' && (
-        <>
-          {/* Ambient glow */}
-          <motion.div
-            className="absolute inset-0 rounded-full opacity-0 hidden md:block"
-            style={{
-              background: 'linear-gradient(90deg, var(--color-asics-blue), var(--color-asics-accent))',
-              filter: 'blur(15px)',
-            }}
-            animate={{
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-          {/* Shimmer effect */}
-          <motion.div
-            className="absolute inset-0 hidden md:block"
-            style={{
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-            }}
-            animate={{
-              x: ['-100%', '100%'],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: 'linear',
-            }}
-          />
-        </>
-      )}
-
       {/* Hover glow effect */}
       <motion.div
         className="absolute inset-0 rounded-full pointer-events-none"

@@ -145,11 +145,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                     className="relative aspect-square bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)]"
                     data-cursor="view"
                   >
-                    <motion.div
-                      className="absolute inset-0 flex items-center justify-center p-8"
-                      animate={isDesktop ? { y: [-5, 5, -5] } : undefined}
-                      transition={isDesktop ? { duration: 4, repeat: Infinity, ease: "easeInOut" } : undefined}
-                    >
+                    <div className="absolute inset-0 flex items-center justify-center p-8">
                       <Image
                         src={shoe.imageUrl}
                         alt={shoe.name}
@@ -158,7 +154,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                         className="object-contain drop-shadow-2xl p-8"
                         priority
                       />
-                    </motion.div>
+                    </div>
 
                     {/* Category badge */}
                     <div className="absolute top-6 left-6 z-10">
