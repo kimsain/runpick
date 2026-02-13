@@ -11,8 +11,6 @@ import { getCategoryById } from '@/data/categories';
 import Badge from '@/components/common/Badge';
 import TextReveal from '@/components/effects/TextReveal';
 import ImageDistortion from '@/components/effects/ImageDistortion';
-import FloatingShapes from '@/components/effects/FloatingShapes';
-
 interface QuizResultProps {
   result: QuizResultType;
   onRetry: () => void;
@@ -99,8 +97,6 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
       transition={{ duration: 0.5 }}
       className="relative"
     >
-      <FloatingShapes count={4} />
-
       {/* Hero: Match Score + Title */}
       <div className="relative text-center mb-8 sm:mb-12">
         {/* Particle burst */}

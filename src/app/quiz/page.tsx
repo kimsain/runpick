@@ -9,7 +9,6 @@ import QuizQuestionComponent from '@/components/quiz/QuizQuestion';
 import QuizResult from '@/components/quiz/QuizResult';
 import Button from '@/components/common/Button';
 import TextReveal from '@/components/effects/TextReveal';
-import FloatingShapes from '@/components/effects/FloatingShapes';
 import { quizQuestions } from '@/data/quiz-questions';
 import { QuizAnswer, QuizResult as QuizResultType } from '@/types/quiz';
 import { calculateQuizResult } from '@/utils/quiz-logic';
@@ -89,8 +88,6 @@ export default function QuizPage() {
     <>
       <Header />
       <main className="pt-20 min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)] relative overflow-hidden">
-        <FloatingShapes count={4} />
-
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <AnimatePresence mode="wait">
             {phase === 'quiz' && (

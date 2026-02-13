@@ -27,71 +27,6 @@
   --font-sans: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
   --font-display: 'Inter', var(--font-sans);
 
-  /* Animation */
-  --animate-float: float 6s ease-in-out infinite;
-  --animate-glow: glow 2s ease-in-out infinite alternate;
-  --animate-shimmer: shimmer 2s linear infinite;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-@keyframes glow {
-  from {
-    box-shadow: 0 0 20px var(--color-asics-glow);
-  }
-  to {
-    box-shadow: 0 0 40px var(--color-asics-glow), 0 0 60px var(--color-asics-glow);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes badge-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 var(--color-asics-accent); }
-  50% { box-shadow: 0 0 15px 2px var(--color-asics-accent); }
-}
-
-@keyframes button-glow {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.65; transform: scale(1.06); }
-}
-
-@keyframes floating-shape {
-  0%, 100% { transform: translate(0, 0) scale(1); border-radius: 50%; }
-  25% { transform: translate(30px, -20px) scale(1.1); border-radius: 40% 60% 50% 50%; }
-  50% { transform: translate(-20px, 30px) scale(0.9); border-radius: 50% 40% 60% 50%; }
-  75% { transform: translate(10px, 10px) scale(1.05); border-radius: 45% 55% 45% 55%; }
-}
-
-@keyframes dot-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.3); opacity: 1; }
 }
 
 /* Base styles */
@@ -190,15 +125,6 @@ body {
   display: inline-block;
 }
 
-/* Hero gradient wave - CSS animation for flicker-free rendering */
-.hero-gradient-wave {
-  background: linear-gradient(45deg, transparent 0%, var(--color-asics-blue) 25%, var(--color-asics-accent) 50%, var(--color-asics-blue) 75%, transparent 100%);
-  background-size: 400% 400%;
-  filter: blur(60px);
-  will-change: background-position;
-  animation: gradient-shift 15s linear infinite;
-}
-
 /* Horizontal scroll section */
 .horizontal-scroll-section {
   overflow: hidden;
@@ -238,27 +164,9 @@ body {
     transform: none !important;
   }
 
-  /* Hero: eyebrow badge boxShadow + animation disable */
-  .hero-eyebrow-badge {
-    box-shadow: none !important;
-    animation: none !important;
-  }
-
   /* Hero: headline text-shadow static */
   .hero-headline-glow {
     text-shadow: 0 0 15px rgba(0, 209, 255, 0.5), 0 0 30px rgba(0, 61, 165, 0.3) !important;
-  }
-
-  /* Hero gradient wave lightweight */
-  .hero-gradient-wave {
-    animation: none !important;
-    opacity: 0.15 !important;
-  }
-
-  /* FeaturedShoes badge boxShadow + animation disable */
-  .featured-badge-pulse {
-    box-shadow: none !important;
-    animation: none !important;
   }
 
   /* CategoryNav header visibility */

@@ -10,7 +10,6 @@ import ShoeCard from '@/components/shoe/ShoeCard';
 import Badge from '@/components/common/Badge';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
-import FloatingShapes from '@/components/effects/FloatingShapes';
 import { categories } from '@/data/categories';
 import { getShoesByBrand, getShoesByCategory } from '@/utils/shoe-utils';
 import asicsData from '@/data/brands/asics.json';
@@ -87,8 +86,6 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
       <main className="pt-20">
         {/* Hero Section */}
         <section className="py-10 sm:py-16 bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)] relative overflow-hidden">
-          <FloatingShapes />
-
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <TextReveal

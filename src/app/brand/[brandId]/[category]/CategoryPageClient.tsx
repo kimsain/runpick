@@ -6,7 +6,6 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
 import TextReveal from '@/components/effects/TextReveal';
-import FloatingShapes from '@/components/effects/FloatingShapes';
 import { getCategoryById, getSubcategoriesByCategory } from '@/data/categories';
 import { getShoesByCategory, getShoesBySubcategory } from '@/utils/shoe-utils';
 import { CategoryId, SubcategoryId } from '@/types/shoe';
@@ -81,9 +80,6 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
             background: `linear-gradient(135deg, var(--color-card) 0%, var(--color-background) 100%)`,
           }}
         >
-          {/* Floating shapes background */}
-          <FloatingShapes color={categoryData.color} />
-
           {/* Glow effect */}
           <div
             className="absolute inset-0 opacity-20"
