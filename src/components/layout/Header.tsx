@@ -5,14 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { DUR_FAST } from '@/constants/animation';
-import { useIsDesktop } from '@/hooks/useIsDesktop';
-
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const lastScrollY = useRef(0);
-  const isDesktop = useIsDesktop();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,20 +56,6 @@ export default function Header() {
                 className="text-2xl font-bold text-gradient relative"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                animate={isDesktop ? {
-                  textShadow: [
-                    '0 0 20px rgba(0, 61, 165, 0.3)',
-                    '0 0 30px rgba(0, 61, 165, 0.5)',
-                    '0 0 20px rgba(0, 61, 165, 0.3)',
-                  ],
-                } : undefined}
-                transition={isDesktop ? {
-                  textShadow: {
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  },
-                } : undefined}
                 style={{ textShadow: '0 0 20px rgba(0, 61, 165, 0.3)' }}
               >
                 RunPick

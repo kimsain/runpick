@@ -105,22 +105,9 @@ export default function Footer() {
 
 function FloatingShoe() {
   return (
-    <motion.div
-      className="absolute right-8 top-8 text-4xl opacity-20 pointer-events-none select-none hidden md:block"
-      animate={{
-        y: [0, -10, 0],
-        rotate: [0, 5, -5, 0],
-      }}
-      transition={{
-        duration: 4,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      }}
-    >
-      <span role="img" aria-label="running shoe">
-        👟
-      </span>
-    </motion.div>
+    <div className="absolute right-8 top-8 text-4xl opacity-20 pointer-events-none select-none hidden md:block">
+      <span role="img" aria-label="running shoe">👟</span>
+    </div>
   );
 }
 
