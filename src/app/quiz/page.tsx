@@ -14,6 +14,7 @@ import { QuizAnswer, QuizResult as QuizResultType } from '@/types/quiz';
 import { calculateQuizResult } from '@/utils/quiz-logic';
 import { getAllBrands } from '@/utils/shoe-utils';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 type QuizPhase = 'brand-select' | 'quiz' | 'analyzing' | 'result';
 
@@ -28,7 +29,8 @@ export default function QuizPage() {
   const timersRef = useRef<NodeJS.Timeout[]>([]);
   const quizCardRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
   const brands = useMemo(() => getAllBrands(), []);
 
   const currentQuestion = quizQuestions[currentIndex];

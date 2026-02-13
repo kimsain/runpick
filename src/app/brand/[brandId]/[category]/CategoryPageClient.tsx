@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { DUR_FAST } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 interface CategoryPageClientProps {
   brandId: string;
@@ -31,7 +32,8 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
   );
   const brand = useMemo(() => getBrandById(brandId), [brandId]);
   const isDesktop = useIsDesktop();
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
 
   const [selectedSubcategory, setSelectedSubcategory] = useState<SubcategoryId | 'all'>(
     'all'
@@ -52,12 +54,12 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
         <Header />
         <main id="main-content" className="pt-20 min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-[var(--color-foreground)]">
+            <h1 className="type-h1 text-[var(--color-foreground)]">
               카테고리를 찾을 수 없습니다
             </h1>
             <Link
               href={`/brand/${brandId}`}
-              className="mt-4 inline-block text-[var(--color-asics-accent)]"
+              className="mt-4 inline-flex min-h-11 items-center type-body text-[var(--color-asics-accent)]"
             >
               ← 브랜드 페이지로 돌아가기
             </Link>
@@ -190,7 +192,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
             <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto overscroll-x-contain pb-2 scrollbar-hide snap-x snap-mandatory touch-pan-x">
               <button
                 onClick={() => handleSelectSubcategory('all')}
-                className="relative px-4 py-2 min-h-11 rounded-full text-sm font-medium whitespace-nowrap transition-all snap-start"
+                className="relative px-4 py-2 min-h-11 rounded-full type-caption whitespace-nowrap transition-all snap-start"
                 aria-pressed={selectedSubcategory === 'all'}
               >
                 {selectedSubcategory === 'all' && animateEnabled && (
@@ -215,7 +217,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                   <button
                     key={sub.id}
                     onClick={() => handleSelectSubcategory(sub.id)}
-                    className="relative px-4 py-2 min-h-11 rounded-full text-sm font-medium whitespace-nowrap transition-all snap-start"
+                    className="relative px-4 py-2 min-h-11 rounded-full type-caption whitespace-nowrap transition-all snap-start"
                     aria-pressed={selectedSubcategory === sub.id}
                   >
                     {selectedSubcategory === sub.id && animateEnabled && (
@@ -292,7 +294,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
 
             {displayedShoes.length === 0 && (
               <div className="text-center py-12">
-                <p className="text-[var(--color-foreground)]/60">
+                <p className="type-body text-[var(--color-foreground)]/60">
                   해당 서브카테고리에 모델이 없습니다.
                 </p>
               </div>

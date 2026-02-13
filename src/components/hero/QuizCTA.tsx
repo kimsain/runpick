@@ -12,9 +12,9 @@ import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 export default function QuizCTA() {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const animateEnabled = !useReducedMotion();
   const { isDesktop, hasMotionBudget } = useInteractionCapabilities();
-  const isEnabled = isDesktop && hasMotionBudget && animateEnabled;
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
+  const isEnabled = isDesktop && animateEnabled;
 
   useEffect(() => {
     if (!isEnabled) return;

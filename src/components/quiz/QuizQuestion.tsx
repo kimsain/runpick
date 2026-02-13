@@ -4,6 +4,7 @@
 
 import { motion, useReducedMotion } from 'framer-motion';
 import { QuizQuestion as QuizQuestionType } from '@/types/quiz';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 interface QuizQuestionProps {
   question: QuizQuestionType;
@@ -16,7 +17,8 @@ export default function QuizQuestion({
   selectedOption,
   onSelectOption,
 }: QuizQuestionProps) {
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
 
   const handleClick = (optionId: string) => {
     onSelectOption(optionId);

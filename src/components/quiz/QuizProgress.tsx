@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 interface QuizProgressProps {
   current: number;
@@ -8,7 +9,8 @@ interface QuizProgressProps {
 }
 
 export default function QuizProgress({ current, total }: QuizProgressProps) {
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
 
   return (
     <div className="mb-8">
@@ -19,7 +21,7 @@ export default function QuizProgress({ current, total }: QuizProgressProps) {
             <div className="relative flex items-center justify-center">
               {animateEnabled ? (
                 <motion.div
-                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium border-2 transition-colors ${
+                    className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center type-caption border-2 transition-colors ${
                     i < current
                       ? 'bg-[var(--color-asics-accent)] border-[var(--color-asics-accent)] text-white'
                       : i === current
@@ -29,10 +31,10 @@ export default function QuizProgress({ current, total }: QuizProgressProps) {
                   style={i === current ? { boxShadow: '0 0 8px rgba(0, 209, 255, 0.3)' } : undefined}
                 >
                   {i < current ? (
-                    <motion.svg
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="w-5 h-5"
+                <motion.svg
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="w-5 h-5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -45,7 +47,7 @@ export default function QuizProgress({ current, total }: QuizProgressProps) {
                 </motion.div>
               ) : (
                 <div
-                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium border-2 ${
+                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center type-caption border-2 ${
                     i < current
                       ? 'bg-[var(--color-asics-accent)] border-[var(--color-asics-accent)] text-white'
                       : i === current

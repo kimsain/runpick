@@ -2,6 +2,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { ElementType, ReactNode } from 'react';
 import { EASE_OUT_EXPO, DUR_REVEAL, STAGGER_FAST } from '@/constants/animation';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 interface TextRevealProps {
   children: ReactNode;
@@ -21,7 +22,8 @@ export default function TextReveal({
   delay = 0,
   className = '',
 }: TextRevealProps) {
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
   const text = typeof children === 'string' ? children : '';
   const words = text.split(' ');
   const wordStagger = stagger ?? STAGGER_FAST;

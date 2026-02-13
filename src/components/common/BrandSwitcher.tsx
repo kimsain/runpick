@@ -29,7 +29,7 @@ export default function BrandSwitcher({
           <Link
             key={brand.id}
             href={href}
-            className={`inline-flex shrink-0 snap-start items-center gap-2 rounded-full border px-3.5 py-2 min-h-11 text-xs sm:text-sm transition-all ${
+            className={`inline-flex shrink-0 snap-start items-center gap-2 rounded-full border px-3.5 py-2 min-h-11 type-caption transition-all ${
               isActive
                 ? 'border-transparent bg-[var(--color-asics-accent)]/15 text-[var(--color-asics-accent)]'
                 : 'border-[var(--color-border)] text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)]'

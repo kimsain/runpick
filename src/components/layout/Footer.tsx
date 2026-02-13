@@ -53,10 +53,10 @@ export default function Footer() {
       <div className="relative layout-shell section-space-tight">
         <div ref={linksRef} className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
           <div className="col-span-1 md:col-span-2 footer-link-item">
-            <TextReveal as="span" mode="clip" className="text-2xl font-bold text-gradient inline-block">
+            <TextReveal as="span" mode="clip" className="type-h3 text-gradient inline-block">
               RunPick
             </TextReveal>
-            <p className="mt-4 type-body text-[var(--color-foreground)]/60 max-w-md">
+            <p className="mt-4 type-body text-[var(--color-foreground)]/65 max-w-md">
               당신에게 딱 맞는 러닝화를 찾아드립니다.
               카테고리별로 정리된 러닝화 카탈로그와 맞춤 추천 퀴즈로
               완벽한 러닝화를 찾아보세요.
@@ -64,7 +64,7 @@ export default function Footer() {
           </div>
 
           <div className="footer-link-item">
-            <h3 className="type-body font-semibold text-[var(--color-foreground)] mb-4">
+            <h3 className="type-h3 text-[var(--color-foreground)] mb-4">
               카탈로그
             </h3>
             <ul className="space-y-2">
@@ -78,7 +78,7 @@ export default function Footer() {
           </div>
 
           <div className="footer-link-item">
-            <h3 className="type-body font-semibold text-[var(--color-foreground)] mb-4">
+            <h3 className="type-h3 text-[var(--color-foreground)] mb-4">
               도움말
             </h3>
             <ul className="space-y-2">

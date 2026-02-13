@@ -21,7 +21,7 @@ export default function SmartShoeImage({
   forceFallback = false,
   showFallbackBadge = false,
   fallbackBadgeLabel = '사진 준비중',
-  fallbackBadgeClassName = 'absolute bottom-3 right-3 z-20 rounded-full border border-white/20 bg-black/60 px-2 py-1 text-[10px] font-medium text-white',
+  fallbackBadgeClassName = 'absolute bottom-3 right-3 z-20 rounded-full border border-white/20 bg-black/60 px-2 py-1 type-caption text-white',
   onError,
   ...props
 }: SmartShoeImageProps) {

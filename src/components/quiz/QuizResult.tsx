@@ -13,6 +13,7 @@ import Badge from '@/components/common/Badge';
 import TextReveal from '@/components/effects/TextReveal';
 import ImageDistortion from '@/components/effects/ImageDistortion';
 import SmartShoeImage from '@/components/common/SmartShoeImage';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 interface QuizResultProps {
   result: QuizResultType;
   onRetry: () => void;
@@ -20,7 +21,8 @@ interface QuizResultProps {
 
 function MatchScoreCircle({ score }: { score: number }) {
   const motionValue = useMotionValue(0);
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
   const rounded = useTransform(motionValue, (v) => Math.round(v));
   const circumference = 2 * Math.PI * 54; // radius=54
   const strokeDashoffset = useTransform(
@@ -88,7 +90,7 @@ function MatchScoreCircle({ score }: { score: number }) {
       <div className="absolute inset-0 flex items-center justify-center">
         <span
           ref={displayRef}
-          className="text-2xl sm:text-3xl font-bold text-[var(--color-asics-accent)]"
+          className="type-h3 text-[var(--color-asics-accent)]"
         >
           0%
         </span>
@@ -98,7 +100,8 @@ function MatchScoreCircle({ score }: { score: number }) {
 }
 
 export default function QuizResult({ result, onRetry }: QuizResultProps) {
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
   const isDesktop = useIsDesktop();
   const { primaryRecommendation, alternatives, matchScore, matchReasons, reasoning } = result;
   const category = getCategoryById(primaryRecommendation.categoryId);
@@ -171,15 +174,15 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
             className="flex flex-wrap items-center justify-center gap-2 mb-6"
           >
             {matchReasons.map((reason, i) => (
-              <motion.span
-                key={reason}
-                initial={animateEnabled ? { opacity: 0, scale: 0.8 } : false}
-                animate={animateEnabled ? { opacity: 1, scale: 1 } : undefined}
-                transition={animateEnabled ? { delay: 0.9 + i * 0.1 } : undefined}
-                className="px-4 py-1.5 rounded-full text-sm font-medium bg-[var(--color-asics-accent)]/10 text-[var(--color-asics-accent)] border border-[var(--color-asics-accent)]/20"
-              >
-                {reason}
-              </motion.span>
+                <motion.span
+                  key={reason}
+                  initial={animateEnabled ? { opacity: 0, scale: 0.8 } : false}
+                  animate={animateEnabled ? { opacity: 1, scale: 1 } : undefined}
+                  transition={animateEnabled ? { delay: 0.9 + i * 0.1 } : undefined}
+                  className="px-4 py-1.5 rounded-full type-caption bg-[var(--color-asics-accent)]/10 text-[var(--color-asics-accent)] border border-[var(--color-asics-accent)]/20"
+                >
+                  {reason}
+                </motion.span>
             ))}
           </motion.div>
         )}
@@ -215,17 +218,17 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
         <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 p-5 sm:gap-8 sm:p-8">
           <ImageDistortion variant="glow" enabled={isDesktop && animateEnabled}>
             <div className="relative aspect-square bg-[var(--color-background)] rounded-2xl overflow-hidden">
-              <SmartShoeImage
-                src={primaryRecommendation.imageUrl}
+                <SmartShoeImage
+                  src={primaryRecommendation.imageUrl}
                 alt={primaryRecommendation.name}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-contain p-8"
                 showFallbackBadge
-                forceFallback={!hasShoeImage(primaryRecommendation.imageUrl)}
-                fallbackBadgeLabel={`${primaryRecommendation.brandId.toUpperCase()} 이미지 준비중`}
-                fallbackBadgeClassName="absolute bottom-4 right-4 z-20 rounded-full border border-white/20 bg-black/70 px-2.5 py-1 text-[11px] font-medium text-white"
-              />
+                  forceFallback={!hasShoeImage(primaryRecommendation.imageUrl)}
+                  fallbackBadgeLabel={`${primaryRecommendation.brandId.toUpperCase()} 이미지 준비중`}
+                  fallbackBadgeClassName="absolute bottom-4 right-4 z-20 rounded-full border border-white/20 bg-black/70 px-2.5 py-1 type-caption text-white"
+                />
               <div className="absolute top-4 left-4">
                 <Badge variant="category" categoryId={primaryRecommendation.categoryId}>
                   {category?.icon} 1순위 추천
@@ -320,25 +323,25 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
                         showFallbackBadge
                         forceFallback={!hasShoeImage(shoe.imageUrl)}
                         fallbackBadgeLabel={`${shoe.brandId.toUpperCase()} 준비중`}
-                        fallbackBadgeClassName="absolute bottom-2 right-2 z-20 rounded-full border border-white/20 bg-black/70 px-2 py-0.5 text-[10px] font-medium text-white"
+                        fallbackBadgeClassName="absolute bottom-2 right-2 z-20 rounded-full border border-white/20 bg-black/70 px-2 py-0.5 type-caption text-white"
                       />
                     </div>
                     <div className="p-4">
-                      <h4 className="font-semibold text-[var(--color-foreground)] mb-1">
+                      <h4 className="type-h3 text-[var(--color-foreground)] mb-1">
                         {shoe.name}
                       </h4>
-                      <p className="text-xs text-[var(--color-foreground)]/50 mb-2">
+                      <p className="type-caption text-[var(--color-foreground)]/50 mb-2">
                         {shoe.nameKo}
                       </p>
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[var(--color-asics-accent)]/10 text-[var(--color-asics-accent)] border border-[var(--color-asics-accent)]/20">
+                        <span className="px-2 py-0.5 rounded-full type-caption bg-[var(--color-asics-accent)]/10 text-[var(--color-asics-accent)] border border-[var(--color-asics-accent)]/20">
                           {topSpec.label} {topSpec.value}/10
                         </span>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[var(--color-foreground)]/5 text-[var(--color-foreground)]/60 border border-[var(--color-border)]">
+                        <span className="px-2 py-0.5 rounded-full type-caption bg-[var(--color-foreground)]/5 text-[var(--color-foreground)]/60 border border-[var(--color-border)]">
                           {shoe.specs.weight}g
                         </span>
                       </div>
-                      <p className="text-sm text-[var(--color-asics-accent)] leading-snug">
+                      <p className="type-body text-[var(--color-asics-accent)] leading-snug">
                         {reason}
                       </p>
                     </div>

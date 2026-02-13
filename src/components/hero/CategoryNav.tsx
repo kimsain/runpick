@@ -169,10 +169,10 @@ export default function CategoryNav() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
-  const animateEnabled = !useReducedMotion();
   const [preferredBrandId, setPreferredBrandId] = useState<string | null>(null);
   const { hasMotionBudget } = useInteractionCapabilities();
-  const isEnabled = isDesktop && hasMotionBudget && animateEnabled;
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
+  const isEnabled = isDesktop && animateEnabled;
 
   useEffect(() => {
     if (!isEnabled) return;

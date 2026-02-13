@@ -10,6 +10,7 @@ import Button from '@/components/common/Button';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { EASE_OUT_EXPO, STAGGER_NORMAL } from '@/constants/animation';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 // Pulsing CTA button wrapper
 function PulsingButton({
@@ -48,7 +49,8 @@ function PulsingButton({
 }
 
 export default function HeroSection() {
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
 
   return (
     <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
@@ -89,7 +91,7 @@ export default function HeroSection() {
             className="relative inline-block mb-6"
           >
             <span
-              className="hero-eyebrow-badge type-eyebrow relative z-10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[var(--color-asics-accent)]/30 bg-[var(--color-asics-accent)]/5 text-center text-[var(--color-asics-accent)]"
+              className="hero-eyebrow-badge type-kicker type-eyebrow relative z-10 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full border border-[var(--color-asics-accent)]/30 bg-[var(--color-asics-accent)]/5 text-center text-[var(--color-asics-accent)]"
               style={{
                 boxShadow: '0 0 8px 1px rgba(0, 209, 255, 0.15)',
               }}
@@ -191,19 +193,19 @@ export default function HeroSection() {
 
 function ScrollIndicator({ animateEnabled = true }: { animateEnabled?: boolean }) {
   return (
-    <motion.div
-      className="flex flex-col items-center gap-3 group"
-      whileHover={animateEnabled ? { scale: 1.1 } : undefined}
-      data-cursor="pointer"
-    >
-      <a
+        <motion.div
+          className="flex flex-col items-center gap-3 group"
+          whileHover={animateEnabled ? { scale: 1.1 } : undefined}
+          data-cursor="pointer"
+        >
+          <a
         href="#category-nav"
         aria-label="카테고리 섹션으로 이동"
         className="flex flex-col items-center gap-3"
       >
-        <span className="text-xs tracking-wider uppercase font-medium text-[var(--color-foreground)]/50 group-hover:text-[var(--color-asics-accent)] transition-colors">
-          카테고리로 이동
-        </span>
+            <span className="type-kicker text-[var(--color-foreground)]/60 group-hover:text-[var(--color-asics-accent)] transition-colors">
+              카테고리로 이동
+            </span>
 
         <span className="relative scroll-indicator-mouse block">
           <div className="w-6 h-10 rounded-full border-2 border-[var(--color-foreground)]/30 group-hover:border-[var(--color-asics-accent)]/50 transition-colors flex items-start justify-center p-1.5">

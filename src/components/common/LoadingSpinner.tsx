@@ -28,7 +28,7 @@ export default function LoadingSpinner({ size = 'md', text }: LoadingSpinnerProp
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-sm text-[var(--color-foreground)]/60"
+          className="type-caption text-[var(--color-foreground)]/60"
         >
           {text}
         </motion.p>

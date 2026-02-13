@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import { useReducedMotion } from 'framer-motion';
 import { useState, ReactNode } from 'react';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 interface ImageDistortionProps {
   children: ReactNode;
@@ -15,7 +16,8 @@ export default function ImageDistortion({
   enabled = true,
 }: ImageDistortionProps) {
   const animateEnabled = !useReducedMotion();
-  const isMotionEnabled = animateEnabled && enabled;
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const isMotionEnabled = animateEnabled && enabled && hasMotionBudget;
   const [isHovered, setIsHovered] = useState(false);
 
   if (!isMotionEnabled) {

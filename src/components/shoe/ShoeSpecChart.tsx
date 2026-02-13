@@ -25,9 +25,9 @@ function SpecBar({ label, value, max = 10 }: SpecBarProps) {
 
   return (
     <div className="space-y-1">
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-[var(--color-foreground)]/70">{label}</span>
-        <span className="font-medium text-[var(--color-foreground)]">{value}/{max}</span>
+      <div className="flex items-center justify-between">
+        <span className="type-caption text-[var(--color-foreground)]/80">{label}</span>
+        <span className="type-caption text-[var(--color-foreground)]">{value}/{max}</span>
       </div>
       <div className="h-2.5 bg-[var(--color-card)] rounded-full overflow-hidden">
         <div
@@ -119,8 +119,8 @@ export default function ShoeSpecChart({ specs, animated = false }: ShoeSpecChart
 function QuickStat({ label, value }: { label: string; value: string }) {
   return (
     <div className="text-center">
-      <p className="text-xs text-[var(--color-foreground)]/50">{label}</p>
-      <p className="mt-1 text-sm font-bold text-[var(--color-asics-accent)]">{value}</p>
+      <p className="type-caption text-[var(--color-foreground)]/60">{label}</p>
+      <p className="mt-1 type-body text-[var(--color-asics-accent)]">{value}</p>
     </div>
   );
 }

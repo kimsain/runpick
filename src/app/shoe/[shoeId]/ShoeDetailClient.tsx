@@ -25,6 +25,7 @@ import { CategoryId } from '@/types/shoe';
 import Link from 'next/link';
 import { SPRING_SNAPPY, STAGGER_NORMAL } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 interface ShoeDetailClientProps {
   shoeId: string;
@@ -35,7 +36,8 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
   const prosRef = useRef<HTMLDivElement>(null);
   const consRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
 
   useEffect(() => {
     if (!isDesktop || !animateEnabled) return;
@@ -85,12 +87,12 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
         <Header />
         <main id="main-content" className="pt-20 min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl sm:text-4xl font-bold text-[var(--color-foreground)]">
+            <h1 className="type-h1 text-[var(--color-foreground)]">
               러닝화를 찾을 수 없습니다
             </h1>
             <Link
               href="/brand"
-              className="mt-4 inline-block text-[var(--color-asics-accent)]"
+              className="mt-4 inline-flex min-h-11 items-center type-body text-[var(--color-asics-accent)]"
             >
               ← 카탈로그로 돌아가기
             </Link>
@@ -169,7 +171,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                         showFallbackBadge
                         forceFallback={!hasShoeImage(shoe.imageUrl)}
                         fallbackBadgeLabel={`${shoe.brandId.toUpperCase()} 이미지 준비중`}
-                        fallbackBadgeClassName="absolute bottom-6 right-6 z-20 rounded-full border border-white/20 bg-black/70 px-2.5 py-1 text-[11px] font-medium text-white"
+                        fallbackBadgeClassName="absolute bottom-6 right-6 z-20 rounded-full border border-white/20 bg-black/70 px-2.5 py-1 type-caption text-white"
                       />
                     </div>
 
@@ -183,7 +185,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                     {/* Upcoming badge */}
                     {shoe.isUpcoming && (
                       <div className="absolute top-6 right-6 z-10">
-                        <span className="px-3 py-1.5 bg-orange-500/90 text-white text-xs font-bold rounded-full">
+                        <span className="px-3 py-1.5 bg-orange-500/90 text-white type-caption rounded-full">
                           {shoe.upcomingNote || 'Coming Soon'}
                         </span>
                       </div>

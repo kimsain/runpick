@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { DUR_FAST } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 interface BrandPageClientProps {
   brandId: string;
@@ -41,7 +42,8 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
   }, [shoes]);
   const sectionsRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
   const { isHidden: headerHidden } = useScrollVisibility({ enabled: isDesktop });
 
   useEffect(() => {
@@ -56,15 +58,15 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
         <Header />
         <main id="main-content" className="pt-20 min-h-screen flex items-center justify-center">
           <div className="text-center px-4">
-            <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)]">
+            <h1 className="type-h1 text-[var(--color-foreground)]">
               브랜드를 찾을 수 없습니다
             </h1>
-            <p className="mt-3 text-[var(--color-foreground)]/60">
+            <p className="mt-3 type-body text-[var(--color-foreground)]/60">
               요청하신 브랜드 경로가 유효하지 않습니다.
             </p>
             <Link
               href="/brand"
-              className="mt-6 inline-block text-[var(--color-asics-accent)]"
+              className="mt-6 inline-flex items-center min-h-11 type-body text-[var(--color-asics-accent)]"
             >
               ← 브랜드 선택으로 돌아가기
             </Link>
@@ -139,10 +141,10 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                       }}
                     >
                       <span className="mr-1 sm:mr-2">{category.icon}</span>
-                      <span style={{ color: category.color }} className="text-xs sm:text-base font-medium">
+                      <span style={{ color: category.color }} className="type-body">
                         {category.name}
                       </span>
-                      <span className="ml-0.5 sm:ml-2 text-[10px] sm:text-sm text-[var(--color-foreground)]/40">
+                      <span className="type-caption ml-0.5 sm:ml-2 text-[var(--color-foreground)]/40">
                         {shoesByCategory.get(category.id)?.length || 0}
                       </span>
                     </motion.div>

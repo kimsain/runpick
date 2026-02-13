@@ -79,7 +79,7 @@ export default function BrandIndexPage() {
             <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
                 <Link
                   href="/brand"
-                  className={`rounded-full border px-3 py-1.5 type-caption transition-all ${
+                  className={`rounded-full border px-3 py-2 sm:px-3.5 sm:py-2.5 min-h-11 type-caption transition-all ${
                     selectedCategoryInfo
                       ? 'border-[var(--color-border)] text-[var(--color-foreground)]/60 hover:text-[var(--color-foreground)]'
                       : 'border-transparent bg-[var(--color-asics-accent)]/15 text-[var(--color-asics-accent)]'
@@ -91,7 +91,7 @@ export default function BrandIndexPage() {
                 <Link
                   key={category.id}
                   href={`/brand?category=${category.id}`}
-                  className={`rounded-full border px-3 py-1.5 type-caption transition-all ${
+                  className={`rounded-full border px-3 py-2 sm:px-3.5 sm:py-2.5 min-h-11 type-caption transition-all ${
                     selectedCategoryInfo?.id === category.id
                       ? 'border-transparent'
                       : 'border-[var(--color-border)] text-[var(--color-foreground)]/60 hover:text-[var(--color-foreground)]'

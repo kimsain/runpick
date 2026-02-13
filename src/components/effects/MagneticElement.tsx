@@ -2,6 +2,7 @@
 import { useRef, useState, useEffect, ReactNode } from 'react';
 import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion';
 import { SPRING_SMOOTH, MOBILE_BREAKPOINT } from '@/constants/animation';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 interface MagneticElementProps {
   children: ReactNode;
@@ -16,7 +17,8 @@ export default function MagneticElement({
   radius = 150,
   className = '',
 }: MagneticElementProps) {
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
   const ref = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(true);
   const x = useMotionValue(0);

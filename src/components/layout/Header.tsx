@@ -8,11 +8,13 @@ import MagneticElement from '@/components/effects/MagneticElement';
 import { DUR_FAST } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isDesktop = useIsDesktop();
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
   const pathname = usePathname();
   const { isScrolled, isHidden } = useScrollVisibility({ enabled: isDesktop });
 
@@ -63,7 +65,7 @@ export default function Header() {
             {/* Logo - Left */}
             <Link href="/" className="flex items-center gap-2 shrink-0">
               <motion.span
-                className="text-2xl font-bold text-gradient relative"
+                className="type-h3 text-gradient relative"
                 whileHover={animateEnabled ? { scale: 1.05 } : undefined}
                 whileTap={animateEnabled ? { scale: 0.95 } : undefined}
                 style={{ textShadow: '0 0 20px rgba(0, 61, 165, 0.3)' }}
@@ -155,7 +157,7 @@ export default function Header() {
               aria-label="모바일 메뉴"
             >
               <div className="p-6 space-y-4">
-                <p className="text-xs font-semibold tracking-wide text-[var(--color-foreground)]/45 uppercase">
+                <p className="type-kicker text-[var(--color-foreground)]/45">
                   Menu
                 </p>
                 <MobileNavLink href="/brand" onClick={() => setMobileMenuOpen(false)} animateEnabled={animateEnabled}>
@@ -187,7 +189,7 @@ function NavLink({
   return (
     <Link href={href}>
       <motion.span
-        className="text-sm font-semibold text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)] transition-all duration-300 relative px-3 py-2 rounded-lg"
+        className="type-body font-semibold text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)] transition-all duration-300 relative px-3 py-2 rounded-lg min-h-[44px] inline-flex items-center"
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         whileHover={animateEnabled ? { y: -2, color: 'var(--color-asics-accent)' } : undefined}
@@ -240,7 +242,7 @@ function MobileNavLink({
       <motion.div
         whileHover={animateEnabled ? { x: 10, backgroundColor: 'rgba(0, 61, 165, 0.1)' } : undefined}
         whileTap={animateEnabled ? { scale: 0.98 } : undefined}
-        className="text-lg font-medium text-[var(--color-foreground)] py-4 px-4 -mx-4 border-b border-[var(--color-border)]/50 rounded-lg transition-colors relative overflow-hidden"
+        className="type-body py-4 px-4 -mx-4 border-b border-[var(--color-border)]/50 rounded-lg transition-colors relative overflow-hidden"
       >
         <motion.span
           className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[var(--color-asics-blue)] to-[var(--color-asics-accent)]"

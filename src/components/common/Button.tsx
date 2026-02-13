@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useState, useCallback, useRef } from 'react';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -69,7 +70,8 @@ export default function Button({
   const [isPressed, setIsPressed] = useState(false);
   const rippleIdRef = useRef(0);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
   const isDesktop = useIsDesktop();
   const enableRichMotion = animateEnabled && isDesktop;
 

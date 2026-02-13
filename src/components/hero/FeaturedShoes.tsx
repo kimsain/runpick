@@ -159,8 +159,8 @@ function SpotlightShoeCard({
 export default function FeaturedShoes() {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const animateEnabled = !useReducedMotion();
   const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
 
   const allShoes = useMemo(() => getAllShoes(), []);
   // 각 카테고리에서 인기 모델 Top 5
@@ -178,7 +178,7 @@ export default function FeaturedShoes() {
 
   // GSAP pin needs wider viewport (1024px+) — at 768px cards are too narrow
   const isPinDesktop = useIsDesktop(1024);
-  const isEnabled = isPinDesktop && animateEnabled && hasMotionBudget;
+  const isEnabled = isPinDesktop && animateEnabled;
 
   // Desktop: GSAP horizontal scroll with pin
   useEffect(() => {
