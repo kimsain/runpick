@@ -1,57 +1,32 @@
 'use client';
 
 // Single quiz question with option grid. Single-select only.
-// Auto-advance: 0.5s after click -> onAutoAdvance callback.
-// Re-selecting cancels pending timer and restarts.
 
 import { motion } from 'framer-motion';
 import { QuizQuestion as QuizQuestionType } from '@/types/quiz';
-import { useRef, useEffect } from 'react';
 
 interface QuizQuestionProps {
   question: QuizQuestionType;
   selectedOption: string | null;
   onSelectOption: (optionId: string) => void;
-  onAutoAdvance: (optionId: string) => void;
 }
 
 export default function QuizQuestion({
   question,
   selectedOption,
   onSelectOption,
-  onAutoAdvance,
 }: QuizQuestionProps) {
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const pendingAdvanceRef = useRef(false);
-
   const handleClick = (optionId: string) => {
-    // Cancel any pending auto-advance
-    if (timerRef.current) clearTimeout(timerRef.current);
-
-    // Update selection
     onSelectOption(optionId);
-    pendingAdvanceRef.current = true;
-
-    // Start auto-advance timer
-    timerRef.current = setTimeout(() => {
-      pendingAdvanceRef.current = false;
-      onAutoAdvance(optionId);
-    }, 500);
   };
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
 
   return (
     <div>
-      <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-foreground)] mb-2 text-balance leading-snug">
+      <h2 className="type-h2 text-[var(--color-foreground)] mb-2 text-balance">
         {question.questionKo}
       </h2>
       {question.description && (
-        <p className="text-[var(--color-foreground)]/60 mb-8 text-pretty">{question.description}</p>
+        <p className="type-body text-[var(--color-foreground)]/62 mb-8 text-pretty">{question.description}</p>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -72,11 +47,12 @@ export default function QuizQuestion({
               whileHover={!isSelected ? { scale: 1.02, y: -4 } : {}}
               whileTap={!isSelected ? { scale: 0.98 } : {}}
               onClick={() => handleClick(option.id)}
-              className={`relative w-full p-4 sm:p-6 rounded-2xl border text-left transition-all ${
+              className={`relative w-full min-h-[96px] p-4 sm:p-6 rounded-2xl border text-left transition-all ${
                 isSelected
                   ? 'border-[var(--color-asics-accent)] bg-[var(--color-asics-accent)]/10 shadow-[0_0_20px_rgba(0,209,255,0.15)]'
                   : 'border-[var(--color-border)] bg-[var(--color-card)] hover:border-[var(--color-border-hover)]'
               }`}
+              aria-pressed={isSelected}
             >
               {/* Check icon for selected */}
               {isSelected && (
@@ -95,7 +71,7 @@ export default function QuizQuestion({
               {/* Icon + Label */}
               <div className="flex items-center gap-3 mb-1">
                 {option.icon && <span className="text-2xl sm:text-3xl shrink-0">{option.icon}</span>}
-                <h3 className={`text-base sm:text-lg font-medium ${
+                <h3 className={`type-body font-medium ${
                   isSelected ? 'text-[var(--color-asics-accent)]' : 'text-[var(--color-foreground)]'
                 }`}>
                   {option.labelKo}
@@ -104,7 +80,7 @@ export default function QuizQuestion({
 
               {/* Description */}
               {option.description && (
-                <p className="text-sm text-[var(--color-foreground)]/60">{option.description}</p>
+                <p className="type-body text-[var(--color-foreground)]/60">{option.description}</p>
               )}
 
               {/* Glow effect */}

@@ -1,4 +1,4 @@
-// Quiz scoring algorithm. Uses shoe.specs directly from asics.json (no manual shoeTraits).
+// Quiz scoring algorithm. Uses shoe.specs directly from brand JSON (no manual shoeTraits).
 // Scoring: 40% attribute match + 40% category match + 20% experience bonus.
 // Match score clamped to 60-98%. Returns primary + 3 alternatives with comparison reasons.
 
@@ -15,7 +15,15 @@ interface ShoeMatchResult {
   matchReasons: string[];
 }
 
-export function calculateQuizResult(answers: QuizAnswer[]): QuizResult {
+interface CalculateQuizOptions {
+  preferredBrandId?: string;
+}
+
+export function calculateQuizResult(
+  answers: QuizAnswer[],
+  options: CalculateQuizOptions = {}
+): QuizResult {
+  const { preferredBrandId } = options;
   // 1. Aggregate user scores from answers
   const userScores: UserScores = {};
   answers.forEach((answer) => {
@@ -30,7 +38,11 @@ export function calculateQuizResult(answers: QuizAnswer[]): QuizResult {
   });
 
   // 2. Score each shoe
-  const shoes = getAllShoes();
+  const allShoes = getAllShoes();
+  const filteredShoes = preferredBrandId
+    ? allShoes.filter((shoe) => shoe.brandId === preferredBrandId)
+    : allShoes;
+  const shoes = filteredShoes.length > 0 ? filteredShoes : allShoes;
   const results: ShoeMatchResult[] = shoes.map((shoe) => calculateShoeMatch(shoe, userScores));
   results.sort((a, b) => b.score - a.score);
 
@@ -47,20 +59,25 @@ export function calculateQuizResult(answers: QuizAnswer[]): QuizResult {
     reason: generateAlternativeReason(r, primary),
   }));
 
+  const baseReasons = primary.matchReasons;
+  const matchReasons = preferredBrandId
+    ? [`${preferredBrandId.toUpperCase()} 선호 반영`, ...baseReasons].slice(0, 3)
+    : baseReasons;
+
   return {
     primaryRecommendation: primary.shoe,
     alternatives: alts,
     matchScore,
-    matchReasons: primary.matchReasons,
+    matchReasons,
     userProfile: Object.fromEntries(
       Object.entries(userScores).map(([k, v]) => [k, v || 0])
     ),
-    reasoning: generateReasoning(primary, userScores),
+    reasoning: generateReasoning(primary, userScores, preferredBrandId),
   };
 }
 
 function calculateShoeMatch(shoe: RunningShoe, pref: UserScores): ShoeMatchResult {
-  // A. Attribute matching (40%) — use actual specs from asics.json
+  // A. Attribute matching (40%) — use actual specs from data
   const attrScore =
     (pref.cushioning || 0) * (shoe.specs.cushioning / 10) +
     (pref.responsiveness || 0) * (shoe.specs.responsiveness / 10) +
@@ -178,7 +195,8 @@ function generateAlternativeReason(alt: ShoeMatchResult, primary: ShoeMatchResul
 
 function generateReasoning(
   result: ShoeMatchResult,
-  userScores: UserScores
+  userScores: UserScores,
+  preferredBrandId?: string
 ): string {
   const { shoe, matchReasons } = result;
 
@@ -203,6 +221,9 @@ function generateReasoning(
     .join(', ');
 
   let reasoning = `${priorityText}을(를) 중시하시는 것으로 분석되었습니다. `;
+  if (preferredBrandId) {
+    reasoning += `${preferredBrandId.toUpperCase()} 선호를 반영해 `;
+  }
   reasoning += `${shoe.name}은(는) ${shoe.shortDescription}으로, `;
 
   if (matchReasons.length > 0) {

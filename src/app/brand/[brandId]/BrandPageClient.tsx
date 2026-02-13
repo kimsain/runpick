@@ -8,10 +8,12 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
 import Badge from '@/components/common/Badge';
+import BrandSwitcher from '@/components/common/BrandSwitcher';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { categories } from '@/data/categories';
 import { getShoesByBrand, getShoesByBrandAndCategory, getBrandById } from '@/utils/shoe-utils';
+import { getBrandThemeVars } from '@/utils/brand-utils';
 import Link from 'next/link';
 import { STAGGER_NORMAL, DUR_FAST } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
@@ -23,8 +25,6 @@ interface BrandPageClientProps {
 export default function BrandPageClient({ brandId }: BrandPageClientProps) {
   const brand = getBrandById(brandId);
   const shoes = getShoesByBrand(brandId);
-
-  if (!brand) return null;
   const sectionsRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
 
@@ -34,6 +34,10 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
   const headerHiddenRef = useRef(false);
 
   useEffect(() => {
+    if (!isDesktop) {
+      setHeaderHidden(false);
+      return;
+    }
     const handleScroll = () => {
       const currentY = window.scrollY;
       const isDown = currentY > lastScrollY.current;
@@ -48,7 +52,13 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isDesktop]);
+
+  useEffect(() => {
+    if (brandId) {
+      window.localStorage.setItem('runpick.preferredBrand', brandId);
+    }
+  }, [brandId]);
 
   useEffect(() => {
     if (!isDesktop) return;
@@ -83,18 +93,45 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
     };
   }, [isDesktop]);
 
+  if (!brand) {
+    return (
+      <>
+        <Header />
+        <main className="pt-20 min-h-screen flex items-center justify-center">
+          <div className="text-center px-4">
+            <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)]">
+              브랜드를 찾을 수 없습니다
+            </h1>
+            <p className="mt-3 text-[var(--color-foreground)]/60">
+              요청하신 브랜드 경로가 유효하지 않습니다.
+            </p>
+            <Link
+              href="/brand"
+              className="mt-6 inline-block text-[var(--color-asics-accent)]"
+            >
+              ← 브랜드 선택으로 돌아가기
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  const brandThemeVars = getBrandThemeVars(brand.id, brand.color);
+
   return (
     <>
       <Header />
-      <main className="pt-20">
+      <main className="pt-20" style={brandThemeVars}>
         {/* Hero Section */}
-        <section className="py-8 sm:py-12 bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)] relative overflow-hidden">
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="section-space-tight bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)] relative overflow-hidden">
+          <div className="relative layout-shell">
             <div className="text-center">
               <TextReveal
                 as="h1"
                 mode="clip"
-                className="text-4xl sm:text-5xl md:text-6xl font-bold text-balance leading-tight"
+                className="type-h1 text-balance"
               >
                 <span style={{ color: brand.color }}>{brand.name}</span>
               </TextReveal>
@@ -102,7 +139,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="mt-4 text-lg text-[var(--color-foreground)]/60 max-w-2xl mx-auto text-pretty leading-relaxed"
+                className="mt-4 type-lead text-[var(--color-foreground)]/62 reading-measure text-pretty"
               >
                 {brand.description}
               </motion.p>
@@ -110,10 +147,13 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="mt-2 text-sm text-[var(--color-foreground)]/40"
+                className="mt-2 type-caption text-[var(--color-foreground)]/42"
               >
                 {shoes.length}개 모델
               </motion.p>
+              <div className="mt-5">
+                <BrandSwitcher currentBrandId={brand.id} className="justify-center" />
+              </div>
             </div>
           </div>
         </section>
@@ -122,17 +162,17 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
         <motion.section
           animate={{ y: headerHidden ? -64 : 0 }}
           transition={{ duration: DUR_FAST, ease: 'easeOut' }}
-          className="fixed top-16 left-0 right-0 py-3 border-b border-[var(--color-border)] bg-[var(--color-background)]/95 backdrop-blur-sm z-40"
+          className="fixed top-16 left-0 right-0 pt-2 pb-3 sm:py-3 border-b border-[var(--color-border)] bg-[var(--color-background)]/95 backdrop-blur-sm z-40"
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-center gap-1.5 sm:gap-4">
+          <div className="layout-shell">
+            <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto overscroll-x-contain scrollbar-hide pb-2 snap-x snap-mandatory touch-pan-x">
               {categories.map((category) => (
                 <MagneticElement key={category.id} strength={0.2} radius={120}>
                   <Link href={`/brand/${brandId}/${category.id}`}>
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-2.5 py-1.5 sm:px-6 sm:py-3 rounded-full border border-[var(--color-border)] hover:border-transparent transition-all cursor-pointer whitespace-nowrap"
+                      className="px-3.5 py-2 min-h-11 sm:px-6 sm:py-3 rounded-full border border-[var(--color-border)] hover:border-transparent transition-all cursor-pointer whitespace-nowrap shrink-0 snap-start"
                       style={{
                         background: `linear-gradient(135deg, transparent, ${category.color}10)`,
                       }}
@@ -153,7 +193,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
         </motion.section>
 
         {/* Spacer for fixed category nav */}
-        <div className="h-12" />
+        <div className="h-16 sm:h-12" />
 
         {/* All Shoes by Category */}
         <div ref={sectionsRef}>
@@ -167,7 +207,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                 className="category-section py-10"
                 id={category.id}
               >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="layout-shell">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -177,7 +217,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-3xl">{category.icon}</span>
                       <h2
-                        className="text-2xl font-bold text-balance"
+                        className="type-h2 text-balance"
                         style={{ color: category.color }}
                       >
                         {category.name}
@@ -186,7 +226,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                         {category.nameKo}
                       </Badge>
                     </div>
-                    <p className="text-[var(--color-foreground)]/60 text-pretty leading-relaxed">
+                    <p className="type-body text-[var(--color-foreground)]/62 text-pretty">
                       {category.description}
                     </p>
                   </motion.div>

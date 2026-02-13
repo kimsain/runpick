@@ -1,13 +1,13 @@
 import { categories } from '@/data/categories';
 import CategoryPageClient from './CategoryPageClient';
+import { getAllBrandIds } from '@/utils/shoe-utils';
 
 interface CategoryPageProps {
   params: Promise<{ brandId: string; category: string }>;
 }
 
 export function generateStaticParams() {
-  const brandIds = ['asics', 'nike', 'adidas'];
-  return brandIds.flatMap((brandId) =>
+  return getAllBrandIds().flatMap((brandId) =>
     categories.map((category) => ({
       brandId,
       category: category.id,

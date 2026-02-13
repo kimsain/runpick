@@ -27,6 +27,16 @@
   --font-sans: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
   --font-display: 'Inter', var(--font-sans);
 
+  /* Type scale */
+  --type-eyebrow: clamp(0.69rem, 0.62rem + 0.25vw, 0.82rem);
+  --type-display: clamp(2.1rem, 1.25rem + 3vw, 4.9rem);
+  --type-h1: clamp(1.85rem, 1.35rem + 1.8vw, 3.7rem);
+  --type-h2: clamp(1.55rem, 1.2rem + 1.2vw, 2.65rem);
+  --type-h3: clamp(1.2rem, 1.05rem + 0.65vw, 1.85rem);
+  --type-lead: clamp(1rem, 0.93rem + 0.4vw, 1.25rem);
+  --type-body: clamp(0.95rem, 0.91rem + 0.2vw, 1.08rem);
+  --type-caption: clamp(0.78rem, 0.74rem + 0.12vw, 0.88rem);
+
 }
 
 /* Base styles */
@@ -38,11 +48,97 @@ body {
   background-color: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
-  line-height: 1.75;
+  line-height: 1.68;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   word-break: keep-all;
   overflow-wrap: break-word;
+}
+
+.layout-shell {
+  width: min(100%, 84rem);
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 640px) {
+  .layout-shell {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout-shell {
+    padding-inline: 2rem;
+  }
+}
+
+.section-space {
+  padding-block: clamp(3rem, 6vw, 7.5rem);
+}
+
+.section-space-tight {
+  padding-block: clamp(2.25rem, 4vw, 4.5rem);
+}
+
+.reading-measure {
+  width: min(100%, 68ch);
+  margin-inline: auto;
+}
+
+.type-eyebrow {
+  font-size: var(--type-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.type-display {
+  font-family: var(--font-display);
+  font-size: var(--type-display);
+  font-weight: 850;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.type-h1 {
+  font-family: var(--font-display);
+  font-size: var(--type-h1);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -0.017em;
+}
+
+.type-h2 {
+  font-family: var(--font-display);
+  font-size: var(--type-h2);
+  font-weight: 760;
+  line-height: 1.2;
+  letter-spacing: -0.014em;
+}
+
+.type-h3 {
+  font-family: var(--font-display);
+  font-size: var(--type-h3);
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: -0.012em;
+}
+
+.type-lead {
+  font-size: var(--type-lead);
+  line-height: 1.6;
+}
+
+.type-body {
+  font-size: var(--type-body);
+  line-height: 1.66;
+}
+
+.type-caption {
+  font-size: var(--type-caption);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
 }
 
 /* Selection */
@@ -134,11 +230,27 @@ body {
 .mobile-scroll-snap {
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  scroll-padding-inline: 8vw;
   -webkit-overflow-scrolling: touch;
 }
 
 .mobile-scroll-snap > * {
   scroll-snap-align: center;
+}
+
+/* Accessibility: reduce motion for users who requested it */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Default visible state (서버 렌더링 / JS 비활성화 fallback) */

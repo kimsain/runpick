@@ -40,8 +40,8 @@ export default function QuizCTA() {
   }, [isDesktop]);
 
   return (
-    <section ref={sectionRef} className="py-16 sm:py-32 relative">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={sectionRef} className="section-space relative">
+      <div className="layout-shell max-w-5xl">
         <div
           ref={containerRef}
           className="relative overflow-hidden rounded-[2rem] quiz-cta-container"
@@ -90,7 +90,7 @@ export default function QuizCTA() {
           />
 
           {/* Content */}
-          <div className="relative py-12 px-5 sm:py-20 sm:px-8 md:py-24 md:px-16 text-center">
+          <div className="relative py-11 px-5 sm:py-16 sm:px-8 md:py-20 md:px-14 text-center">
             {/* Pill badge */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -100,7 +100,7 @@ export default function QuizCTA() {
               className="inline-flex items-center gap-2 mb-8"
             >
               <span
-                className="px-5 py-2 rounded-full text-sm font-medium tracking-wide"
+                className="type-caption px-5 py-2 rounded-full font-medium tracking-wide"
                 style={{
                   background: 'rgba(0,209,255,0.08)',
                   border: '1px solid rgba(0,209,255,0.2)',
@@ -116,13 +116,13 @@ export default function QuizCTA() {
             <TextReveal
               as="h2"
               mode="clip"
-              className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-5 leading-tight text-balance"
+              className="type-h1 text-white mb-4 text-balance"
             >
               어떤 러닝화가 나에게 맞을까?
             </TextReveal>
 
             <motion.p
-              className="text-base sm:text-lg text-white/50 max-w-lg mx-auto mb-10 leading-relaxed text-pretty"
+              className="type-lead text-white/58 reading-measure mb-9 text-pretty"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}

@@ -61,7 +61,7 @@ export default function QuizProgress({ current, total }: QuizProgressProps) {
       </div>
 
       {/* Question label */}
-      <p className="text-center text-sm text-[var(--color-foreground)]/50 mt-4">
+      <p className="text-center type-caption text-[var(--color-foreground)]/50 mt-4">
         질문 {current + 1} / {total}
       </p>
     </div>

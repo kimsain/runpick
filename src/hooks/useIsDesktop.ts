@@ -1,15 +1,32 @@
 'use client';
 
-// Standard GSAP/Lenis guard hook. One-shot check, no resize listener, SSR-safe.
-// Used in 11+ components. Pattern: if (!isDesktop) return; in useEffect.
-// See mobile-optimization skill for full checklist.
-
 import { useState, useEffect } from 'react';
 import { MOBILE_BREAKPOINT } from '@/constants/animation';
+
 export function useIsDesktop(breakpoint = MOBILE_BREAKPOINT): boolean {
   const [isDesktop, setIsDesktop] = useState(false);
+
   useEffect(() => {
-    setIsDesktop(window.innerWidth >= breakpoint);
+    const mediaQuery = window.matchMedia(`(min-width: ${breakpoint}px)`);
+    const sync = () => setIsDesktop(mediaQuery.matches);
+
+    sync();
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', sync);
+    } else {
+      mediaQuery.addListener(sync);
+    }
+    window.addEventListener('orientationchange', sync);
+
+    return () => {
+      if (typeof mediaQuery.removeEventListener === 'function') {
+        mediaQuery.removeEventListener('change', sync);
+      } else {
+        mediaQuery.removeListener(sync);
+      }
+      window.removeEventListener('orientationchange', sync);
+    };
   }, [breakpoint]);
+
   return isDesktop;
 }

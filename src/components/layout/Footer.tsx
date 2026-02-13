@@ -8,11 +8,13 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
 import { STAGGER_NORMAL } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { getAllBrands } from '@/utils/shoe-utils';
 
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const linksRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
+  const brands = getAllBrands();
 
   useEffect(() => {
     if (!isDesktop) return;
@@ -49,13 +51,13 @@ export default function Footer() {
       {/* Floating shoe animation */}
       <FloatingShoe />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+      <div className="relative layout-shell section-space-tight">
         <div ref={linksRef} className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
           <div className="col-span-1 md:col-span-2 footer-link-item">
             <TextReveal as="span" mode="clip" className="text-2xl font-bold text-gradient inline-block">
               RunPick
             </TextReveal>
-            <p className="mt-4 text-sm text-[var(--color-foreground)]/60 max-w-md leading-relaxed">
+            <p className="mt-4 type-body text-[var(--color-foreground)]/60 max-w-md">
               당신에게 딱 맞는 러닝화를 찾아드립니다.
               카테고리별로 정리된 러닝화 카탈로그와 맞춤 추천 퀴즈로
               완벽한 러닝화를 찾아보세요.
@@ -63,19 +65,21 @@ export default function Footer() {
           </div>
 
           <div className="footer-link-item">
-            <h3 className="text-sm font-semibold text-[var(--color-foreground)] mb-4">
+            <h3 className="type-body font-semibold text-[var(--color-foreground)] mb-4">
               카탈로그
             </h3>
             <ul className="space-y-2">
-              <FooterLink href="/brand/asics">ASICS</FooterLink>
-              <FooterLink href="/brand/asics/daily">Daily</FooterLink>
-              <FooterLink href="/brand/asics/super-trainer">Super Trainer</FooterLink>
-              <FooterLink href="/brand/asics/racing">Racing</FooterLink>
+              <FooterLink href="/brand">전체 브랜드</FooterLink>
+              {brands.map((brand) => (
+                <FooterLink key={brand.id} href={`/brand/${brand.id}`}>
+                  {brand.name}
+                </FooterLink>
+              ))}
             </ul>
           </div>
 
           <div className="footer-link-item">
-            <h3 className="text-sm font-semibold text-[var(--color-foreground)] mb-4">
+            <h3 className="type-body font-semibold text-[var(--color-foreground)] mb-4">
               도움말
             </h3>
             <ul className="space-y-2">
@@ -86,7 +90,7 @@ export default function Footer() {
 
         <div className="mt-8 pt-8 border-t border-[var(--color-border)] relative footer-link-item">
           <motion.p
-            className="text-center text-sm text-[var(--color-foreground)]/40"
+            className="text-center type-caption text-[var(--color-foreground)]/40"
             initial={{ opacity: 0.4 }}
             whileHover={{ opacity: 0.7 }}
             transition={{ duration: 0.3 }}
@@ -112,7 +116,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
     <li>
       <Link href={href}>
         <motion.span
-          className="text-sm text-[var(--color-foreground)]/60 hover:text-[var(--color-foreground)] transition-colors inline-flex items-center gap-2 relative min-h-[44px]"
+          className="type-body text-[var(--color-foreground)]/60 hover:text-[var(--color-foreground)] transition-colors inline-flex items-center gap-2 relative min-h-[44px]"
           whileHover={{ x: 4 }}
           transition={{ duration: 0.2 }}
         >

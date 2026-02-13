@@ -1,16 +1,19 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
+import BrandSwitcher from '@/components/common/BrandSwitcher';
 import TextReveal from '@/components/effects/TextReveal';
 import { getCategoryById, getSubcategoriesByCategory } from '@/data/categories';
-import { getShoesByBrandAndCategory } from '@/utils/shoe-utils';
+import { getBrandById, getShoesByBrandAndCategory } from '@/utils/shoe-utils';
+import { getBrandThemeVars } from '@/utils/brand-utils';
 import { CategoryId, SubcategoryId } from '@/types/shoe';
 import Link from 'next/link';
 import { DUR_FAST } from '@/constants/animation';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 interface CategoryPageClientProps {
   brandId: string;
@@ -21,10 +24,13 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
   const categoryData = getCategoryById(category as CategoryId);
   const subcategories = getSubcategoriesByCategory(category as CategoryId);
   const allCategoryShoes = getShoesByBrandAndCategory(brandId, category as CategoryId);
+  const brand = getBrandById(brandId);
+  const isDesktop = useIsDesktop();
 
   const [selectedSubcategory, setSelectedSubcategory] = useState<SubcategoryId | 'all'>(
     'all'
   );
+  const listSectionRef = useRef<HTMLElement>(null);
 
   // Track header visibility (mirrors Header.tsx logic)
   const [headerHidden, setHeaderHidden] = useState(false);
@@ -32,6 +38,10 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
   const headerHiddenRef = useRef(false);
 
   useEffect(() => {
+    if (!isDesktop) {
+      setHeaderHidden(false);
+      return;
+    }
     const handleScroll = () => {
       const currentY = window.scrollY;
       const isDown = currentY > lastScrollY.current;
@@ -46,7 +56,13 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isDesktop]);
+
+  useEffect(() => {
+    if (brandId) {
+      window.localStorage.setItem('runpick.preferredBrand', brandId);
+    }
+  }, [brandId]);
 
   if (!categoryData) {
     return (
@@ -74,14 +90,40 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
     selectedSubcategory === 'all'
       ? allCategoryShoes
       : allCategoryShoes.filter((s) => s.subcategoryId === selectedSubcategory);
+  const subcategoryCounts = useMemo(() => {
+    const counts = new Map<SubcategoryId, number>();
+    allCategoryShoes.forEach((shoe) => {
+      const key = shoe.subcategoryId as SubcategoryId;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+    return counts;
+  }, [allCategoryShoes]);
+  const visibleSubcategories = useMemo(
+    () => subcategories.filter((sub) => (subcategoryCounts.get(sub.id) || 0) > 0),
+    [subcategories, subcategoryCounts]
+  );
+  const brandThemeVars = getBrandThemeVars(brandId, brand?.color);
+
+  const handleSelectSubcategory = (next: SubcategoryId | 'all') => {
+    setSelectedSubcategory(next);
+
+    if (!isDesktop) {
+      window.requestAnimationFrame(() => {
+        const top = listSectionRef.current?.getBoundingClientRect().top;
+        if (typeof top !== 'number') return;
+        const targetY = window.scrollY + top - 116;
+        window.scrollTo({ top: Math.max(targetY, 0), behavior: 'smooth' });
+      });
+    }
+  };
 
   return (
     <>
       <Header />
-      <main className="pt-20">
+      <main className="pt-20" style={brandThemeVars}>
         {/* Hero Section */}
         <section
-          className="py-8 sm:py-14 relative overflow-hidden"
+          className="section-space-tight relative overflow-hidden"
           style={{
             background: `linear-gradient(135deg, var(--color-card) 0%, var(--color-background) 100%)`,
           }}
@@ -94,16 +136,16 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
             }}
           />
 
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="relative layout-shell text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
               <Link
                 href={`/brand/${brandId}`}
-                className="inline-flex items-center gap-2 text-sm text-[var(--color-foreground)]/60 hover:text-[var(--color-foreground)] mb-4"
+                className="inline-flex items-center gap-2 type-caption text-[var(--color-foreground)]/60 hover:text-[var(--color-foreground)] mb-4"
               >
-                ← ASICS
+                ← {brand?.name || brandId.toUpperCase()}
               </Link>
 
               <motion.span
@@ -118,33 +160,41 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
               <TextReveal
                 as="h1"
                 mode="clip"
-                className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-balance leading-tight"
+                className="type-h1 mb-4 text-balance"
               >
                 <span style={{ color: categoryData.color }}>
                   {categoryData.name}
                 </span>
               </TextReveal>
-              <p className="text-lg sm:text-xl text-[var(--color-foreground)]/60 max-w-2xl mx-auto text-pretty leading-relaxed">
+              <p className="type-lead text-[var(--color-foreground)]/62 reading-measure text-pretty">
                 {categoryData.description}
               </p>
-              <p className="mt-4 text-sm text-[var(--color-foreground)]/40">
+              <p className="mt-4 type-caption text-[var(--color-foreground)]/42">
                 {allCategoryShoes.length}개 모델
               </p>
+              <div className="mt-5">
+                <BrandSwitcher
+                  currentBrandId={brandId}
+                  categoryId={category as CategoryId}
+                  className="justify-center"
+                />
+              </div>
             </motion.div>
           </div>
         </section>
 
         {/* Subcategory Tabs — fixed below header, follows header hide/show */}
         <motion.section
-          animate={{ y: headerHidden ? -64 : 0 }}
+          animate={{ y: isDesktop && headerHidden ? -64 : 0 }}
           transition={{ duration: DUR_FAST, ease: 'easeOut' }}
-          className="fixed top-16 left-0 right-0 py-3 border-b border-[var(--color-border)] bg-[var(--color-background)]/95 backdrop-blur-sm z-40"
+          className="fixed top-16 left-0 right-0 pt-2 pb-3 sm:py-3 border-b border-[var(--color-border)] bg-[var(--color-background)]/95 backdrop-blur-sm z-40"
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="layout-shell">
+            <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto overscroll-x-contain pb-2 scrollbar-hide snap-x snap-mandatory touch-pan-x">
               <button
-                onClick={() => setSelectedSubcategory('all')}
-                className="relative px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                onClick={() => handleSelectSubcategory('all')}
+                className="relative px-4 py-2 min-h-11 rounded-full text-sm font-medium whitespace-nowrap transition-all snap-start"
+                aria-pressed={selectedSubcategory === 'all'}
               >
                 {selectedSubcategory === 'all' && (
                   <motion.div
@@ -162,13 +212,14 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                 </span>
               </button>
 
-              {subcategories.filter((sub) => allCategoryShoes.filter((s) => s.subcategoryId === sub.id).length > 0).map((sub) => {
-                const count = allCategoryShoes.filter((s) => s.subcategoryId === sub.id).length;
+              {visibleSubcategories.map((sub) => {
+                const count = subcategoryCounts.get(sub.id) || 0;
                 return (
                   <button
                     key={sub.id}
-                    onClick={() => setSelectedSubcategory(sub.id)}
-                    className="relative px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                    onClick={() => handleSelectSubcategory(sub.id)}
+                    className="relative px-4 py-2 min-h-11 rounded-full text-sm font-medium whitespace-nowrap transition-all snap-start"
+                    aria-pressed={selectedSubcategory === sub.id}
                   >
                     {selectedSubcategory === sub.id && (
                       <motion.div
@@ -193,11 +244,11 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
         </motion.section>
 
         {/* Spacer for fixed subcategory nav */}
-        <div className="h-12" />
+        <div className="h-16 sm:h-12" />
 
         {/* Shoes Grid with AnimatePresence layout */}
-        <section className="py-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section ref={listSectionRef} className="py-10">
+          <div className="layout-shell">
             {selectedSubcategory !== 'all' && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -208,10 +259,10 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                   const sub = subcategories.find((s) => s.id === selectedSubcategory);
                   return sub ? (
                     <>
-                      <h2 className="text-xl font-bold text-[var(--color-foreground)] text-balance">
+                      <h2 className="type-h2 text-[var(--color-foreground)] text-balance">
                         {sub.name}
                       </h2>
-                      <p className="text-[var(--color-foreground)]/60 text-pretty leading-relaxed">
+                      <p className="type-body text-[var(--color-foreground)]/62 text-pretty">
                         {sub.description}
                       </p>
                     </>
@@ -234,7 +285,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                   >
-                    <ShoeCard shoe={shoe} index={0} />
+                    <ShoeCard shoe={shoe} index={index} />
                   </motion.div>
                 ))}
               </AnimatePresence>

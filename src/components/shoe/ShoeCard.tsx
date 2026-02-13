@@ -6,13 +6,14 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
 import { RunningShoe, ShoeSpecs } from '@/types/shoe';
 import Badge from '@/components/common/Badge';
 import { getCategoryById } from '@/data/categories';
+import { hasShoeImage } from '@/data/image-manifest';
 import { useRef, useState, useCallback } from 'react';
 import ImageDistortion from '@/components/effects/ImageDistortion';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+import SmartShoeImage from '@/components/common/SmartShoeImage';
 
 interface ShoeCardProps {
   shoe: RunningShoe;
@@ -42,7 +43,7 @@ function getTopSpecs(specs: ShoeSpecs): { key: string; label: string; value: num
 function SpecDotBar({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-[10px] text-[var(--color-foreground)]/50 w-8 shrink-0">{label}</span>
+      <span className="type-caption text-[var(--color-foreground)]/50 w-9 shrink-0">{label}</span>
       <div className="flex gap-[2px]">
         {Array.from({ length: 10 }, (_, i) => (
           <div
@@ -57,7 +58,7 @@ function SpecDotBar({ label, value }: { label: string; value: number }) {
           />
         ))}
       </div>
-      <span className="text-[10px] font-medium text-[var(--color-foreground)]/60 w-4 text-right">{value}</span>
+      <span className="type-caption font-medium text-[var(--color-foreground)]/60 w-4 text-right">{value}</span>
     </div>
   );
 }
@@ -94,13 +95,16 @@ function ShoeCardImage({ shoe, category, index, isHovered }: {
           animate={isHovered ? { scale: 1.1 } : { scale: 1 }}
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         >
-          <Image
+          <SmartShoeImage
             src={shoe.imageUrl}
             alt={shoe.name}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-contain drop-shadow-2xl"
             priority={index < 3}
+            showFallbackBadge
+            forceFallback={!hasShoeImage(shoe.imageUrl)}
+            fallbackBadgeLabel={`${shoe.brandId.toUpperCase()} 이미지 준비중`}
           />
         </motion.div>
       </motion.div>
@@ -127,6 +131,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const isDesktop = useIsDesktop();
+  const showDetailHint = isDesktop ? isHovered : true;
 
   // 3D tilt effect values - desktop only
   const x = useMotionValue(0);
@@ -169,7 +174,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.4, delay: index * 0.1 }}
-        whileHover={{
+        whileHover={isDesktop ? {
           y: -12,
           scale: 1.03,
           transition: {
@@ -177,7 +182,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
             stiffness: 400,
             damping: 20
           }
-        }}
+        } : undefined}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onMouseEnter={handleMouseEnter}
@@ -213,14 +218,14 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
 
         {/* Content */}
         <div className="p-4" style={{ backfaceVisibility: 'hidden' }}>
-          <h3 className="text-lg font-bold text-[var(--color-foreground)] group-hover:text-gradient transition-all duration-300 text-balance">
+          <h3 className="type-h3 text-[var(--color-foreground)] group-hover:text-gradient transition-all duration-300 text-balance">
             {shoe.name}
           </h3>
-          <p className="mt-1 text-sm text-[var(--color-foreground)]/60 line-clamp-2 leading-relaxed">
+          <p className="mt-1 type-body text-[var(--color-foreground)]/60 line-clamp-2">
             {shoe.shortDescription}
           </p>
 
-          <div className="mt-3 flex items-center gap-4 text-xs text-[var(--color-foreground)]/50">
+          <div className="mt-3 flex items-center gap-4 type-caption text-[var(--color-foreground)]/50">
             <span className="flex items-center gap-1">
               <span className="text-[var(--color-asics-accent)]">⚖</span>
               <span>{shoe.specs.weight}g</span>
@@ -240,13 +245,13 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
 
           {/* Price */}
           <div className="mt-3 pt-3 border-t border-[var(--color-border)] flex items-center justify-between">
-            <span className="text-lg font-bold text-gradient">
+            <span className="type-h3 text-gradient">
               {shoe.priceFormatted}
             </span>
             <motion.span
-              className="text-sm text-[var(--color-asics-accent)]"
-              initial={{ x: -10, opacity: 0 }}
-              animate={isHovered ? { x: 0, opacity: 1 } : { x: -10, opacity: 0 }}
+              className="type-body text-[var(--color-asics-accent)]"
+              initial={isDesktop ? { x: -10, opacity: 0 } : false}
+              animate={showDetailHint ? { x: 0, opacity: 1 } : { x: -10, opacity: 0 }}
               transition={{ duration: 0.3, type: 'spring', stiffness: 300 }}
             >
               자세히 보기 →

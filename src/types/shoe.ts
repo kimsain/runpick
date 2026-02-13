@@ -70,6 +70,7 @@ export interface RunningShoe {
   releaseYear: number;
   colorways: string[];
   slug: string;
+  officialUrl?: string;
   isUpcoming?: boolean;
   upcomingNote?: string;
 }

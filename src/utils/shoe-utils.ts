@@ -1,4 +1,4 @@
-// Data access helpers for all brand JSON files. Single source of truth for all shoe queries.
+// Data access helpers for all brand JSON files.
 // getAllShoes() preserves array order (for FeaturedShoes manual ordering).
 // Listing functions (getShoesByCategory, etc.) sort by b.name.localeCompare(a.name).
 
@@ -15,6 +15,10 @@ export function getAllShoes(): RunningShoe[] {
 
 export function getAllBrands(): Brand[] {
   return allBrandData.map((b) => b.brand) as Brand[];
+}
+
+export function getAllBrandIds(): string[] {
+  return allBrandData.map((b) => b.brand.id);
 }
 
 export function getBrandById(brandId: string): Brand | undefined {
@@ -53,14 +57,31 @@ export function getShoesByBrandAndCategory(brandId: string, categoryId: Category
     .sort((a, b) => b.name.localeCompare(a.name));
 }
 
-export function getSimilarShoes(shoe: RunningShoe, limit: number = 3): RunningShoe[] {
-  return getAllShoes()
-    .filter(
-      (s) =>
-        s.id !== shoe.id &&
-        (s.subcategoryId === shoe.subcategoryId || s.categoryId === shoe.categoryId)
-    )
-    .slice(0, limit);
+interface SimilarShoesOptions {
+  sameBrandFirst?: boolean;
+}
+
+export function getSimilarShoes(
+  shoe: RunningShoe,
+  limit: number = 3,
+  options: SimilarShoesOptions = {}
+): RunningShoe[] {
+  const { sameBrandFirst = false } = options;
+
+  const baseMatches = getAllShoes().filter(
+    (s) =>
+      s.id !== shoe.id &&
+      (s.subcategoryId === shoe.subcategoryId || s.categoryId === shoe.categoryId)
+  );
+
+  if (!sameBrandFirst) {
+    return baseMatches.slice(0, limit);
+  }
+
+  const sameBrand = baseMatches.filter((s) => s.brandId === shoe.brandId);
+  const crossBrand = baseMatches.filter((s) => s.brandId !== shoe.brandId);
+
+  return [...sameBrand, ...crossBrand].slice(0, limit);
 }
 
 export function formatPrice(price: number): string {

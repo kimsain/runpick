@@ -37,7 +37,7 @@ function PulsingButton({ children, href, variant = 'primary', delay = 0 }: {
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
       {/* Background gradient - static to prevent flicker */}
       <div
         className="absolute inset-0 bg-gradient-to-br from-[var(--color-background)] via-[var(--color-background)] to-[var(--color-asics-blue)]/10"
@@ -56,7 +56,7 @@ export default function HeroSection() {
 
       {/* Content */}
       <div
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+        className="relative z-10 layout-shell pt-24 pb-16 sm:pt-28 sm:pb-20 text-center"
       >
         <motion.div
           initial={{ opacity: 0 }}
@@ -71,7 +71,7 @@ export default function HeroSection() {
             className="relative inline-block mb-6"
           >
             <span
-              className="hero-eyebrow-badge relative z-10 text-[11px] sm:text-sm font-medium tracking-wider uppercase px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[var(--color-asics-accent)]/30 bg-[var(--color-asics-accent)]/5 text-center text-[var(--color-asics-accent)]"
+              className="hero-eyebrow-badge type-eyebrow relative z-10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[var(--color-asics-accent)]/30 bg-[var(--color-asics-accent)]/5 text-center text-[var(--color-asics-accent)]"
               style={{
                 boxShadow: '0 0 8px 1px rgba(0, 209, 255, 0.15)',
               }}
@@ -81,7 +81,7 @@ export default function HeroSection() {
           </motion.div>
 
           {/* Main headline with TextReveal */}
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tight text-balance leading-[1.15]" data-cursor="text">
+          <h1 className="type-display text-balance" data-cursor="text">
             <TextReveal
               as="span"
               mode="clip"
@@ -109,7 +109,7 @@ export default function HeroSection() {
                 as="span"
                 mode="clip"
                 delay={0.7}
-                className="inline-block font-extrabold text-white relative"
+                className="inline-block text-white relative"
               >
                 <span
                   className="inline-block hero-headline-glow"
@@ -128,18 +128,18 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.6, ease: EASE_OUT_EXPO as unknown as number[] }}
-            className="mt-8 text-lg sm:text-xl text-[var(--color-foreground)]/60 max-w-2xl mx-auto text-pretty leading-relaxed"
+            className="mt-7 sm:mt-8 type-lead text-[var(--color-foreground)]/65 reading-measure text-pretty"
           >
             Daily, Super Trainer, Racing 카테고리별로 정리된 러닝화 카탈로그와
             맞춤 추천 퀴즈로 완벽한 러닝화를 찾아보세요.
           </motion.p>
 
           {/* CTA Buttons with stagger clip-path reveal */}
-          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
+          <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
             <PulsingButton href="/quiz" delay={1.5}>
               나에게 맞는 신발 찾기
             </PulsingButton>
-            <PulsingButton href="/brand/asics" variant="outline" delay={1.5 + STAGGER_NORMAL}>
+            <PulsingButton href="/brand" variant="outline" delay={1.5 + STAGGER_NORMAL}>
               카탈로그 둘러보기
             </PulsingButton>
           </div>

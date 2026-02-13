@@ -22,7 +22,7 @@ function FeaturedBadge() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: 0.3 }}
-      className="inline-flex items-center gap-2 mb-8"
+      className="inline-flex items-center gap-2 mb-6 sm:mb-8"
     >
       <div
         className="featured-badge-pulse flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)]/20 to-[var(--color-asics-accent)]/20 border border-[var(--color-asics-accent)]/30"
@@ -31,7 +31,7 @@ function FeaturedBadge() {
         }}
       >
         <span className="text-lg">⭐</span>
-        <span className="text-sm font-semibold text-[var(--color-asics-accent)]">
+        <span className="type-caption font-semibold text-[var(--color-asics-accent)]">
           RUNNER&apos;S CHOICE
         </span>
         <span className="text-lg">🔥</span>
@@ -46,7 +46,7 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
 
   return (
     <div
-      className="relative shrink-0 w-[80vw] md:w-[33vw] px-4"
+      className="relative shrink-0 w-[86vw] sm:w-[72vw] md:w-[33vw] px-2 sm:px-4 snap-center"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -178,20 +178,20 @@ export default function FeaturedShoes() {
   }, [isPinDesktop]);
 
   return (
-    <section ref={sectionRef} className="relative bg-[var(--color-background)]">
+    <section ref={sectionRef} className="relative bg-[var(--color-background)] section-space-tight">
       <div
         ref={scrollContainerRef}
         className={`relative flex flex-col justify-center overflow-hidden ${!isPinDesktop ? '' : 'min-h-screen'}`}
         data-cursor="drag"
       >
         {/* Section header */}
-        <div className="text-center pt-20 md:pt-8 pb-12 md:pb-4 px-4">
+        <div className="text-center pt-6 md:pt-8 pb-8 md:pb-4 layout-shell">
           <FeaturedBadge />
 
           <TextReveal
             as="h2"
             mode="clip"
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-balance leading-tight"
+            className="type-h1 text-balance"
           >
             <span
               className="inline-block"
@@ -208,7 +208,7 @@ export default function FeaturedShoes() {
           </TextReveal>
 
           <motion.p
-            className="mt-5 text-lg sm:text-xl text-[var(--color-foreground)]/60 text-pretty"
+            className="mt-4 type-lead text-[var(--color-foreground)]/62 text-pretty reading-measure"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -216,11 +216,15 @@ export default function FeaturedShoes() {
           >
             러너들이 가장 사랑하는 모델들
           </motion.p>
+
+          <p className="mt-2 type-caption text-[var(--color-foreground)]/45 md:hidden">
+            좌우로 넘겨서 비교해보세요
+          </p>
         </div>
 
         {/* Horizontal scrolling cards */}
         <div
-          className={`horizontal-cards flex items-start md:items-center gap-8 pt-5 md:pt-0 pl-[5vw] md:pl-[10vw] pr-[10vw] pb-20 md:pb-6 ${
+          className={`horizontal-cards flex items-start md:items-center gap-4 sm:gap-8 pt-5 md:pt-0 pl-[4vw] md:pl-[10vw] pr-[8vw] md:pr-[10vw] pb-20 md:pb-6 overscroll-x-contain touch-pan-x ${
             !isPinDesktop ? 'mobile-scroll-snap scrollbar-hide' : ''
           }`}
         >

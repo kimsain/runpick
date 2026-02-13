@@ -1,16 +1,17 @@
 'use client';
 
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { QuizResult as QuizResultType } from '@/types/quiz';
 import Button from '@/components/common/Button';
 import ShoeSpecChart from '@/components/shoe/ShoeSpecChart';
 import { getCategoryById } from '@/data/categories';
+import { hasShoeImage } from '@/data/image-manifest';
 import Badge from '@/components/common/Badge';
 import TextReveal from '@/components/effects/TextReveal';
 import ImageDistortion from '@/components/effects/ImageDistortion';
+import SmartShoeImage from '@/components/common/SmartShoeImage';
 interface QuizResultProps {
   result: QuizResultType;
   onRetry: () => void;
@@ -132,7 +133,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           as="h1"
           mode="clip"
           delay={0.3}
-          className="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-4 text-balance leading-snug"
+          className="type-h1 text-[var(--color-foreground)] mb-4 text-balance"
         >
           당신에게 딱 맞는 러닝화를 찾았어요!
         </TextReveal>
@@ -173,7 +174,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.0 }}
-          className="text-[var(--color-foreground)]/60 max-w-2xl mx-auto text-pretty leading-relaxed"
+          className="type-body text-[var(--color-foreground)]/62 reading-measure text-pretty"
         >
           {reasoning}
         </motion.p>
@@ -196,12 +197,16 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
         <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 p-5 sm:gap-8 sm:p-8">
           <ImageDistortion variant="glow">
             <div className="relative aspect-square bg-[var(--color-background)] rounded-2xl overflow-hidden">
-              <Image
+              <SmartShoeImage
                 src={primaryRecommendation.imageUrl}
                 alt={primaryRecommendation.name}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-contain p-8"
+                showFallbackBadge
+                forceFallback={!hasShoeImage(primaryRecommendation.imageUrl)}
+                fallbackBadgeLabel={`${primaryRecommendation.brandId.toUpperCase()} 이미지 준비중`}
+                fallbackBadgeClassName="absolute bottom-4 right-4 z-20 rounded-full border border-white/20 bg-black/70 px-2.5 py-1 text-[11px] font-medium text-white"
               />
               <div className="absolute top-4 left-4">
                 <Badge variant="category" categoryId={primaryRecommendation.categoryId}>
@@ -218,19 +223,19 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
               </Badge>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-foreground)] mb-1 text-balance leading-tight">
+            <h2 className="type-h2 text-[var(--color-foreground)] mb-1 text-balance">
               {primaryRecommendation.name}
             </h2>
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-[var(--color-foreground)]/60">
+              <span className="type-body text-[var(--color-foreground)]/60">
                 {primaryRecommendation.nameKo}
               </span>
-              <span className="text-xl sm:text-2xl font-bold text-gradient">
+              <span className="type-h3 text-gradient">
                 {primaryRecommendation.priceFormatted}
               </span>
             </div>
 
-            <p className="text-[var(--color-foreground)]/80 mb-6 leading-relaxed text-pretty">
+            <p className="type-body text-[var(--color-foreground)]/82 mb-6 text-pretty">
               {primaryRecommendation.shortDescription}
             </p>
 
@@ -250,7 +255,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
         transition={{ delay: 0.7 }}
         className="mb-12 p-4 sm:p-6 bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)]"
       >
-        <h3 className="text-lg font-bold text-[var(--color-foreground)] mb-4">
+        <h3 className="type-h3 text-[var(--color-foreground)] mb-4">
           스펙 분석
         </h3>
         <ShoeSpecChart specs={primaryRecommendation.specs} animated />
@@ -264,7 +269,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           transition={{ delay: 0.7 }}
           className="mb-12"
         >
-          <h3 className="text-lg font-bold text-[var(--color-foreground)] mb-6 text-balance">
+          <h3 className="type-h3 text-[var(--color-foreground)] mb-6 text-balance">
             이런 선택지도 있어요
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -288,12 +293,16 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
                     className="block bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-all hover:-translate-y-1 overflow-hidden"
                   >
                     <div className="relative aspect-[4/3] bg-[var(--color-background)]">
-                      <Image
+                      <SmartShoeImage
                         src={shoe.imageUrl}
                         alt={shoe.name}
                         fill
                         sizes="(max-width: 640px) 100vw, 33vw"
                         className="object-contain p-4"
+                        showFallbackBadge
+                        forceFallback={!hasShoeImage(shoe.imageUrl)}
+                        fallbackBadgeLabel={`${shoe.brandId.toUpperCase()} 준비중`}
+                        fallbackBadgeClassName="absolute bottom-2 right-2 z-20 rounded-full border border-white/20 bg-black/70 px-2 py-0.5 text-[10px] font-medium text-white"
                       />
                     </div>
                     <div className="p-4">
@@ -333,8 +342,8 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
         <Button variant="outline" onClick={onRetry}>
           다시 테스트하기
         </Button>
-        <Button href="/brand/asics" variant="ghost">
-          전체 카탈로그 보기
+        <Button href={`/brand/${primaryRecommendation.brandId}`} variant="ghost">
+          추천 브랜드 카탈로그 보기
         </Button>
       </motion.div>
     </motion.div>

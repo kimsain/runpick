@@ -1,14 +1,18 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { DUR_FAST } from '@/constants/animation';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isDesktop = useIsDesktop();
+  const pathname = usePathname();
   const lastScrollY = useRef(0);
   const scrolledRef = useRef(false);
   const directionRef = useRef<'up' | 'down'>('up');
@@ -45,7 +49,24 @@ export default function Header() {
     };
   }, [mobileMenuOpen]);
 
-  const isHidden = scrollDirection === 'down' && scrolled && !mobileMenuOpen;
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
+
+  const isHidden = isDesktop && scrollDirection === 'down' && scrolled && !mobileMenuOpen;
 
   return (
     <>
@@ -76,7 +97,7 @@ export default function Header() {
             {/* Desktop Navigation - Right aligned */}
             <div className="hidden md:flex items-center gap-8">
               <MagneticElement strength={0.15}>
-                <NavLink href="/brand/asics">Catalog</NavLink>
+                <NavLink href="/brand">Catalog</NavLink>
               </MagneticElement>
               <MagneticElement strength={0.15}>
                 <NavLink href="/quiz">Quiz</NavLink>
@@ -88,7 +109,9 @@ export default function Header() {
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-[var(--color-card)] transition-colors"
-                aria-label="Toggle menu"
+                aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-nav-panel"
               >
                 <motion.div
                   animate={mobileMenuOpen ? 'open' : 'closed'}
@@ -146,11 +169,18 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="absolute top-16 right-0 bottom-0 w-full max-w-sm bg-[var(--color-card)] border-l border-[var(--color-border)]"
+              className="absolute top-16 right-0 bottom-0 w-full max-w-sm bg-[var(--color-card)] border-l border-[var(--color-border)] overflow-y-auto pb-[calc(1.5rem+env(safe-area-inset-bottom))]"
+              id="mobile-nav-panel"
+              role="dialog"
+              aria-modal="true"
+              aria-label="모바일 메뉴"
             >
-              <div className="p-6 space-y-6">
+              <div className="p-6 space-y-4">
+                <p className="text-xs font-semibold tracking-wide text-[var(--color-foreground)]/45 uppercase">
+                  Menu
+                </p>
                 <MobileNavLink
-                  href="/brand/asics"
+                  href="/brand"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   🏷️ Catalog

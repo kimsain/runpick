@@ -6,7 +6,6 @@
 
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '@/components/layout/Header';
@@ -15,10 +14,15 @@ import ShoeCard from '@/components/shoe/ShoeCard';
 import ShoeSpecChart from '@/components/shoe/ShoeSpecChart';
 import Badge from '@/components/common/Badge';
 import Button from '@/components/common/Button';
+import BrandSwitcher from '@/components/common/BrandSwitcher';
 import TextReveal from '@/components/effects/TextReveal';
 import ImageDistortion from '@/components/effects/ImageDistortion';
-import { getShoeBySlug, getSimilarShoes } from '@/utils/shoe-utils';
+import SmartShoeImage from '@/components/common/SmartShoeImage';
+import { hasShoeImage } from '@/data/image-manifest';
+import { getBrandById, getShoeBySlug, getSimilarShoes } from '@/utils/shoe-utils';
+import { getBrandThemeVars } from '@/utils/brand-utils';
 import { getCategoryById, getSubcategoryById } from '@/data/categories';
+import { CategoryId } from '@/types/shoe';
 import Link from 'next/link';
 import { SPRING_SNAPPY, STAGGER_NORMAL } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
@@ -85,7 +89,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
               러닝화를 찾을 수 없습니다
             </h1>
             <Link
-              href="/brand/asics"
+              href="/brand"
               className="mt-4 inline-block text-[var(--color-asics-accent)]"
             >
               ← 카탈로그로 돌아가기
@@ -99,22 +103,24 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
 
   const category = getCategoryById(shoe.categoryId);
   const subcategory = getSubcategoryById(shoe.subcategoryId);
-  const similarShoes = getSimilarShoes(shoe);
+  const brand = getBrandById(shoe.brandId);
+  const similarShoes = getSimilarShoes(shoe, 3, { sameBrandFirst: true });
+  const brandThemeVars = getBrandThemeVars(shoe.brandId, brand?.color);
 
   return (
     <>
       <Header />
-      <main className="pt-20">
+      <main className="pt-20" style={brandThemeVars}>
         {/* Breadcrumb */}
         <div className="bg-[var(--color-card)] border-b border-[var(--color-border)]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <nav className="flex items-center gap-2 text-sm text-[var(--color-foreground)]/60">
-              <Link href="/brand/asics" className="hover:text-[var(--color-foreground)]">
-                ASICS
+          <div className="layout-shell py-4">
+            <nav className="flex items-center gap-2 type-caption text-[var(--color-foreground)]/60">
+              <Link href={`/brand/${shoe.brandId}`} className="hover:text-[var(--color-foreground)]">
+                {brand?.name || shoe.brandId.toUpperCase()}
               </Link>
               <span>/</span>
               <Link
-                href={`/brand/asics/${shoe.categoryId}`}
+                href={`/brand/${shoe.brandId}/${shoe.categoryId}`}
                 className="hover:text-[var(--color-foreground)]"
                 style={{ color: category?.color }}
               >
@@ -126,9 +132,19 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
           </div>
         </div>
 
+        <div className="border-b border-[var(--color-border)] bg-[var(--color-card)]/50">
+          <div className="layout-shell py-3">
+            <BrandSwitcher
+              currentBrandId={shoe.brandId}
+              categoryId={shoe.categoryId as CategoryId}
+              className="justify-start"
+            />
+          </div>
+        </div>
+
         {/* Hero Section */}
-        <section className="py-12 bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="section-space-tight bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)]">
+          <div className="layout-shell">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
               {/* Image with ImageDistortion glow */}
               <motion.div
@@ -142,13 +158,17 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                     data-cursor="view"
                   >
                     <div className="absolute inset-0 flex items-center justify-center p-8">
-                      <Image
+                      <SmartShoeImage
                         src={shoe.imageUrl}
                         alt={shoe.name}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-contain drop-shadow-2xl p-8"
                         priority
+                        showFallbackBadge
+                        forceFallback={!hasShoeImage(shoe.imageUrl)}
+                        fallbackBadgeLabel={`${shoe.brandId.toUpperCase()} 이미지 준비중`}
+                        fallbackBadgeClassName="absolute bottom-6 right-6 z-20 rounded-full border border-white/20 bg-black/70 px-2.5 py-1 text-[11px] font-medium text-white"
                       />
                     </div>
 
@@ -187,28 +207,28 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 <TextReveal
                   as="h1"
                   mode="clip"
-                  className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-foreground)] mb-2 text-balance leading-tight"
+                  className="type-h1 text-[var(--color-foreground)] mb-2 text-balance"
                 >
                   {shoe.name}
                 </TextReveal>
-                <p className="text-lg sm:text-xl text-[var(--color-foreground)]/60 mb-6 text-pretty">
+                <p className="type-lead text-[var(--color-foreground)]/62 mb-6 text-pretty">
                   {shoe.nameKo}
                 </p>
 
-                <p className="text-lg text-[var(--color-foreground)]/80 mb-8 leading-relaxed text-pretty">
+                <p className="type-body text-[var(--color-foreground)]/82 mb-8 text-pretty">
                   {shoe.description}
                 </p>
 
                 {/* Price */}
                 <div className="mb-8">
-                  <span className="text-3xl sm:text-4xl font-bold text-gradient">
+                  <span className="type-h1 text-gradient">
                     {shoe.priceFormatted}
                   </span>
                 </div>
 
                 {/* Technologies with spring cascade */}
                 <div className="mb-8">
-                  <h3 className="text-sm font-medium text-[var(--color-foreground)]/60 mb-3">
+                  <h3 className="type-caption font-medium text-[var(--color-foreground)]/60 mb-3">
                     탑재 기술
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -233,7 +253,15 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
 
                 {/* CTA */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-                  <Button size="lg">공식 스토어에서 보기</Button>
+                  {shoe.officialUrl ? (
+                    <Button size="lg" href={shoe.officialUrl}>
+                      공식 스토어에서 보기
+                    </Button>
+                  ) : (
+                    <Button size="lg" href={`/brand/${shoe.brandId}/${shoe.categoryId}`}>
+                      같은 카테고리 더 보기
+                    </Button>
+                  )}
                   <Button variant="outline" size="lg" href="/quiz">
                     나에게 맞을까?
                   </Button>
@@ -244,8 +272,8 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
         </section>
 
         {/* Specs & Details */}
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="section-space-tight">
+          <div className="layout-shell">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Spec Chart */}
               <motion.div
@@ -254,7 +282,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 viewport={{ once: true }}
                 className="lg:col-span-1 bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
               >
-                <h2 className="text-lg sm:text-xl font-bold text-[var(--color-foreground)] mb-6">
+                <h2 className="type-h3 text-[var(--color-foreground)] mb-6">
                   스펙
                 </h2>
                 <ShoeSpecChart specs={shoe.specs} />
@@ -267,7 +295,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                   ref={prosRef}
                   className="shoe-detail-pros h-full flex flex-col bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
                 >
-                  <h2 className="text-lg sm:text-xl font-bold text-[var(--color-daily)] mb-4 flex items-center gap-2">
+                  <h2 className="type-h3 text-[var(--color-daily)] mb-4 flex items-center gap-2">
                     <span>👍</span> 장점
                   </h2>
                   <ul className="space-y-3">
@@ -278,7 +306,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: index * 0.1 }}
-                        className="flex items-start gap-2 text-[var(--color-foreground)]/80 leading-relaxed"
+                        className="flex items-start gap-2 type-body text-[var(--color-foreground)]/80"
                       >
                         <span className="text-[var(--color-daily)] mt-1">•</span>
                         {pro}
@@ -292,7 +320,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                   ref={consRef}
                   className="shoe-detail-cons h-full flex flex-col bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
                 >
-                  <h2 className="text-lg sm:text-xl font-bold text-[var(--color-racing)] mb-4 flex items-center gap-2">
+                  <h2 className="type-h3 text-[var(--color-racing)] mb-4 flex items-center gap-2">
                     <span>👎</span> 단점
                   </h2>
                   <ul className="space-y-3">
@@ -303,7 +331,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: index * 0.1 }}
-                        className="flex items-start gap-2 text-[var(--color-foreground)]/80 leading-relaxed"
+                        className="flex items-start gap-2 type-body text-[var(--color-foreground)]/80"
                       >
                         <span className="text-[var(--color-racing)] mt-1">•</span>
                         {con}
@@ -321,7 +349,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
               viewport={{ once: true }}
               className="mt-8 bg-gradient-to-r from-[var(--color-asics-blue)]/10 to-[var(--color-asics-accent)]/10 rounded-2xl p-6 border border-[var(--color-asics-accent)]/20"
             >
-              <h2 className="text-lg sm:text-xl font-bold text-[var(--color-foreground)] mb-4 flex items-center gap-2">
+              <h2 className="type-h3 text-[var(--color-foreground)] mb-4 flex items-center gap-2">
                 <span>🎯</span> 이런 분에게 추천
               </h2>
               <div className="flex flex-wrap gap-3">
@@ -337,7 +365,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                       stiffness: 300,
                       damping: 20,
                     }}
-                    className="px-4 py-2 bg-[var(--color-card)] rounded-full text-sm text-[var(--color-foreground)]/80 border border-[var(--color-border)]"
+                    className="px-4 py-2 bg-[var(--color-card)] rounded-full type-body text-[var(--color-foreground)]/80 border border-[var(--color-border)]"
                   >
                     {item}
                   </motion.span>
@@ -349,25 +377,25 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
 
         {/* Similar Shoes - horizontal scroll carousel */}
         {similarShoes.length > 0 && (
-          <section className="py-16 bg-[var(--color-card)] overflow-x-clip">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <section className="section-space-tight bg-[var(--color-card)] overflow-x-clip">
+            <div className="layout-shell">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 className="mb-8"
               >
-                <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-foreground)] text-balance">
+                <h2 className="type-h2 text-[var(--color-foreground)] text-balance">
                   비슷한 러닝화
                 </h2>
-                <p className="text-[var(--color-foreground)]/60 text-pretty">
+                <p className="type-body text-[var(--color-foreground)]/62 text-pretty">
                   같은 카테고리의 다른 모델도 살펴보세요
                 </p>
               </motion.div>
             </div>
 
             <div
-              className="flex gap-4 lg:gap-6 overflow-x-auto md:overflow-visible pb-4 scrollbar-hide max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+              className="flex gap-4 lg:gap-6 overflow-x-auto md:overflow-visible pb-4 scrollbar-hide layout-shell"
               data-cursor="drag"
             >
               {similarShoes.map((similarShoe, index) => (

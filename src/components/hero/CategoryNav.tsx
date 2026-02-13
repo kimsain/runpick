@@ -2,12 +2,13 @@
 
 // Category navigation grid (daily, super-trainer, racing).
 // 6 core hover effects per card. GSAP header reveal (desktop only).
-// Links to /brand/asics/{categoryId}. Colors from categories.ts.
+// Links to /brand?category={categoryId}. Colors from categories.ts.
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { categories } from '@/data/categories';
+import { getAllBrandIds } from '@/utils/shoe-utils';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
@@ -15,8 +16,19 @@ import MagneticElement from '@/components/effects/MagneticElement';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 // Category card component — 6 core hover effects only
-function CategoryCard({ category, index }: { category: typeof categories[0]; index: number }) {
+function CategoryCard({
+  category,
+  index,
+  preferredBrandId,
+}: {
+  category: typeof categories[0];
+  index: number;
+  preferredBrandId: string | null;
+}) {
   const [isHovered, setIsHovered] = useState(false);
+  const href = preferredBrandId
+    ? `/brand/${preferredBrandId}/${category.id}`
+    : `/brand?category=${category.id}`;
 
   return (
     <motion.div
@@ -31,13 +43,13 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
       style={{ perspective: '1000px' }}
     >
       <MagneticElement strength={0.15}>
-        <Link href={`/brand/asics/${category.id}`}>
+        <Link href={href}>
           <motion.div
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             whileHover={{ y: -12, scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="group relative h-64 sm:h-72 rounded-3xl overflow-hidden border border-[var(--color-border)] hover:border-transparent transition-all duration-500"
+            className="group relative h-[17.5rem] sm:h-[18.5rem] rounded-3xl overflow-hidden border border-[var(--color-border)] hover:border-transparent transition-all duration-500"
             style={{
               background: `linear-gradient(135deg, var(--color-card) 0%, var(--color-card-hover) 100%)`,
               transformStyle: 'preserve-3d',
@@ -82,7 +94,7 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
 
               {/* 4. Category name with textShadow */}
               <motion.h3
-                className="text-2xl font-bold mb-2 transition-all duration-300 text-balance"
+                className="type-h3 mb-2 transition-all duration-300 text-balance"
                 style={{
                   color: category.color,
                   textShadow: isHovered ? `0 0 20px ${category.color}80` : 'none',
@@ -91,18 +103,18 @@ function CategoryCard({ category, index }: { category: typeof categories[0]; ind
                 {category.name}
               </motion.h3>
 
-              <p className="text-sm text-[var(--color-foreground)]/60 mb-2">
+              <p className="type-caption text-[var(--color-foreground)]/60 mb-2">
                 {category.nameKo}
               </p>
 
-              <p className="text-sm text-[var(--color-foreground)]/50 line-clamp-2 max-w-xs leading-relaxed">
+              <p className="type-body text-[var(--color-foreground)]/52 line-clamp-2 max-w-[30ch]">
                 {category.description}
               </p>
 
               {/* Subcategory badge */}
               <div className="mt-5 flex items-center gap-2">
                 <span
-                  className="text-xs px-3 py-1.5 rounded-full font-medium"
+                  className="type-caption px-3 py-1.5 rounded-full font-medium"
                   style={{
                     backgroundColor: `${category.color}20`,
                     color: category.color,
@@ -141,6 +153,7 @@ export default function CategoryNav() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
+  const [preferredBrandId, setPreferredBrandId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isDesktop) return;
@@ -168,13 +181,19 @@ export default function CategoryNav() {
     return () => ctx.revert();
   }, [isDesktop]);
 
+  useEffect(() => {
+    const stored = window.localStorage.getItem('runpick.preferredBrand');
+    const valid = stored && getAllBrandIds().includes(stored) ? stored : null;
+    setPreferredBrandId(valid);
+  }, []);
+
   return (
-    <section ref={sectionRef} className="py-16 sm:py-28 bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={sectionRef} className="section-space bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]">
+      <div className="layout-shell">
         {/* Animated section header */}
         <div
           ref={headerRef}
-          className="text-center mb-10 sm:mb-20 category-nav-header"
+          className="text-center mb-10 sm:mb-16 category-nav-header"
         >
           {/* Decorative line */}
           <motion.div
@@ -188,7 +207,7 @@ export default function CategoryNav() {
           <TextReveal
             as="h2"
             mode="clip"
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-foreground)] text-balance leading-tight"
+            className="type-h1 text-[var(--color-foreground)] text-balance"
           >
             <span
               style={{
@@ -204,7 +223,7 @@ export default function CategoryNav() {
           </TextReveal>
 
           <motion.p
-            className="mt-5 text-lg sm:text-xl text-[var(--color-foreground)]/60 text-pretty"
+            className="mt-4 type-lead text-[var(--color-foreground)]/62 text-pretty reading-measure"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -212,6 +231,12 @@ export default function CategoryNav() {
           >
             목적에 맞는 카테고리를 선택해보세요
           </motion.p>
+
+          <p className="mt-3 type-caption text-[var(--color-foreground)]/45">
+            {preferredBrandId
+              ? `선호 브랜드(${preferredBrandId.toUpperCase()}) 기준으로 바로 이동합니다.`
+              : '카테고리 선택 후 브랜드를 고를 수 있습니다.'}
+          </p>
 
           {/* Animated dots */}
           <motion.div
@@ -238,9 +263,14 @@ export default function CategoryNav() {
         </div>
 
         {/* Category cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" style={{ perspective: '1000px' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7" style={{ perspective: '1000px' }}>
           {categories.map((category, index) => (
-            <CategoryCard key={category.id} category={category} index={index} />
+            <CategoryCard
+              key={category.id}
+              category={category}
+              index={index}
+              preferredBrandId={preferredBrandId}
+            />
           ))}
         </div>
       </div>

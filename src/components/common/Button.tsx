@@ -79,6 +79,8 @@ export default function Button({
   `;
 
   const combinedClassName = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
+  const isExternalHref = typeof href === 'string' && /^(https?:)?\/\//.test(href);
+  const isDisabled = Boolean(props.disabled);
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -136,6 +138,36 @@ export default function Button({
   );
 
   if (href) {
+    if (isExternalHref) {
+      return (
+        <MagneticElement>
+          <motion.a
+            data-cursor="hover"
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{
+              scale: 1.05,
+              boxShadow: variant === 'primary'
+                ? '0 10px 30px -10px var(--color-asics-accent)'
+                : '0 5px 15px -5px rgba(0,0,0,0.2)',
+            }}
+            whileTap={{
+              scale: 0.95,
+            }}
+            transition={{
+              type: 'spring',
+              stiffness: 400,
+              damping: 17,
+            }}
+            className={combinedClassName}
+          >
+            {buttonContent}
+          </motion.a>
+        </MagneticElement>
+      );
+    }
+
     return (
       <MagneticElement>
         <Link href={href}>
@@ -169,13 +201,13 @@ export default function Button({
       <motion.button
         ref={buttonRef}
         data-cursor="hover"
-        whileHover={{
+        whileHover={isDisabled ? undefined : {
           scale: 1.05,
           boxShadow: variant === 'primary'
             ? '0 10px 30px -10px var(--color-asics-accent)'
             : '0 5px 15px -5px rgba(0,0,0,0.2)',
         }}
-        whileTap={{
+        whileTap={isDisabled ? undefined : {
           scale: 0.92,
         }}
         animate={isPressed ? {
@@ -187,7 +219,7 @@ export default function Button({
           damping: 17,
         }}
         className={combinedClassName}
-        onClick={handleClick}
+        onClick={isDisabled ? undefined : handleClick}
         {...props}
       >
         {buttonContent}
