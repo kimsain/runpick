@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -15,6 +15,7 @@ import { getBrandThemeVars } from '@/utils/brand-utils';
 import Link from 'next/link';
 import { DUR_FAST } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 
 interface BrandPageClientProps {
   brandId: string;
@@ -41,32 +42,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
   const sectionsRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
   const animateEnabled = !useReducedMotion();
-
-  // Track header visibility (mirrors Header.tsx logic)
-  const [headerHidden, setHeaderHidden] = useState(false);
-  const lastScrollY = useRef(0);
-  const headerHiddenRef = useRef(false);
-
-  useEffect(() => {
-    if (!isDesktop) {
-      setHeaderHidden(false);
-      return;
-    }
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      const isDown = currentY > lastScrollY.current;
-      const scrolled = currentY > 20;
-      const newHidden = isDown && scrolled;
-      lastScrollY.current = currentY;
-
-      if (newHidden !== headerHiddenRef.current) {
-        headerHiddenRef.current = newHidden;
-        setHeaderHidden(newHidden);
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isDesktop]);
+  const { isHidden: headerHidden } = useScrollVisibility({ enabled: isDesktop });
 
   useEffect(() => {
     if (brandId) {

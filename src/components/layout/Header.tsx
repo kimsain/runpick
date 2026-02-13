@@ -3,41 +3,18 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { DUR_FAST } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
-  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isDesktop = useIsDesktop();
   const animateEnabled = !useReducedMotion();
   const pathname = usePathname();
-  const lastScrollY = useRef(0);
-  const scrolledRef = useRef(false);
-  const directionRef = useRef<'up' | 'down'>('up');
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      const newDirection = currentY > lastScrollY.current ? 'down' : 'up';
-      const newScrolled = currentY > 20;
-      lastScrollY.current = currentY;
-
-      if (newDirection !== directionRef.current) {
-        directionRef.current = newDirection;
-        setScrollDirection(newDirection);
-      }
-      if (newScrolled !== scrolledRef.current) {
-        scrolledRef.current = newScrolled;
-        setScrolled(newScrolled);
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const { isScrolled, isHidden } = useScrollVisibility({ enabled: isDesktop });
 
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -67,16 +44,16 @@ export default function Header() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [mobileMenuOpen]);
 
-  const isHidden = isDesktop && scrollDirection === 'down' && scrolled && !mobileMenuOpen;
+  const hideByScroll = isHidden && !mobileMenuOpen;
 
   return (
     <>
       <motion.header
         initial={{ y: -100 }}
-        animate={{ y: isHidden ? -100 : 0 }}
+        animate={{ y: hideByScroll ? -100 : 0 }}
         transition={animateEnabled ? { duration: DUR_FAST, ease: 'easeOut' } : undefined}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled || mobileMenuOpen
+          isScrolled || mobileMenuOpen
             ? 'glass shadow-lg shadow-[var(--color-asics-blue)]/10 backdrop-blur-xl border-b border-white/10'
             : 'bg-transparent backdrop-blur-none border-b border-transparent'
         }`}

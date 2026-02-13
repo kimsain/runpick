@@ -14,6 +14,7 @@ import { CategoryId, SubcategoryId } from '@/types/shoe';
 import Link from 'next/link';
 import { DUR_FAST } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 
 interface CategoryPageClientProps {
   brandId: string;
@@ -37,31 +38,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
   );
   const listSectionRef = useRef<HTMLElement>(null);
 
-  // Track header visibility (mirrors Header.tsx logic)
-  const [headerHidden, setHeaderHidden] = useState(false);
-  const lastScrollY = useRef(0);
-  const headerHiddenRef = useRef(false);
-
-  useEffect(() => {
-    if (!isDesktop) {
-      setHeaderHidden(false);
-      return;
-    }
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      const isDown = currentY > lastScrollY.current;
-      const scrolled = currentY > 20;
-      const newHidden = isDown && scrolled;
-      lastScrollY.current = currentY;
-
-      if (newHidden !== headerHiddenRef.current) {
-        headerHiddenRef.current = newHidden;
-        setHeaderHidden(newHidden);
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isDesktop]);
+  const { isHidden: headerHidden } = useScrollVisibility({ enabled: isDesktop });
 
   useEffect(() => {
     if (brandId) {
