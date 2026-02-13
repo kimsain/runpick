@@ -8,7 +8,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
 import { EASE_OUT_EXPO, DUR_REVEAL } from '@/constants/animation';
-import Sparkle from '@/components/effects/Sparkle';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 // Featured badge component
@@ -24,7 +23,7 @@ function FeaturedBadge() {
       <div
         className="featured-badge-pulse flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)]/20 to-[var(--color-asics-accent)]/20 border border-[var(--color-asics-accent)]/30"
         style={{
-          animation: 'badge-pulse 3s ease-in-out infinite',
+          boxShadow: '0 0 8px 1px rgba(0, 209, 255, 0.15)',
         }}
       >
         <span className="text-lg">⭐</span>
@@ -143,7 +142,6 @@ export default function FeaturedShoes() {
     allShoes.find((s) => s.id === 'magic-speed-5'),
   ].filter(Boolean);
 
-  const isDesktop = useIsDesktop();
   // GSAP pin needs wider viewport (1024px+) — at 768px cards are too narrow
   const isPinDesktop = useIsDesktop(1024);
 
@@ -177,16 +175,6 @@ export default function FeaturedShoes() {
 
   return (
     <section ref={sectionRef} className="relative bg-[var(--color-background)]">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
-        {/* Sparkles */}
-        <Sparkle delay={0} x="15%" y="20%" size={16} opacity={0.6} duration={2} />
-        <Sparkle delay={1} x="85%" y="30%" size={16} opacity={0.6} duration={2} />
-        <Sparkle delay={2} x="10%" y="70%" size={16} opacity={0.6} duration={2} />
-        <Sparkle delay={1.5} x="90%" y="80%" size={16} opacity={0.6} duration={2} />
-        <Sparkle delay={0.5} x="50%" y="10%" size={16} opacity={0.6} duration={2} />
-      </div>
-
       <div
         ref={scrollContainerRef}
         className={`relative flex flex-col justify-center overflow-hidden ${!isPinDesktop ? '' : 'min-h-screen'}`}
@@ -201,22 +189,18 @@ export default function FeaturedShoes() {
             mode="clip"
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-balance leading-tight"
           >
-            <motion.span
+            <span
               className="inline-block"
-              animate={isDesktop ? {
-                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-              } : undefined}
-              transition={isDesktop ? { duration: 4, repeat: Infinity } : undefined}
               style={{
-                backgroundImage: 'linear-gradient(90deg, var(--color-foreground), var(--color-asics-blue), var(--color-asics-accent), var(--color-foreground))',
-                backgroundSize: '300% 100%',
+                backgroundImage: 'linear-gradient(90deg, var(--color-foreground), var(--color-asics-blue), var(--color-asics-accent))',
+                backgroundSize: '100% 100%',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
               }}
             >
               인기 러닝화
-            </motion.span>
+            </span>
           </TextReveal>
 
           <motion.p

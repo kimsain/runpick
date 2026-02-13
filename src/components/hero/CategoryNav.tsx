@@ -48,7 +48,7 @@ function HoverParticles({ isHovered, color }: { isHovered: boolean; color: strin
 }
 
 // Category card component
-function CategoryCard({ category, index, isDesktop }: { category: typeof categories[0]; index: number; isDesktop: boolean }) {
+function CategoryCard({ category, index }: { category: typeof categories[0]; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -295,21 +295,17 @@ export default function CategoryNav() {
             mode="clip"
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-foreground)] text-balance leading-tight"
           >
-            <motion.span
-              animate={isDesktop ? {
-                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-              } : undefined}
-              transition={isDesktop ? { duration: 5, repeat: Infinity } : undefined}
+            <span
               style={{
-                backgroundImage: 'linear-gradient(90deg, var(--color-foreground), var(--color-asics-blue), var(--color-asics-accent), var(--color-foreground))',
-                backgroundSize: '200% 100%',
+                backgroundImage: 'linear-gradient(90deg, var(--color-foreground), var(--color-asics-blue), var(--color-asics-accent))',
+                backgroundSize: '100% 100%',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
               }}
             >
               러닝화 카테고리
-            </motion.span>
+            </span>
           </TextReveal>
 
           <motion.p
@@ -340,7 +336,6 @@ export default function CategoryNav() {
                     : i === 1
                       ? 'var(--color-super-trainer)'
                       : 'var(--color-racing)',
-                  animation: `dot-pulse 2s ease-in-out ${i * 0.3}s infinite`,
                 }}
               />
             ))}
@@ -350,7 +345,7 @@ export default function CategoryNav() {
         {/* Category cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" style={{ perspective: '1000px' }}>
           {categories.map((category, index) => (
-            <CategoryCard key={category.id} category={category} index={index} isDesktop={isDesktop} />
+            <CategoryCard key={category.id} category={category} index={index} />
           ))}
         </div>
       </div>
