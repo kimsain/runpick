@@ -273,7 +273,7 @@ function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
           <h3 className="type-h3 text-[var(--color-foreground)] group-hover:text-gradient transition-all duration-300 text-balance">
             {shoe.name}
           </h3>
-          <p className="mt-1 type-body text-[var(--color-foreground)]/60 line-clamp-2">
+          <p className="mt-1 type-body type-readable text-[var(--color-foreground)]/60">
             {shoe.shortDescription}
           </p>
 

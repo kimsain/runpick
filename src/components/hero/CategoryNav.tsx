@@ -123,7 +123,7 @@ function CategoryCard({
                 {category.nameKo}
               </p>
 
-              <p className="type-body text-[var(--color-foreground)]/52 line-clamp-2 max-w-[30ch]">
+              <p className="type-body type-readable text-[var(--color-foreground)]/52 max-w-[30ch]">
                 {category.description}
               </p>
 

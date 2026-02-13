@@ -126,15 +126,13 @@ export default function QuizCTA() {
             </TextReveal>
 
             <motion.p
-              className="type-lead text-white/58 reading-measure mb-9 text-pretty"
+              className="type-lead type-readable text-white/58 reading-measure mb-9 text-pretty"
               initial={animateEnabled ? { opacity: 0 } : false}
               whileInView={animateEnabled ? { opacity: 1 } : undefined}
               viewport={{ once: true }}
               transition={animateEnabled ? { delay: 0.3, duration: 0.6 } : undefined}
             >
-              러닝 스타일, 목표, 발 유형을 분석해서
-              <br className="hidden sm:block" />
-              딱 맞는 러닝화를 추천해드려요.
+              러닝 스타일, 목표, 발 유형을 분석해서 딱 맞는 러닝화를 추천해드려요.
             </motion.p>
 
             {/* CTA Button */}
