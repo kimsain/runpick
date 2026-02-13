@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { ScrollTrigger, gsap, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
 import TextReveal from '@/components/effects/TextReveal';
@@ -14,6 +14,7 @@ export default function Footer() {
   const linksRef = useRef<HTMLDivElement>(null);
   const brands = getAllBrands();
   const { isDesktop, hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
   const isEnabled = isDesktop && hasMotionBudget;
 
   useEffect(() => {
@@ -68,9 +69,9 @@ export default function Footer() {
               카탈로그
             </h3>
             <ul className="space-y-2">
-              <FooterLink href="/brand">전체 브랜드</FooterLink>
+              <FooterLink href="/brand" animateEnabled={animateEnabled}>전체 브랜드</FooterLink>
               {brands.map((brand) => (
-                <FooterLink key={brand.id} href={`/brand/${brand.id}`}>
+                <FooterLink key={brand.id} href={`/brand/${brand.id}`} animateEnabled={animateEnabled}>
                   {brand.name}
                 </FooterLink>
               ))}
@@ -82,7 +83,9 @@ export default function Footer() {
               도움말
             </h3>
             <ul className="space-y-2">
-              <FooterLink href="/quiz">추천 퀴즈</FooterLink>
+              <FooterLink href="/quiz" animateEnabled={animateEnabled}>
+                추천 퀴즈
+              </FooterLink>
             </ul>
           </div>
         </div>
@@ -91,8 +94,8 @@ export default function Footer() {
           <motion.p
             className="text-center type-caption text-[var(--color-foreground)]/40"
             initial={{ opacity: 0.4 }}
-            whileHover={{ opacity: 0.7 }}
-            transition={{ duration: 0.3 }}
+            whileHover={animateEnabled ? { opacity: 0.7 } : undefined}
+            transition={animateEnabled ? { duration: 0.3 } : undefined}
           >
             &copy; 2024 RunPick. 러닝화 정보는 공식 사이트 기준이며, 가격은 변동될 수 있습니다.
           </motion.p>
@@ -110,14 +113,22 @@ function FloatingShoe() {
   );
 }
 
-function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+function FooterLink({
+  href,
+  children,
+  animateEnabled,
+}: {
+  href: string;
+  children: React.ReactNode;
+  animateEnabled: boolean;
+}) {
   return (
     <li>
       <Link href={href}>
         <motion.span
           className="type-body text-[var(--color-foreground)]/60 hover:text-[var(--color-foreground)] transition-colors inline-flex items-center gap-2 relative min-h-[44px]"
-          whileHover={{ x: 4 }}
-          transition={{ duration: 0.2 }}
+          whileHover={animateEnabled ? { x: 4 } : undefined}
+          transition={animateEnabled ? { duration: 0.2 } : undefined}
         >
           {children}
         </motion.span>

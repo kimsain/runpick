@@ -7,12 +7,13 @@ import "./globals.css";
 import LayoutClient from "@/components/layout/LayoutClient";
 
 export const metadata: Metadata = {
-  title: "RunPick - 당신에게 딱 맞는 러닝화를 찾아드립니다",
-  description: "Asics 러닝화 카탈로그 및 추천 퀴즈. Daily, Super Trainer, Racing 카테고리별로 완벽한 러닝화를 찾아보세요.",
-  keywords: ["러닝화", "아식스", "Asics", "러닝", "마라톤", "조깅", "운동화"],
+  title: "RunPick - 나이키, 아디다스, 아식스 런닝화 카탈로그",
+  description:
+    "러닝화 카탈로그 및 맞춤 추천 퀴즈. Daily, Super Trainer, Racing 카테고리별로 나이키·아디다스·아식스 러닝화를 쉽게 비교하세요.",
+  keywords: ["러닝화", "나이키", "Nike", "아디다스", "Adidas", "아식스", "Asics", "카탈로그", "러닝", "퀴즈", "추천", "마라톤", "조깅", "운동화"],
   openGraph: {
-    title: "RunPick - 당신에게 딱 맞는 러닝화",
-    description: "Asics 러닝화 카탈로그 및 추천 퀴즈",
+    title: "RunPick - 나이키/아디다스/아식스 런닝화 매칭",
+    description: "브랜드·카테고리 기반 런닝화 카탈로그와 5개 질문 추천 퀴즈로 내게 맞는 신발을 찾습니다.",
     type: "website",
   },
 };
