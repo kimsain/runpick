@@ -353,7 +353,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
 
         {/* Similar Shoes - horizontal scroll carousel */}
         {similarShoes.length > 0 && (
-          <section className="py-16 bg-[var(--color-card)]">
+          <section className="py-16 bg-[var(--color-card)] overflow-x-clip">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -368,17 +368,17 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                   같은 카테고리의 다른 모델도 살펴보세요
                 </p>
               </motion.div>
+            </div>
 
-              <div
-                className="flex gap-4 lg:gap-6 overflow-x-auto pb-4 scrollbar-hide"
-                data-cursor="drag"
-              >
-                {similarShoes.map((similarShoe, index) => (
-                  <div key={similarShoe.id} className="min-w-[260px] sm:min-w-[340px] shrink-0">
-                    <ShoeCard shoe={similarShoe} index={index} />
-                  </div>
-                ))}
-              </div>
+            <div
+              className="flex gap-4 lg:gap-6 overflow-x-auto md:overflow-visible pb-4 scrollbar-hide max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+              data-cursor="drag"
+            >
+              {similarShoes.map((similarShoe, index) => (
+                <div key={similarShoe.id} className="min-w-[260px] sm:min-w-[340px] md:min-w-0 md:flex-1 shrink-0 md:shrink">
+                  <ShoeCard shoe={similarShoe} index={index} />
+                </div>
+              ))}
             </div>
           </section>
         )}
