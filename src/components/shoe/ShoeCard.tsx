@@ -10,7 +10,7 @@ import { RunningShoe, ShoeSpecs } from '@/types/shoe';
 import Badge from '@/components/common/Badge';
 import { getCategoryById } from '@/data/categories';
 import { hasShoeImage } from '@/data/image-manifest';
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useMemo } from 'react';
 import ImageDistortion from '@/components/effects/ImageDistortion';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import SmartShoeImage from '@/components/common/SmartShoeImage';
@@ -127,7 +127,8 @@ function ShoeCardImage({ shoe, category, index, isHovered }: {
 }
 
 export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
-  const category = getCategoryById(shoe.categoryId);
+  const category = useMemo(() => getCategoryById(shoe.categoryId), [shoe.categoryId]);
+  const topSpecs = useMemo(() => getTopSpecs(shoe.specs), [shoe.specs]);
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const isDesktop = useIsDesktop();
@@ -238,7 +239,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
 
           {/* Top 2 spec scores */}
           <div className="mt-2 flex flex-col gap-1">
-            {getTopSpecs(shoe.specs).map((spec) => (
+            {topSpecs.map((spec) => (
               <SpecDotBar key={spec.key} label={spec.label} value={spec.value} />
             ))}
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -18,20 +18,25 @@ export default function BrandIndexPage() {
   const categoryParam = searchParams.get('category');
   const selectedCategory = categoryParam && isCategoryId(categoryParam) ? categoryParam : null;
   const [preferredBrand, setPreferredBrand] = useState<string | null>(null);
-  const selectedCategoryInfo = selectedCategory
-    ? categories.find((item) => item.id === selectedCategory)
-    : null;
-
-  const brandCards = getAllBrands().map((brand) => ({
-    ...brand,
-    shoeCount: getShoesByBrand(brand.id).length,
-  }));
+  const selectedCategoryInfo = useMemo(
+    () => (selectedCategory ? categories.find((item) => item.id === selectedCategory) : null),
+    [selectedCategory]
+  );
+  const brandCards = useMemo(
+    () =>
+      getAllBrands().map((brand) => ({
+        ...brand,
+        shoeCount: getShoesByBrand(brand.id).length,
+      })),
+    []
+  );
+  const allBrandIds = useMemo(() => getAllBrandIds(), []);
 
   useEffect(() => {
     const stored = window.localStorage.getItem('runpick.preferredBrand');
-    const valid = stored && getAllBrandIds().includes(stored) ? stored : null;
+    const valid = stored && allBrandIds.includes(stored) ? stored : null;
     setPreferredBrand(valid);
-  }, []);
+  }, [allBrandIds]);
 
   return (
     <>

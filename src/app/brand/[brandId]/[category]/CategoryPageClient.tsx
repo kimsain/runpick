@@ -21,10 +21,14 @@ interface CategoryPageClientProps {
 }
 
 export default function CategoryPageClient({ brandId, category }: CategoryPageClientProps) {
-  const categoryData = getCategoryById(category as CategoryId);
-  const subcategories = getSubcategoriesByCategory(category as CategoryId);
-  const allCategoryShoes = getShoesByBrandAndCategory(brandId, category as CategoryId);
-  const brand = getBrandById(brandId);
+  const categoryId = category as CategoryId;
+  const categoryData = useMemo(() => getCategoryById(categoryId), [categoryId]);
+  const subcategories = useMemo(() => getSubcategoriesByCategory(categoryId), [categoryId]);
+  const allCategoryShoes = useMemo(
+    () => getShoesByBrandAndCategory(brandId, categoryId),
+    [brandId, categoryId]
+  );
+  const brand = useMemo(() => getBrandById(brandId), [brandId]);
   const isDesktop = useIsDesktop();
 
   const [selectedSubcategory, setSelectedSubcategory] = useState<SubcategoryId | 'all'>(
@@ -86,10 +90,13 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
     );
   }
 
-  const displayedShoes =
-    selectedSubcategory === 'all'
-      ? allCategoryShoes
-      : allCategoryShoes.filter((s) => s.subcategoryId === selectedSubcategory);
+  const displayedShoes = useMemo(
+    () =>
+      selectedSubcategory === 'all'
+        ? allCategoryShoes
+        : allCategoryShoes.filter((s) => s.subcategoryId === selectedSubcategory),
+    [allCategoryShoes, selectedSubcategory]
+  );
   const subcategoryCounts = useMemo(() => {
     const counts = new Map<SubcategoryId, number>();
     allCategoryShoes.forEach((shoe) => {
@@ -102,7 +109,17 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
     () => subcategories.filter((sub) => (subcategoryCounts.get(sub.id) || 0) > 0),
     [subcategories, subcategoryCounts]
   );
-  const brandThemeVars = getBrandThemeVars(brandId, brand?.color);
+  const selectedSubcategoryInfo = useMemo(
+    () =>
+      selectedSubcategory === 'all'
+        ? null
+        : subcategories.find((sub) => sub.id === selectedSubcategory) || null,
+    [selectedSubcategory, subcategories]
+  );
+  const brandThemeVars = useMemo(
+    () => getBrandThemeVars(brandId, brand?.color),
+    [brandId, brand?.color]
+  );
 
   const handleSelectSubcategory = (next: SubcategoryId | 'all') => {
     setSelectedSubcategory(next);
@@ -175,7 +192,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
               <div className="mt-5">
                 <BrandSwitcher
                   currentBrandId={brandId}
-                  categoryId={category as CategoryId}
+                  categoryId={categoryId}
                   className="justify-center"
                 />
               </div>
@@ -255,19 +272,16 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-8"
               >
-                {(() => {
-                  const sub = subcategories.find((s) => s.id === selectedSubcategory);
-                  return sub ? (
-                    <>
-                      <h2 className="type-h2 text-[var(--color-foreground)] text-balance">
-                        {sub.name}
-                      </h2>
-                      <p className="type-body text-[var(--color-foreground)]/62 text-pretty">
-                        {sub.description}
-                      </p>
-                    </>
-                  ) : null;
-                })()}
+                {selectedSubcategoryInfo ? (
+                  <>
+                    <h2 className="type-h2 text-[var(--color-foreground)] text-balance">
+                      {selectedSubcategoryInfo.name}
+                    </h2>
+                    <p className="type-body text-[var(--color-foreground)]/62 text-pretty">
+                      {selectedSubcategoryInfo.description}
+                    </p>
+                  </>
+                ) : null}
               </motion.div>
             )}
 

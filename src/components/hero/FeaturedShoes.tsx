@@ -5,7 +5,7 @@
 // Mobile/Tablet: CSS scroll-snap carousel. Uses isPinDesktop(1024), not 768.
 
 import { motion } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import ShoeCard from '@/components/shoe/ShoeCard';
 import { getAllShoes } from '@/utils/shoe-utils';
 import gsap from 'gsap';
@@ -136,15 +136,19 @@ export default function FeaturedShoes() {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const allShoes = getAllShoes();
+  const allShoes = useMemo(() => getAllShoes(), []);
   // 각 카테고리에서 인기 모델 Top 5
-  const featuredShoes = [
-    allShoes.find((s) => s.id === 'novablast-5'),
-    allShoes.find((s) => s.id === 'superblast-2'),
-    allShoes.find((s) => s.id === 'metaspeed-sky-tokyo'),
-    allShoes.find((s) => s.id === 'gel-nimbus-28'),
-    allShoes.find((s) => s.id === 'magic-speed-5'),
-  ].filter(Boolean);
+  const featuredShoes = useMemo(
+    () =>
+      [
+        allShoes.find((s) => s.id === 'novablast-5'),
+        allShoes.find((s) => s.id === 'superblast-2'),
+        allShoes.find((s) => s.id === 'metaspeed-sky-tokyo'),
+        allShoes.find((s) => s.id === 'gel-nimbus-28'),
+        allShoes.find((s) => s.id === 'magic-speed-5'),
+      ].filter(Boolean),
+    [allShoes]
+  );
 
   // GSAP pin needs wider viewport (1024px+) — at 768px cards are too narrow
   const isPinDesktop = useIsDesktop(1024);

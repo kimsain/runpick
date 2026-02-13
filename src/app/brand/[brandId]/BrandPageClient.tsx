@@ -1,9 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
@@ -12,10 +10,10 @@ import BrandSwitcher from '@/components/common/BrandSwitcher';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { categories } from '@/data/categories';
-import { getShoesByBrand, getShoesByBrandAndCategory, getBrandById } from '@/utils/shoe-utils';
+import { getShoesByBrand, getBrandById } from '@/utils/shoe-utils';
 import { getBrandThemeVars } from '@/utils/brand-utils';
 import Link from 'next/link';
-import { STAGGER_NORMAL, DUR_FAST } from '@/constants/animation';
+import { DUR_FAST } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 interface BrandPageClientProps {
@@ -23,8 +21,23 @@ interface BrandPageClientProps {
 }
 
 export default function BrandPageClient({ brandId }: BrandPageClientProps) {
-  const brand = getBrandById(brandId);
-  const shoes = getShoesByBrand(brandId);
+  const brand = useMemo(() => getBrandById(brandId), [brandId]);
+  const shoes = useMemo(() => getShoesByBrand(brandId), [brandId]);
+  const shoesByCategory = useMemo(() => {
+    const grouped = new Map<string, typeof shoes>();
+    for (const category of categories) {
+      grouped.set(category.id, []);
+    }
+    for (const shoe of shoes) {
+      const bucket = grouped.get(shoe.categoryId);
+      if (bucket) {
+        bucket.push(shoe);
+      } else {
+        grouped.set(shoe.categoryId, [shoe]);
+      }
+    }
+    return grouped;
+  }, [shoes]);
   const sectionsRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
 
@@ -60,39 +73,6 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
     }
   }, [brandId]);
 
-  useEffect(() => {
-    if (!isDesktop) return;
-    gsap.registerPlugin(ScrollTrigger);
-    const triggers: ScrollTrigger[] = [];
-
-    // Stagger reveal for each category section's shoe cards
-    const sections = sectionsRef.current?.querySelectorAll('.category-section');
-    sections?.forEach((section) => {
-      const cards = section.querySelectorAll('.shoe-card-wrapper');
-      if (cards.length === 0) return;
-
-      cards.forEach((card, i) => {
-        const tween = gsap.to(card, {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 95%',
-              toggleActions: 'play none none none',
-            },
-            delay: i * STAGGER_NORMAL,
-          });
-        if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
-      });
-    });
-
-    return () => {
-      triggers.forEach((t) => t.kill());
-    };
-  }, [isDesktop]);
-
   if (!brand) {
     return (
       <>
@@ -118,7 +98,10 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
     );
   }
 
-  const brandThemeVars = getBrandThemeVars(brand.id, brand.color);
+  const brandThemeVars = useMemo(
+    () => getBrandThemeVars(brand.id, brand.color),
+    [brand.id, brand.color]
+  );
 
   return (
     <>
@@ -182,7 +165,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                         {category.name}
                       </span>
                       <span className="ml-0.5 sm:ml-2 text-[10px] sm:text-sm text-[var(--color-foreground)]/40">
-                        {getShoesByBrandAndCategory(brandId, category.id).length}
+                        {shoesByCategory.get(category.id)?.length || 0}
                       </span>
                     </motion.div>
                   </Link>
@@ -198,7 +181,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
         {/* All Shoes by Category */}
         <div ref={sectionsRef}>
           {categories.map((category) => {
-            const categoryShoes = shoes.filter((s) => s.categoryId === category.id);
+            const categoryShoes = shoesByCategory.get(category.id) || [];
             if (categoryShoes.length === 0) return null;
 
             return (

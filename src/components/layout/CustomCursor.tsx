@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
 import { SPRING_SNAPPY } from '@/constants/animation';
 
@@ -10,6 +10,7 @@ export default function CustomCursor() {
   const [cursorState, setCursorState] = useState<CursorState>('default');
   const [isVisible, setIsVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
+  const cursorStateRef = useRef<CursorState>('default');
 
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
@@ -18,25 +19,32 @@ export default function CustomCursor() {
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
+  const updateCursorState = useCallback((next: CursorState) => {
+    if (cursorStateRef.current === next) return;
+    cursorStateRef.current = next;
+    setCursorState(next);
+  }, []);
+
   const moveCursor = useCallback(
     (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
-      if (!isVisible) setIsVisible(true);
+      setIsVisible((prev) => (prev ? prev : true));
     },
-    [cursorX, cursorY, isVisible]
+    [cursorX, cursorY]
   );
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.matchMedia('(max-width: 768px)').matches || 'ontouchstart' in window);
+      const next = window.matchMedia('(max-width: 768px)').matches || 'ontouchstart' in window;
+      setIsMobile((prev) => (prev === next ? prev : next));
     };
 
     checkMobile();
     window.addEventListener('resize', checkMobile);
 
     if (!isMobile) {
-      window.addEventListener('mousemove', moveCursor);
+      window.addEventListener('mousemove', moveCursor, { passive: true });
 
       const handleMouseOver = (e: MouseEvent) => {
         const target = e.target as HTMLElement;
@@ -44,7 +52,7 @@ export default function CustomCursor() {
         // Check data-cursor attribute first
         const cursorAttr = target.closest('[data-cursor]')?.getAttribute('data-cursor');
         if (cursorAttr === 'view' || cursorAttr === 'drag' || cursorAttr === 'text' || cursorAttr === 'hover') {
-          setCursorState(cursorAttr as CursorState);
+          updateCursorState(cursorAttr as CursorState);
           return;
         }
 
@@ -57,7 +65,7 @@ export default function CustomCursor() {
           target.classList.contains('cursor-pointer') ||
           target.closest('.cursor-pointer')
         ) {
-          setCursorState('hover');
+          updateCursorState('hover');
           return;
         }
 
@@ -71,9 +79,11 @@ export default function CustomCursor() {
           target.tagName === 'LI' ||
           target.tagName === 'LABEL'
         ) {
-          setCursorState('text');
+          updateCursorState('text');
           return;
         }
+
+        updateCursorState('default');
       };
 
       const handleMouseOut = (e: MouseEvent) => {
@@ -82,7 +92,7 @@ export default function CustomCursor() {
 
         // Only reset if we're leaving a data-cursor area
         if (target.closest('[data-cursor]') && !relatedTarget?.closest('[data-cursor]')) {
-          setCursorState('default');
+          updateCursorState('default');
           return;
         }
 
@@ -101,7 +111,7 @@ export default function CustomCursor() {
           target.tagName === 'LI' ||
           target.tagName === 'LABEL'
         ) {
-          setCursorState('default');
+          updateCursorState('default');
         }
       };
 
@@ -131,7 +141,7 @@ export default function CustomCursor() {
     return () => {
       window.removeEventListener('resize', checkMobile);
     };
-  }, [moveCursor, isMobile]);
+  }, [moveCursor, isMobile, updateCursorState]);
 
   if (isMobile) return null;
 
