@@ -127,7 +127,7 @@ function SpotlightShoeCard({
 
       {/* The actual shoe card */}
       <motion.div
-        whileHover={animateEnabled ? { y: -8, scale: 1.02 } : undefined}
+        whileHover={animateEnabled ? { y: -8, scale: 1.02, zIndex: 20 } : undefined}
         transition={animateEnabled ? { duration: 0.3 } : undefined}
         className="relative z-10"
       >

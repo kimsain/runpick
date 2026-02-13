@@ -214,6 +214,7 @@ function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
         whileHover={isMotionEnabled ? {
           y: -12,
           scale: 1.03,
+          zIndex: 20,
           transition: {
             type: 'spring',
             stiffness: 400,

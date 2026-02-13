@@ -53,7 +53,7 @@ export default function QuizQuestion({
                   : undefined
               }
               transition={animateEnabled ? { delay: index * 0.08, duration: 0.3 } : undefined}
-              whileHover={animateEnabled && !isSelected ? { scale: 1.02, y: -4 } : undefined}
+              whileHover={animateEnabled && !isSelected ? { scale: 1.02, y: -4, zIndex: 10 } : undefined}
               whileTap={animateEnabled && !isSelected ? { scale: 0.98 } : undefined}
               onClick={() => handleClick(option.id)}
               aria-label={option.labelKo}

@@ -53,7 +53,7 @@ function CategoryCard({
           <motion.div
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
-            whileHover={animateEnabled ? { y: -12, scale: 1.03 } : undefined}
+            whileHover={animateEnabled ? { y: -12, scale: 1.03, zIndex: 20 } : undefined}
             whileTap={animateEnabled ? { scale: 0.97 } : undefined}
             className="group relative h-[17.5rem] sm:h-[18.5rem] rounded-3xl overflow-hidden border border-[var(--color-border)] hover:border-transparent transition-all duration-500"
             style={{
