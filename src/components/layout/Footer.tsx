@@ -35,8 +35,7 @@ export default function Footer() {
             scrollTrigger: {
               trigger: linksRef.current,
               start: 'top 90%',
-              end: 'top 60%',
-              scrub: 1,
+              toggleActions: 'play none none none',
             },
           }
         );

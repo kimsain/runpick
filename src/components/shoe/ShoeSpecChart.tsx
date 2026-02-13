@@ -98,8 +98,7 @@ export default function ShoeSpecChart({ specs, animated = false }: ShoeSpecChart
             scrollTrigger: {
               trigger: bar,
               start: 'top 90%',
-              end: 'top 60%',
-              scrub: 1,
+              toggleActions: 'play none none none',
             },
           }
         );

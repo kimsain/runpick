@@ -28,12 +28,12 @@ export default function QuizCTA() {
           {
             scale: 1,
             opacity: 1,
+            duration: 0.8,
             ease: 'power2.out',
             scrollTrigger: {
               trigger: containerRef.current,
               start: 'top 85%',
-              end: 'top 40%',
-              scrub: 1,
+              toggleActions: 'play none none none',
             },
           }
         );

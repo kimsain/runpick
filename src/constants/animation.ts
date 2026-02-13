@@ -22,10 +22,3 @@ export const STAGGER_SLOW = 0.15;
 
 // Mobile breakpoint
 export const MOBILE_BREAKPOINT = 768;
-
-// ScrollTrigger defaults
-export const SCROLL_TRIGGER_DEFAULTS = {
-  start: 'top 85%',
-  end: 'top 20%',
-  scrub: 1,
-};

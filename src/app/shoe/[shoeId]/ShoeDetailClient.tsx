@@ -47,8 +47,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
           scrollTrigger: {
             trigger: prosRef.current,
             start: 'top 85%',
-            end: 'top 50%',
-            scrub: 1,
+            toggleActions: 'play none none none',
           },
         }
       );
@@ -68,8 +67,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
           scrollTrigger: {
             trigger: consRef.current,
             start: 'top 85%',
-            end: 'top 50%',
-            scrub: 1,
+            toggleActions: 'play none none none',
           },
         }
       );
