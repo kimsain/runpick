@@ -14,10 +14,10 @@ import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 type CursorState = 'default' | 'hover' | 'text' | 'view' | 'drag';
 
 export default function CustomCursor() {
-  const animateEnabled = !useReducedMotion();
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const animateEnabled = !useReducedMotion() && hasMotionBudget;
   const [cursorState, setCursorState] = useState<CursorState>('default');
   const [isVisible, setIsVisible] = useState(false);
-  const { hasMotionBudget } = useInteractionCapabilities();
   const cursorStateRef = useRef<CursorState>('default');
 
   const cursorX = useMotionValue(-100);
@@ -43,7 +43,7 @@ export default function CustomCursor() {
   );
 
   useEffect(() => {
-    if (!animateEnabled || !hasMotionBudget) return;
+    if (!animateEnabled) return;
     window.addEventListener('mousemove', moveCursor, { passive: true });
 
     const handleMouseOver = (e: MouseEvent) => {
