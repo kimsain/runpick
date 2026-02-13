@@ -164,8 +164,11 @@ export default function FeaturedShoes() {
       const cards = container?.querySelector('.horizontal-cards') as HTMLElement | null;
       if (cards && container) {
         const headerHeight = headerRef.current?.offsetHeight ?? 0;
-        // Start pin earlier so the section title remains visible with cards on desktop.
-        const startOffset = Math.min(Math.max(Math.round(headerHeight * 0.22), 24), 64);
+        // Nudge pin start slightly lower so card bottom area (price) is visible before horizontal scroll begins.
+        const startOffset = Math.min(
+          Math.max(Math.round(headerHeight * 0.22) + 8, 30),
+          72
+        );
 
         gsap.to(cards, {
           x: () => -(cards.scrollWidth - window.innerWidth + 100),

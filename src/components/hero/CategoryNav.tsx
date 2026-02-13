@@ -233,15 +233,6 @@ export default function CategoryNav() {
           ref={headerRef}
           className="text-center mb-10 sm:mb-16 category-nav-header"
         >
-          {/* Decorative line */}
-          <motion.div
-            initial={animateEnabled ? { scaleX: 0 } : false}
-            whileInView={animateEnabled ? { scaleX: 1 } : undefined}
-            viewport={{ once: true }}
-            transition={animateEnabled ? { duration: 0.8, delay: 0.2 } : undefined}
-            className="w-20 h-1 mx-auto mb-6 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)]"
-          />
-
           <TextReveal
             as="h2"
             mode="clip"

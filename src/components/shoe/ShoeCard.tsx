@@ -312,6 +312,11 @@ function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
               value={`${shoe.specs.weight}g`}
             />
             <ShoeMetaItem
+              icon="↕"
+              label="드랍"
+              value={`${shoe.specs.drop}mm`}
+            />
+            <ShoeMetaItem
               icon="🦶"
               label="힐스택"
               value={`${formatMillimeter(shoe.specs.stackHeight.heel)}mm`}
@@ -320,11 +325,6 @@ function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
               icon="👣"
               label="포어스택"
               value={`${formatMillimeter(shoe.specs.stackHeight.forefoot)}mm`}
-            />
-            <ShoeMetaItem
-              icon="↕"
-              label="드랍"
-              value={`${shoe.specs.drop}mm`}
             />
           </div>
 

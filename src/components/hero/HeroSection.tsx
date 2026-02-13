@@ -171,7 +171,7 @@ export default function HeroSection() {
           </motion.p>
 
           {/* CTA Buttons with stagger clip-path reveal */}
-          <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-10">
             <PulsingButton href="/quiz" delay={1.5} animateEnabled={animateEnabled}>
               나에게 맞는 신발 찾기
             </PulsingButton>
