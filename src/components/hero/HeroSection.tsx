@@ -3,10 +3,8 @@
 import { motion } from 'framer-motion';
 import Button from '@/components/common/Button';
 import TextReveal from '@/components/effects/TextReveal';
-import FloatingShapes from '@/components/effects/FloatingShapes';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { EASE_OUT_EXPO, STAGGER_NORMAL } from '@/constants/animation';
-import Sparkle from '@/components/effects/Sparkle';
 
 // Pulsing CTA button wrapper
 function PulsingButton({ children, href, variant = 'primary', delay = 0 }: {
@@ -15,8 +13,6 @@ function PulsingButton({ children, href, variant = 'primary', delay = 0 }: {
   variant?: 'primary' | 'outline';
   delay?: number;
 }) {
-  const isPrimary = variant === 'primary';
-
   return (
     <motion.div
       className="relative"
@@ -28,17 +24,6 @@ function PulsingButton({ children, href, variant = 'primary', delay = 0 }: {
         ease: EASE_OUT_EXPO as unknown as number[],
       }}
     >
-      {/* Glow effect behind button */}
-      {isPrimary && (
-        <div
-          className="absolute inset-0 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)] hidden md:block"
-          style={{
-            filter: 'blur(18px)',
-            willChange: 'opacity, transform',
-            animation: 'button-glow 2s ease-in-out infinite',
-          }}
-        />
-      )}
       <Button href={href} size="lg" variant={variant === 'outline' ? 'outline' : undefined}>
         {children}
       </Button>
@@ -54,23 +39,15 @@ export default function HeroSection() {
         className="absolute inset-0 bg-gradient-to-br from-[var(--color-background)] via-[var(--color-background)] to-[var(--color-asics-blue)]/10"
       />
 
-      {/* Animated gradient wave background - CSS animation to avoid JS/scroll conflicts */}
+      {/* Static gradient overlay */}
       <div className="absolute inset-0 overflow-hidden">
         <div
-          className="absolute inset-0 opacity-30 hero-gradient-wave"
+          className="absolute inset-0 opacity-20"
+          style={{
+            background: 'linear-gradient(135deg, transparent 20%, var(--color-asics-blue) 50%, var(--color-asics-accent) 80%)',
+            filter: 'blur(60px)',
+          }}
         />
-      </div>
-
-      {/* FloatingShapes replacing 20 particles */}
-      <FloatingShapes color="var(--color-asics-blue)" count={4} />
-
-      {/* Subtle sparkles (keep 5) */}
-      <div className="absolute inset-0 pointer-events-none hidden md:block">
-        <Sparkle delay={0} x="12%" y="25%" />
-        <Sparkle delay={1.2} x="88%" y="35%" />
-        <Sparkle delay={2.4} x="8%" y="75%" />
-        <Sparkle delay={0.8} x="92%" y="65%" />
-        <Sparkle delay={1.6} x="50%" y="15%" />
       </div>
 
       {/* Content */}
@@ -92,7 +69,7 @@ export default function HeroSection() {
             <span
               className="hero-eyebrow-badge relative z-10 text-[11px] sm:text-sm font-medium tracking-wider uppercase px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[var(--color-asics-accent)]/30 bg-[var(--color-asics-accent)]/5 text-center text-[var(--color-asics-accent)]"
               style={{
-                animation: 'badge-pulse 3s ease-in-out infinite',
+                boxShadow: '0 0 8px 1px rgba(0, 209, 255, 0.15)',
               }}
             >
               Running Shoe Catalog & Recommendation
@@ -188,84 +165,34 @@ function ScrollIndicator() {
       whileHover={{ scale: 1.1 }}
       data-cursor="pointer"
     >
-      <motion.span
-        className="text-xs tracking-wider uppercase font-medium text-[var(--color-foreground)]/50 group-hover:text-[var(--color-asics-accent)] transition-colors"
-        animate={{
-          opacity: [0.5, 1, 0.5],
-        }}
-        transition={{ duration: 2, repeat: Infinity }}
-      >
+      <span className="text-xs tracking-wider uppercase font-medium text-[var(--color-foreground)]/50 group-hover:text-[var(--color-asics-accent)] transition-colors">
         Scroll to explore
-      </motion.span>
+      </span>
 
-      {/* Mouse icon with animated scroll wheel */}
       <motion.div
-        animate={{ y: [0, 8, 0] }}
+        animate={{ y: [0, 6, 0] }}
         transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         className="relative"
       >
         <div className="w-6 h-10 rounded-full border-2 border-[var(--color-foreground)]/30 group-hover:border-[var(--color-asics-accent)]/50 transition-colors flex items-start justify-center p-1.5">
           <motion.div
-            animate={{
-              y: [0, 8, 0],
-              opacity: [1, 0.5, 1],
-            }}
+            animate={{ y: [0, 8, 0], opacity: [1, 0.3, 1] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
             className="w-1.5 h-3 rounded-full bg-gradient-to-b from-[var(--color-asics-accent)] to-[var(--color-asics-blue)]"
           />
         </div>
-
-        {/* Pulsing ring effect */}
-        <motion.div
-          className="absolute inset-0 rounded-full border-2 border-[var(--color-asics-accent)]"
-          animate={{
-            scale: [1, 1.5, 1.5],
-            opacity: [0.5, 0, 0],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeOut',
-          }}
-        />
       </motion.div>
 
-      {/* Bouncing arrow */}
-      <motion.div
-        animate={{ y: [0, 5, 0] }}
-        transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        className="text-[var(--color-foreground)]/40 group-hover:text-[var(--color-asics-accent)] transition-colors"
       >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          className="text-[var(--color-foreground)]/40 group-hover:text-[var(--color-asics-accent)] transition-colors"
-        >
-          <motion.path
-            d="M7 13l5 5 5-5"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            animate={{
-              opacity: [0.4, 1, 0.4],
-            }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          />
-          <motion.path
-            d="M7 7l5 5 5-5"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            animate={{
-              opacity: [0.2, 0.6, 0.2],
-            }}
-            transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
-          />
-        </svg>
-      </motion.div>
+        <path d="M7 13l5 5 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M7 7l5 5 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+      </svg>
     </motion.div>
   );
 }
