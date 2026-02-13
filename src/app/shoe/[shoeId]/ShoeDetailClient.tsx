@@ -153,7 +153,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 transition={animateEnabled ? { duration: 0.45 } : undefined}
                 className="relative aspect-[4/3] lg:aspect-square rounded-3xl overflow-hidden border border-[var(--color-border)]"
               >
-                <ImageDistortion variant="glow">
+                <ImageDistortion variant="glow" enabled={isDesktop && animateEnabled}>
                   <div
                     className="relative aspect-[4/3] lg:aspect-square bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)]"
                     data-cursor="view"

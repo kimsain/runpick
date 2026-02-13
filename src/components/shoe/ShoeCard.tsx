@@ -4,7 +4,7 @@
 // Shows: image, category badge, name, shortDescription, top 2 specs, price.
 // Desktop: ImageDistortion + mouse-follow glow. Mobile: static card.
 
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { RunningShoe, ShoeSpecs } from '@/types/shoe';
 import Badge from '@/components/common/Badge';
@@ -14,6 +14,7 @@ import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import ImageDistortion from '@/components/effects/ImageDistortion';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import SmartShoeImage from '@/components/common/SmartShoeImage';
+import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 interface ShoeCardProps {
   shoe: RunningShoe;
@@ -163,8 +164,8 @@ function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const isDesktop = useIsDesktop();
-  const reduceMotion = useReducedMotion();
-  const isMotionEnabled = isDesktop && !reduceMotion;
+  const { hasMotionBudget } = useInteractionCapabilities();
+  const isMotionEnabled = isDesktop && hasMotionBudget;
   const showDetailHint = isMotionEnabled ? isHovered : true;
 
   // 3D tilt effect values - desktop only
@@ -247,7 +248,7 @@ function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
 
         {/* Image container — ImageDistortion on desktop only */}
         {isDesktop ? (
-          <ImageDistortion variant="scan">
+          <ImageDistortion variant="scan" enabled={hasMotionBudget}>
             <ShoeCardImage
               shoe={shoe}
               category={category}

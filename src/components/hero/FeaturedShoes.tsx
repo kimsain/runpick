@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import ShoeCard from '@/components/shoe/ShoeCard';
 import { getAllShoes } from '@/utils/shoe-utils';
-import { gsap, ScrollTrigger, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
+import { gsap, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
 import TextReveal from '@/components/effects/TextReveal';
 import { EASE_OUT_EXPO, DUR_REVEAL } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';

@@ -6,15 +6,19 @@ import { useState, ReactNode } from 'react';
 interface ImageDistortionProps {
   children: ReactNode;
   variant?: 'scan' | 'glow';
+  enabled?: boolean;
 }
 
 export default function ImageDistortion({
   children,
   variant = 'scan',
+  enabled = true,
 }: ImageDistortionProps) {
   const animateEnabled = !useReducedMotion();
+  const isMotionEnabled = animateEnabled && enabled;
   const [isHovered, setIsHovered] = useState(false);
-  if (!animateEnabled) {
+
+  if (!isMotionEnabled) {
     return <div className="relative overflow-hidden">{children}</div>;
   }
 

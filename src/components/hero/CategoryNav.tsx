@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { categories } from '@/data/categories';
 import { getAllBrandIds } from '@/utils/shoe-utils';
-import { gsap, ScrollTrigger, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
+import { gsap, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { useIsDesktop } from '@/hooks/useIsDesktop';

@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useMotionValue, useTransform, animate, useReducedMotion } from 'framer-motion';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { QuizResult as QuizResultType } from '@/types/quiz';
@@ -98,6 +99,7 @@ function MatchScoreCircle({ score }: { score: number }) {
 
 export default function QuizResult({ result, onRetry }: QuizResultProps) {
   const animateEnabled = !useReducedMotion();
+  const isDesktop = useIsDesktop();
   const { primaryRecommendation, alternatives, matchScore, matchReasons, reasoning } = result;
   const category = getCategoryById(primaryRecommendation.categoryId);
 
@@ -211,7 +213,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-asics-blue)]/5 to-[var(--color-asics-accent)]/10" />
 
         <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 p-5 sm:gap-8 sm:p-8">
-          <ImageDistortion variant="glow">
+          <ImageDistortion variant="glow" enabled={isDesktop && animateEnabled}>
             <div className="relative aspect-square bg-[var(--color-background)] rounded-2xl overflow-hidden">
               <SmartShoeImage
                 src={primaryRecommendation.imageUrl}
