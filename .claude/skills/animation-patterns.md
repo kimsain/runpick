@@ -51,9 +51,56 @@ gsap.ticker.add(time => lenis.raf(time * 1000))  // frame-perfect sync
 gsap.ticker.lagSmoothing(0)  // disable lag compensation
 ```
 
+## Lenis + Page Navigation
+
+SmoothScroll wraps the entire app. Scroll position resets on route change.
+
+**CRITICAL anti-pattern — NEVER do this:**
+```tsx
+// ❌ key={pathname} destroys the ENTIRE React tree on navigation
+<SmoothScroll key={pathname}>
+  <PageTransition>{children}</PageTransition>
+</SmoothScroll>
+```
+
+This kills ALL in-progress Framer Motion animations mid-flight, causing:
+`TypeError: Cannot read properties of null (reading '0')` in `initPlayback → onKeyframesResolved`
+
+**Correct pattern — imperative scroll reset:**
+```tsx
+// SmoothScroll.tsx — reset scroll without tree destruction
+const pathname = usePathname();
+
+useEffect(() => {
+  if (lenisRef.current) {
+    lenisRef.current.scrollTo(0, { immediate: true });
+  } else {
+    window.scrollTo(0, 0);
+  }
+}, [pathname]);
+```
+
+## PageTransition Animation
+
+Use opacity-only for page transitions. Avoid `clipPath` — Framer Motion's clipPath interpolation errors on detached DOM elements during `AnimatePresence` exit.
+
+```tsx
+const pageVariants = {
+  initial: { opacity: 0 },
+  enter: { opacity: 1, transition: { duration: 0.3 } },
+  exit: { opacity: 0, transition: { duration: 0.15 } },
+};
+```
+
+## Dynamic Import Constraints
+
+Desktop-only overlay components (GrainOverlay, ScrollProgress, CustomCursor) can use `next/dynamic({ ssr: false })` for code splitting. But **never** dynamic-import components that are children of `AnimatePresence` — it breaks exit animations.
+
 ## Known Constraints
 
 - 3D transform: `rotateX`/`rotateY` max 6deg (text blur above)
 - Hero background: static only (parallax causes flickering)
 - Infinite animation: use CSS @keyframes, not Framer Motion `repeat: Infinity`
 - FeaturedShoes pin: requires 1024px+ (not 768px — cards too narrow)
+- SmoothScroll: NEVER use `key={pathname}` — use imperative scroll reset instead
+- PageTransition: opacity only — clipPath causes detached DOM errors

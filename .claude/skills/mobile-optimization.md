@@ -71,6 +71,36 @@ Desktop: GSAP animates `scaleX` via ScrollTrigger.
 5. Use `gsap.to()` pattern (not `fromTo`)
 6. Verify: mobile shows content immediately, desktop animates on scroll
 
+## Pattern 5: Mobile Flex Alignment
+
+Cards with variable heights (e.g., 1-line vs 2-line description) misalign with `items-center`. Use breakpoint-split alignment:
+
+```tsx
+// ❌ items-center causes shorter cards to shift down
+className="flex items-center gap-8"
+
+// ✅ Top-align on mobile, center on desktop
+className="flex items-start md:items-center gap-8"
+```
+
+When child elements extend above parent bounds (e.g., absolute-positioned badges at `-top-3`), add mobile-only top padding:
+
+```tsx
+className="flex items-start md:items-center pt-5 md:pt-0"
+```
+
+## Pattern 6: Single-Line Button Rows
+
+When buttons overflow to a second line on narrow viewports:
+
+1. Remove `flex-wrap`
+2. Reduce mobile gap: `gap-1.5 sm:gap-4`
+3. Reduce mobile padding: `px-3 py-1.5 sm:px-6 sm:py-3`
+4. Scale text down: `text-sm sm:text-base`, `text-xs sm:text-sm`
+5. Scale margins: `mr-1 sm:mr-2`, `ml-1 sm:ml-2`
+
+Test at 375px (iPhone SE) — the narrowest common viewport.
+
 ## Framer Motion on Mobile
 
 `whileInView` works with native scroll — safe to keep on mobile.

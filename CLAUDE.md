@@ -22,7 +22,7 @@ npm run lint     # Run ESLint
 - **Tailwind CSS 4** with custom CSS properties
 - **Framer Motion** for component animations
 - **GSAP ScrollTrigger** for scroll-based animations
-- **Lenis** for smooth scrolling (desktop only — disabled on mobile via `window.innerWidth < 768` guard)
+- **Lenis** for smooth scrolling (desktop only — `useIsDesktop()` hook guard)
 
 ## Architecture
 
@@ -71,7 +71,7 @@ Quiz matching algorithm (no manual shoeTraits — uses asics.json specs directly
 - `src/types/shoe.ts` - RunningShoe, Category, ShoeSpecs interfaces
 - `src/types/quiz.ts` - QuizResult (matchScore, matchReasons, alternatives with reasons), QuizAnswer (single-select)
 - `src/data/quiz-questions.ts` - 5 quiz questions with scoring weights per option
-- `src/components/layout/LayoutClient.tsx` - Animation wrappers (SmoothScroll, PageTransition, CustomCursor)
+- `src/components/layout/LayoutClient.tsx` - Client wrappers (GrainOverlay, ScrollProgress, CustomCursor, SmoothScroll, PageTransition)
 - `src/constants/animation.ts` - Shared animation constants (easing, springs, `MOBILE_BREAKPOINT`)
 - `src/hooks/useIsDesktop.ts` - One-shot desktop check hook for GSAP guards (SSR-safe, no resize)
 - `src/app/globals.css` - Desktop GSAP 초기 상태 블록 + ScrollIndicator CSS keyframes + 모바일 `!important` 오버라이드
@@ -96,7 +96,7 @@ Quiz matching algorithm (no manual shoeTraits — uses asics.json specs directly
 
 모바일(< 768px)은 CSS-first 오버라이드 방식으로 최적화. 데스크탑 코드는 100% 동일 유지.
 
-- **`useIsDesktop()` 훅**: 모든 GSAP/Lenis 가드에 표준화된 `useIsDesktop()` 훅 사용. `if (!isDesktop) return;` 패턴. (11곳: CategoryNav, QuizCTA, Footer, ShoeDetailClient, ShoeSpecChart, SmoothScroll, BrandPageClient, ShoeCard, FeaturedShoes, ScrollProgress, PageTransition)
+- **`useIsDesktop()` 훅**: 모든 GSAP/Lenis 가드에 표준화된 `useIsDesktop()` 훅 사용. `if (!isDesktop) return;` 패턴. (13곳: CategoryNav, QuizCTA, Footer, ShoeDetailClient, ShoeSpecChart, SmoothScroll, BrandPageClient, ShoeCard, FeaturedShoes, ScrollProgress, PageTransition, Header, CategoryPageClient)
 - **CSS `!important` 오버라이드**: `globals.css` 끝 `@media (max-width: 767px)` 블록이 GSAP inline style(`opacity:0`, `transform`)을 강제 해제
 - **장식 요소**: `hidden md:block`으로 모바일에서 숨김 (glow, shimmer 등)
 - **ShoeSpecChart 바**: 모바일에서는 CSS 변수 `--target-scale`로 직접 표시, 데스크탑에서는 GSAP 애니메이션
@@ -114,6 +114,10 @@ Quiz matching algorithm (no manual shoeTraits — uses asics.json specs directly
 - **GSAP CSS-first 패턴**: `gsap.fromTo()` 대신 CSS로 초기 상태 선언(`globals.css` `@media (min-width: 768px)` 블록) + `gsap.to()`로 최종 상태 애니메이션. 렌더~init 플래시 방지
 - **Mobile GSAP 추가 시**: 새 GSAP useEffect에는 반드시 `useIsDesktop()` 훅 + `if (!isDesktop) return;` 가드 추가, 대응 CSS 클래스를 `globals.css` 모바일 블록에 등록. 데스크탑 초기 상태도 `@media (min-width: 768px)` 블록에 등록하고 `gsap.to()` 사용
 - **`hidden md:block` 주의**: 모바일에서 숨길 장식 요소에만 사용. 콘텐츠 요소에 실수로 적용하면 모바일에서 사라짐
+- **SmoothScroll `key={pathname}` 금지**: React tree 전체 파괴 → 진행 중인 모든 Framer Motion 애니메이션 크래시 (`TypeError: Cannot read properties of null`). 대신 `lenis.scrollTo(0, { immediate: true })` 사용
+- **PageTransition은 opacity만**: clipPath 애니메이션은 AnimatePresence exit 시 detached DOM에서 interpolation 에러 발생
+- **`next/dynamic` + AnimatePresence 자식 금지**: AnimatePresence 직계 자식을 dynamic import하면 exit 애니메이션이 깨짐. SmoothScroll, PageTransition은 반드시 static import
+- **스크롤 핸들러 ref-guard 필수**: `setState`를 매 scroll event마다 호출하지 말 것. ref로 이전 값 비교 후 변경 시에만 setState 호출 (Header, BrandPageClient, CategoryPageClient에 적용됨)
 
 ## Static Export Notes
 
