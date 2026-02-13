@@ -5,7 +5,7 @@ interface BrandPageProps {
 }
 
 export function generateStaticParams() {
-  return [{ brandId: 'asics' }];
+  return [{ brandId: 'asics' }, { brandId: 'nike' }, { brandId: 'adidas' }];
 }
 
 export default async function BrandPage({ params }: BrandPageProps) {

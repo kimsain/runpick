@@ -11,8 +11,7 @@ import Badge from '@/components/common/Badge';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { categories } from '@/data/categories';
-import { getShoesByBrand, getShoesByCategory } from '@/utils/shoe-utils';
-import asicsData from '@/data/brands/asics.json';
+import { getShoesByBrand, getShoesByBrandAndCategory, getBrandById } from '@/utils/shoe-utils';
 import Link from 'next/link';
 import { STAGGER_NORMAL, DUR_FAST } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
@@ -22,8 +21,10 @@ interface BrandPageClientProps {
 }
 
 export default function BrandPageClient({ brandId }: BrandPageClientProps) {
-  const brand = asicsData.brand;
+  const brand = getBrandById(brandId);
   const shoes = getShoesByBrand(brandId);
+
+  if (!brand) return null;
   const sectionsRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
 
@@ -141,7 +142,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                         {category.name}
                       </span>
                       <span className="ml-0.5 sm:ml-2 text-[10px] sm:text-sm text-[var(--color-foreground)]/40">
-                        {getShoesByCategory(category.id).length}
+                        {getShoesByBrandAndCategory(brandId, category.id).length}
                       </span>
                     </motion.div>
                   </Link>

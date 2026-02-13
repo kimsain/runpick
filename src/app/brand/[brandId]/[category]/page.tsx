@@ -6,10 +6,13 @@ interface CategoryPageProps {
 }
 
 export function generateStaticParams() {
-  return categories.map((category) => ({
-    brandId: 'asics',
-    category: category.id,
-  }));
+  const brandIds = ['asics', 'nike', 'adidas'];
+  return brandIds.flatMap((brandId) =>
+    categories.map((category) => ({
+      brandId,
+      category: category.id,
+    }))
+  );
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {

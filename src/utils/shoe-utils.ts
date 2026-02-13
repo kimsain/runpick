@@ -1,12 +1,24 @@
-// Data access helpers for asics.json. Single source of truth for all shoe queries.
+// Data access helpers for all brand JSON files. Single source of truth for all shoe queries.
 // getAllShoes() preserves array order (for FeaturedShoes manual ordering).
 // Listing functions (getShoesByCategory, etc.) sort by b.name.localeCompare(a.name).
 
-import { RunningShoe, CategoryId, SubcategoryId } from '@/types/shoe';
+import { RunningShoe, Brand, CategoryId, SubcategoryId } from '@/types/shoe';
 import asicsData from '@/data/brands/asics.json';
+import nikeData from '@/data/brands/nike.json';
+import adidasData from '@/data/brands/adidas.json';
+
+const allBrandData = [asicsData, nikeData, adidasData];
 
 export function getAllShoes(): RunningShoe[] {
-  return asicsData.shoes as RunningShoe[];
+  return allBrandData.flatMap((brand) => brand.shoes) as RunningShoe[];
+}
+
+export function getAllBrands(): Brand[] {
+  return allBrandData.map((b) => b.brand) as Brand[];
+}
+
+export function getBrandById(brandId: string): Brand | undefined {
+  return allBrandData.find((b) => b.brand.id === brandId)?.brand as Brand | undefined;
 }
 
 export function getShoeById(id: string): RunningShoe | undefined {
@@ -32,6 +44,12 @@ export function getShoesBySubcategory(subcategoryId: SubcategoryId): RunningShoe
 export function getShoesByBrand(brandId: string): RunningShoe[] {
   return getAllShoes()
     .filter((shoe) => shoe.brandId === brandId)
+    .sort((a, b) => b.name.localeCompare(a.name));
+}
+
+export function getShoesByBrandAndCategory(brandId: string, categoryId: CategoryId): RunningShoe[] {
+  return getAllShoes()
+    .filter((shoe) => shoe.brandId === brandId && shoe.categoryId === categoryId)
     .sort((a, b) => b.name.localeCompare(a.name));
 }
 

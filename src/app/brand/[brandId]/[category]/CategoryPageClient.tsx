@@ -7,7 +7,7 @@ import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
 import TextReveal from '@/components/effects/TextReveal';
 import { getCategoryById, getSubcategoriesByCategory } from '@/data/categories';
-import { getShoesByCategory, getShoesBySubcategory } from '@/utils/shoe-utils';
+import { getShoesByBrandAndCategory } from '@/utils/shoe-utils';
 import { CategoryId, SubcategoryId } from '@/types/shoe';
 import Link from 'next/link';
 import { DUR_FAST } from '@/constants/animation';
@@ -20,7 +20,7 @@ interface CategoryPageClientProps {
 export default function CategoryPageClient({ brandId, category }: CategoryPageClientProps) {
   const categoryData = getCategoryById(category as CategoryId);
   const subcategories = getSubcategoriesByCategory(category as CategoryId);
-  const allCategoryShoes = getShoesByCategory(category as CategoryId);
+  const allCategoryShoes = getShoesByBrandAndCategory(brandId, category as CategoryId);
 
   const [selectedSubcategory, setSelectedSubcategory] = useState<SubcategoryId | 'all'>(
     'all'
@@ -73,7 +73,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
   const displayedShoes =
     selectedSubcategory === 'all'
       ? allCategoryShoes
-      : getShoesBySubcategory(selectedSubcategory);
+      : allCategoryShoes.filter((s) => s.subcategoryId === selectedSubcategory);
 
   return (
     <>
@@ -162,8 +162,8 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                 </span>
               </button>
 
-              {subcategories.filter((sub) => getShoesBySubcategory(sub.id).length > 0).map((sub) => {
-                const count = getShoesBySubcategory(sub.id).length;
+              {subcategories.filter((sub) => allCategoryShoes.filter((s) => s.subcategoryId === sub.id).length > 0).map((sub) => {
+                const count = allCategoryShoes.filter((s) => s.subcategoryId === sub.id).length;
                 return (
                   <button
                     key={sub.id}
