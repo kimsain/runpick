@@ -58,7 +58,7 @@ function MatchScoreCircle({ score }: { score: number }) {
     <div className="relative w-28 h-28 sm:w-36 sm:h-36">
       {/* Glow behind */}
       <div
-        className="absolute inset-0 rounded-full blur-xl opacity-30"
+        className="absolute inset-0 rounded-full blur-xl opacity-30 pointer-events-none"
         style={{ background: 'var(--color-asics-accent)' }}
       />
 
@@ -213,7 +213,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           }
           className="relative bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] rounded-3xl overflow-hidden border border-[var(--color-asics-accent)]/30 mb-8"
         >
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-asics-blue)]/5 to-[var(--color-asics-accent)]/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-asics-blue)]/5 to-[var(--color-asics-accent)]/10 pointer-events-none" />
 
         <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 p-5 sm:gap-8 sm:p-8">
           <ImageDistortion variant="glow" enabled={isDesktop && animateEnabled}>

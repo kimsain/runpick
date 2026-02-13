@@ -51,7 +51,7 @@ export default function QuizCTA() {
         >
           {/* Noise texture overlay */}
           <div
-            className="absolute inset-0 opacity-[0.03]"
+            className="absolute inset-0 opacity-[0.03] pointer-events-none"
             style={{
               backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'256\' height=\'256\' filter=\'url(%23n)\' opacity=\'1\'/%3E%3C/svg%3E")',
               backgroundSize: '128px 128px',
@@ -60,17 +60,17 @@ export default function QuizCTA() {
 
           {/* Static gradient orbs */}
           <div
-            className="absolute -top-32 -right-32 w-80 h-80 rounded-full hidden md:block"
+            className="absolute -top-32 -right-32 w-80 h-80 rounded-full hidden md:block pointer-events-none"
             style={{ background: 'radial-gradient(circle, rgba(0,209,255,0.15) 0%, transparent 70%)' }}
           />
           <div
-            className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full hidden md:block"
+            className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full hidden md:block pointer-events-none"
             style={{ background: 'radial-gradient(circle, rgba(0,61,165,0.2) 0%, transparent 70%)' }}
           />
 
           {/* Accent light streak */}
           <div
-            className="absolute top-0 left-0 right-0 h-px hidden md:block"
+            className="absolute top-0 left-0 right-0 h-px hidden md:block pointer-events-none"
             style={{
               background: 'linear-gradient(90deg, transparent 0%, var(--color-asics-accent) 50%, transparent 100%)',
               opacity: 0.5,
@@ -79,7 +79,7 @@ export default function QuizCTA() {
 
           {/* Grid pattern */}
           <div
-            className="absolute inset-0 opacity-[0.04]"
+            className="absolute inset-0 opacity-[0.04] pointer-events-none"
             style={{
               backgroundImage: `
                 linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),

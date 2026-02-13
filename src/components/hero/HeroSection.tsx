@@ -56,13 +56,13 @@ export default function HeroSection() {
     <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
       {/* Background gradient - static to prevent flicker */}
       <div
-        className="absolute inset-0 bg-gradient-to-br from-[var(--color-background)] via-[var(--color-background)] to-[var(--color-asics-blue)]/10"
+        className="absolute inset-0 bg-gradient-to-br from-[var(--color-background)] via-[var(--color-background)] to-[var(--color-asics-blue)]/10 pointer-events-none"
       />
 
       {/* Static gradient overlay */}
       <div className="absolute inset-0 overflow-hidden">
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-20 pointer-events-none"
           style={{
             background: 'linear-gradient(135deg, transparent 20%, var(--color-asics-blue) 50%, var(--color-asics-accent) 80%)',
             filter: 'blur(60px)',
@@ -112,12 +112,12 @@ export default function HeroSection() {
             </TextReveal>
             <span className="block mt-2 relative">
               {/* Glow backdrop */}
-              <span
-                className="absolute inset-0 blur-2xl hidden md:block"
-                style={{
-                  opacity: 0.4,
-                  background: 'linear-gradient(90deg, var(--color-asics-blue), var(--color-asics-accent), var(--color-asics-blue))',
-                  WebkitBackgroundClip: 'text',
+            <span
+              className="absolute inset-0 blur-2xl hidden md:block pointer-events-none"
+              style={{
+                opacity: 0.4,
+                background: 'linear-gradient(90deg, var(--color-asics-blue), var(--color-asics-accent), var(--color-asics-blue))',
+                WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
                 aria-hidden="true"

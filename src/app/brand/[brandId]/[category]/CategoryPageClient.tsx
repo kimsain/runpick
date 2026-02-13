@@ -127,7 +127,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
         >
           {/* Glow effect */}
           <div
-            className="absolute inset-0 opacity-20"
+            className="absolute inset-0 opacity-20 pointer-events-none"
             style={{
               background: `radial-gradient(circle at 50% 100%, ${categoryData.color} 0%, transparent 50%)`,
             }}
