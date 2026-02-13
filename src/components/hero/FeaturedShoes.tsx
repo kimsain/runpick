@@ -27,25 +27,11 @@ function FeaturedBadge() {
           animation: 'badge-pulse 3s ease-in-out infinite',
         }}
       >
-        <motion.span
-          animate={{ rotate: 360 }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-          className="text-lg hidden md:inline-block"
-        >
-          ⭐
-        </motion.span>
-        <span className="text-lg md:hidden">⭐</span>
+        <span className="text-lg">⭐</span>
         <span className="text-sm font-semibold text-[var(--color-asics-accent)]">
           RUNNER&apos;S CHOICE
         </span>
-        <motion.span
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          className="text-lg hidden md:inline-block"
-        >
-          🔥
-        </motion.span>
-        <span className="text-lg md:hidden">🔥</span>
+        <span className="text-lg">🔥</span>
       </div>
     </motion.div>
   );
@@ -112,16 +98,8 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
             delay: 0.6,
             type: 'spring',
           }}
-          animate={{
-            y: [0, -3, 0],
-          }}
         >
-          <motion.span
-            animate={{ opacity: [1, 0.7, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            MOST POPULAR
-          </motion.span>
+          <span>MOST POPULAR</span>
         </motion.div>
       )}
 

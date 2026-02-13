@@ -133,18 +133,8 @@ function CategoryCard({ category, index, isDesktop }: { category: typeof categor
               {/* Floating/breathing icon */}
               <motion.div
                 className="relative mb-3 sm:mb-6"
-                animate={isDesktop ? {
-                  y: [0, -5, 0],
-                  scale: isHovered ? 1.2 : [1, 1.05, 1],
-                } : {
-                  scale: isHovered ? 1.2 : 1,
-                }}
-                transition={isDesktop ? {
-                  y: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
-                  scale: { duration: 0.3 },
-                } : {
-                  scale: { duration: 0.3 },
-                }}
+                animate={{ scale: isHovered ? 1.2 : 1 }}
+                transition={{ scale: { duration: 0.3 } }}
               >
                 {/* Icon glow effect */}
                 <motion.div
