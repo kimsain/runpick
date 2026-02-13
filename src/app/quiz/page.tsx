@@ -156,7 +156,10 @@ export default function QuizPage() {
   return (
     <>
       <Header />
-      <main id="main-content" className={`pt-20 min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)] relative overflow-hidden ${phase === 'quiz' ? 'pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-0' : ''}`}>
+      <main
+        id="main-content"
+        className={`pt-20 min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)] relative overflow-hidden ${phase === 'quiz' ? 'pb-[calc(6.5rem+env(safe-area-inset-bottom))] sm:pb-0' : ''}`}
+      >
         <div className="relative layout-shell max-w-3xl py-8 sm:py-12">
           <AnimatePresence mode="wait">
             {phase === 'brand-select' && (
@@ -174,7 +177,7 @@ export default function QuizPage() {
                   >
                     러닝화 추천 퀴즈
                   </TextReveal>
-                  <p className="type-body text-[var(--color-foreground)]/62 text-pretty reading-measure">
+                  <p className="type-body text-[var(--color-foreground)]/62 text-pretty reading-measure type-readable">
                     먼저 선호 브랜드를 선택하세요. 전체 선택 시 브랜드 상관없이 추천합니다.
                   </p>
                 </div>
@@ -187,13 +190,18 @@ export default function QuizPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <button
                       onClick={() => setPreferredBrandId('all')}
-                      className={`rounded-2xl border p-4 text-left min-h-24 sm:min-h-24 flex flex-col justify-center transition-all ${
+                      className={`rounded-2xl border p-4 sm:p-5 text-left min-h-[90px] sm:min-h-[92px] flex flex-col justify-between transition-all ${
                         preferredBrandId === 'all'
                           ? 'border-[var(--color-asics-accent)] bg-[var(--color-asics-accent)]/10'
                           : 'border-[var(--color-border)] hover:border-[var(--color-border-hover)]'
                       }`}
                     >
-                      <p className="type-body font-semibold text-[var(--color-foreground)]">전체 브랜드</p>
+                      <p className="type-body font-semibold leading-snug text-[var(--color-foreground)]">
+                        전체 브랜드
+                      </p>
+                      <p className="type-caption text-[var(--color-foreground)]/60">
+                        선호 브랜드 제한 없이 추천
+                      </p>
                     </button>
 
                     {brands.map((brand) => {
@@ -202,7 +210,7 @@ export default function QuizPage() {
                         <button
                           key={brand.id}
                           onClick={() => setPreferredBrandId(brand.id)}
-                          className={`rounded-2xl border p-4 text-left min-h-24 sm:min-h-24 flex flex-col justify-center transition-all ${
+                          className={`rounded-2xl border p-4 sm:p-5 text-left min-h-[90px] sm:min-h-[92px] flex flex-col justify-between transition-all ${
                             active
                               ? 'border-[var(--color-asics-accent)] bg-[var(--color-asics-accent)]/10'
                               : 'border-[var(--color-border)] hover:border-[var(--color-border-hover)]'
@@ -213,9 +221,11 @@ export default function QuizPage() {
                               className="inline-block h-2.5 w-2.5 rounded-full"
                               style={{ backgroundColor: brand.color }}
                             />
-                            <p className="type-body font-semibold text-[var(--color-foreground)]">{brand.name}</p>
+                            <p className="type-body font-semibold leading-snug text-[var(--color-foreground)]">
+                              {brand.name}
+                            </p>
                           </div>
-                          <p className="mt-1 type-body text-[var(--color-foreground)]/60">
+                          <p className="mt-1 type-caption text-[var(--color-foreground)]/60 type-readable">
                             {brand.nameKo} 모델 우선 추천
                           </p>
                         </button>
@@ -248,12 +258,15 @@ export default function QuizPage() {
                     initial={animateEnabled ? { opacity: 0, y: 10 } : false}
                     animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
                     transition={animateEnabled ? { delay: 0.3 } : undefined}
-                    className="type-body text-[var(--color-foreground)]/62 text-pretty"
+                    className="type-body text-[var(--color-foreground)]/62 text-pretty reading-measure type-readable"
                   >
                     5가지 질문으로 딱 맞는 러닝화를 찾아드려요
                   </motion.p>
-                  <p className="mt-2 type-caption text-[var(--color-foreground)]/45">
-                    선호 브랜드: {preferredBrandId === 'all' ? '전체' : preferredBrandId.toUpperCase()}
+                  <p className="mt-2 flex items-center justify-center type-caption text-[var(--color-foreground)]/45">
+                    <span className="mr-1">선호 브랜드</span>
+                    <span className="inline-flex h-5 items-center rounded-full border border-[var(--color-asics-accent)] px-2.5 py-0.5 font-medium text-[var(--color-asics-accent)]">
+                      {preferredBrandId === 'all' ? '전체' : preferredBrandId.toUpperCase()}
+                    </span>
                   </p>
                 </div>
 
@@ -263,7 +276,7 @@ export default function QuizPage() {
                 {/* Question card */}
                 <div
                   ref={quizCardRef}
-                  className="bg-[var(--color-card)] rounded-3xl p-6 sm:p-8 border border-[var(--color-border)]"
+                  className="bg-[var(--color-card)] rounded-3xl p-6 sm:p-8 pb-28 sm:pb-8 border border-[var(--color-border)]"
                 >
                   <AnimatePresence mode="wait">
                     <motion.div
@@ -286,18 +299,19 @@ export default function QuizPage() {
                   </p>
 
                   <div className="mt-8 pt-6 border-t border-[var(--color-border)] hidden sm:flex items-center justify-between gap-3">
-                    {currentIndex > 0 ? (
-                      <Button variant="ghost" onClick={handlePrev}>
-                        ← 이전
-                      </Button>
-                    ) : (
-                      <span />
-                    )}
+                    <Button
+                      variant="ghost"
+                      onClick={handlePrev}
+                      disabled={currentIndex === 0}
+                      className={`min-h-11 ${currentIndex === 0 ? 'opacity-40' : ''}`}
+                    >
+                      ← 이전
+                    </Button>
 
                     <Button
                       onClick={handleNext}
                       disabled={!selectedOption}
-                      className={!selectedOption ? 'opacity-50 cursor-not-allowed' : ''}
+                      className={`min-h-11 ${!selectedOption ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                       {isLastQuestion ? '결과 보기 →' : '다음 →'}
                     </Button>
@@ -310,14 +324,14 @@ export default function QuizPage() {
                       variant="ghost"
                       onClick={handlePrev}
                       disabled={currentIndex === 0}
-                      className={currentIndex === 0 ? 'opacity-40 w-full justify-center' : 'w-full justify-center'}
+                      className={`w-full justify-center min-h-11 ${currentIndex === 0 ? 'opacity-40' : ''}`}
                     >
                       ← 이전
                     </Button>
                     <Button
                       onClick={handleNext}
                       disabled={!selectedOption}
-                      className={!selectedOption ? 'opacity-50 cursor-not-allowed w-full justify-center' : 'w-full justify-center'}
+                      className={`w-full justify-center min-h-11 ${!selectedOption ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                       {isLastQuestion ? '결과 보기 →' : '다음 →'}
                     </Button>

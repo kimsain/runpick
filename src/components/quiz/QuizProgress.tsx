@@ -14,14 +14,14 @@ export default function QuizProgress({ current, total }: QuizProgressProps) {
 
   return (
     <div className="mb-8">
-      <div className="flex items-center justify-center gap-0">
+      <div className="flex items-center justify-center gap-0.5 sm:gap-0">
         {Array.from({ length: total }, (_, i) => (
           <div key={i} className="flex items-center">
             {/* Step circle */}
             <div className="relative flex items-center justify-center">
               {animateEnabled ? (
                 <motion.div
-                    className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center type-caption border-2 transition-colors ${
+                    className={`w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-[0.74rem] sm:text-sm font-medium border-2 transition-colors ${
                     i < current
                       ? 'bg-[var(--color-asics-accent)] border-[var(--color-asics-accent)] text-white'
                       : i === current
@@ -47,7 +47,7 @@ export default function QuizProgress({ current, total }: QuizProgressProps) {
                 </motion.div>
               ) : (
                 <div
-                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center type-caption border-2 ${
+                  className={`w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-[0.74rem] sm:text-sm font-medium border-2 ${
                     i < current
                       ? 'bg-[var(--color-asics-accent)] border-[var(--color-asics-accent)] text-white'
                       : i === current
@@ -63,7 +63,7 @@ export default function QuizProgress({ current, total }: QuizProgressProps) {
 
             {/* Connector line (not after last step) */}
             {i < total - 1 && (
-              <div className="relative w-8 sm:w-16 h-0.5 mx-0.5 sm:mx-1">
+              <div className="relative w-6 sm:w-14 h-0.5 mx-1 sm:mx-1.5">
                 <div className="absolute inset-0 bg-[var(--color-border)] rounded-full" />
                 {i < current && (
                   animateEnabled ? (

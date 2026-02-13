@@ -30,7 +30,9 @@ export default function QuizQuestion({
         {question.questionKo}
       </h2>
       {question.description && (
-        <p className="type-body text-[var(--color-foreground)]/62 mb-8 text-pretty">{question.description}</p>
+        <p className="type-body text-[var(--color-foreground)]/62 mb-8 text-pretty type-readable">
+          {question.description}
+        </p>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -57,7 +59,7 @@ export default function QuizQuestion({
               whileTap={animateEnabled && !isSelected ? { scale: 0.98 } : undefined}
               onClick={() => handleClick(option.id)}
               aria-label={option.labelKo}
-              className={`relative w-full min-h-[96px] p-4 sm:p-6 rounded-2xl border text-left transition-all ${
+              className={`relative w-full min-h-[86px] sm:min-h-[92px] p-4 sm:p-6 rounded-2xl border text-left transition-all ${
                 isSelected
                   ? 'border-[var(--color-asics-accent)] bg-[var(--color-asics-accent)]/10 shadow-[0_0_20px_rgba(0,209,255,0.15)]'
                   : 'border-[var(--color-border)] bg-[var(--color-card)] hover:border-[var(--color-border-hover)]'
@@ -81,9 +83,9 @@ export default function QuizQuestion({
               )}
 
               {/* Icon + Label */}
-              <div className="flex items-center gap-3 mb-1">
+              <div className="flex items-start gap-3 mb-1">
                 {option.icon && <span className="text-2xl sm:text-3xl shrink-0">{option.icon}</span>}
-                <h3 className={`type-body font-medium ${
+                <h3 className={`type-body font-medium leading-tight ${
                   isSelected ? 'text-[var(--color-asics-accent)]' : 'text-[var(--color-foreground)]'
                 }`}>
                   {option.labelKo}
@@ -92,7 +94,7 @@ export default function QuizQuestion({
 
               {/* Description */}
               {option.description && (
-                <p className="type-body text-[var(--color-foreground)]/60">{option.description}</p>
+                <p className="type-caption text-[var(--color-foreground)]/60 leading-snug">{option.description}</p>
               )}
 
               {/* Glow effect */}

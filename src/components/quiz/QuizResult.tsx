@@ -191,7 +191,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           initial={animateEnabled ? { opacity: 0, y: 20 } : false}
           animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
           transition={animateEnabled ? { delay: 1.0 } : undefined}
-          className="type-body text-[var(--color-foreground)]/62 reading-measure text-pretty"
+          className="type-body text-[var(--color-foreground)]/62 reading-measure text-pretty type-readable"
         >
           {reasoning}
         </motion.p>
@@ -215,16 +215,16 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
         >
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-asics-blue)]/5 to-[var(--color-asics-accent)]/10 pointer-events-none" />
 
-        <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 p-5 sm:gap-8 sm:p-8">
-          <ImageDistortion variant="glow" enabled={isDesktop && animateEnabled}>
-            <div className="relative aspect-square bg-[var(--color-background)] rounded-2xl overflow-hidden">
-                <SmartShoeImage
-                  src={primaryRecommendation.imageUrl}
-                alt={primaryRecommendation.name}
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-contain p-8"
-                showFallbackBadge
+            <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 p-5 sm:gap-8 sm:p-8">
+              <ImageDistortion variant="glow" enabled={isDesktop && animateEnabled}>
+                <div className="relative aspect-square bg-[var(--color-background)] rounded-2xl overflow-hidden">
+                  <SmartShoeImage
+                    src={primaryRecommendation.imageUrl}
+                    alt={primaryRecommendation.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-contain p-6 sm:p-8"
+                    showFallbackBadge
                   forceFallback={!hasShoeImage(primaryRecommendation.imageUrl)}
                   fallbackBadgeLabel={`${primaryRecommendation.brandId.toUpperCase()} 이미지 준비중`}
                   fallbackBadgeClassName="absolute bottom-4 right-4 z-20 rounded-full border border-white/20 bg-black/70 px-2.5 py-1 type-caption text-white"
@@ -244,11 +244,11 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
               </Badge>
             </div>
 
-            <h2 className="type-h2 text-[var(--color-foreground)] mb-1 text-balance">
+            <h2 className="type-h2 text-[var(--color-foreground)] mb-2 text-balance">
               {primaryRecommendation.name}
             </h2>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="type-body text-[var(--color-foreground)]/60">
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <span className="type-body text-[var(--color-foreground)]/60 type-readable">
                 {primaryRecommendation.nameKo}
               </span>
               <span className="type-h3 text-gradient">
@@ -256,7 +256,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
               </span>
             </div>
 
-            <p className="type-body text-[var(--color-foreground)]/82 mb-6 text-pretty">
+            <p className="type-body text-[var(--color-foreground)]/82 mb-6 text-pretty reading-measure type-readable">
               {primaryRecommendation.shortDescription}
             </p>
 
@@ -290,9 +290,9 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           transition={animateEnabled ? { delay: 0.7 } : undefined}
           className="mb-12"
         >
-          <h3 className="type-h3 text-[var(--color-foreground)] mb-6 text-balance">
-            이런 선택지도 있어요
-          </h3>
+            <h3 className="type-h3 text-[var(--color-foreground)] mb-6 text-balance">
+              이런 선택지도 있어요
+            </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {alternatives.map(({ shoe, reason }, index) => {
               const topSpec = [
@@ -327,10 +327,10 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
                       />
                     </div>
                     <div className="p-4">
-                      <h4 className="type-h3 text-[var(--color-foreground)] mb-1">
+                      <h4 className="type-body font-medium text-[var(--color-foreground)] mb-1 text-balance">
                         {shoe.name}
                       </h4>
-                      <p className="type-caption text-[var(--color-foreground)]/50 mb-2">
+                      <p className="type-caption text-[var(--color-foreground)]/50 mb-2 type-readable">
                         {shoe.nameKo}
                       </p>
                       <div className="flex items-center gap-2 mb-2">
@@ -341,7 +341,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
                           {shoe.specs.weight}g
                         </span>
                       </div>
-                      <p className="type-body text-[var(--color-asics-accent)] leading-snug">
+                      <p className="type-caption text-[var(--color-asics-accent)] leading-snug type-readable">
                         {reason}
                       </p>
                     </div>
@@ -358,12 +358,17 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           initial={animateEnabled ? { opacity: 0 } : false}
           animate={animateEnabled ? { opacity: 1 } : undefined}
           transition={animateEnabled ? { delay: 0.9 } : undefined}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4"
         >
-        <Button variant="outline" onClick={onRetry}>
+        <Button variant="outline" onClick={onRetry} size="lg" className="w-full sm:w-auto">
           다시 테스트하기
         </Button>
-        <Button href={`/brand/${primaryRecommendation.brandId}`} variant="ghost">
+        <Button
+          href={`/brand/${primaryRecommendation.brandId}`}
+          variant="ghost"
+          size="lg"
+          className="w-full sm:w-auto"
+        >
           추천 브랜드 카탈로그 보기
         </Button>
       </motion.div>
