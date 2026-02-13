@@ -37,12 +37,26 @@ function getPointerRestriction(): boolean {
   return window.matchMedia(COARSE_POINTER_QUERY).matches || 'ontouchstart' in window;
 }
 
+function getInitialSnapshot(): InteractionSnapshot {
+  if (typeof window === 'undefined') {
+    // SSR에서는 보수적으로 애니메이션을 끈 상태로 시작해
+    // 모바일에서 initial 숨김 상태가 고정되는 문제를 방지한다.
+    return {
+      isPointerRestricted: true,
+      isSaveDataEnabled: false,
+    };
+  }
+
+  const connection = (navigator as NavigatorWithConnection).connection;
+  return {
+    isPointerRestricted: getPointerRestriction(),
+    isSaveDataEnabled: getConnectionSaveData(connection),
+  };
+}
+
 let pointerMediaQuery: MediaQueryList | null = null;
 let navConnection: NavigatorWithConnection['connection'] | undefined;
-let snapshot: InteractionSnapshot = {
-  isPointerRestricted: false,
-  isSaveDataEnabled: false,
-};
+let snapshot: InteractionSnapshot = getInitialSnapshot();
 
 function setSnapshot(next: InteractionSnapshot) {
   snapshot = {
@@ -107,10 +121,7 @@ function removeGlobalListeners() {
 
   pointerMediaQuery = null;
   navConnection = undefined;
-  snapshot = {
-    isPointerRestricted: false,
-    isSaveDataEnabled: false,
-  };
+  snapshot = getInitialSnapshot();
 }
 
 function subscribe(listener: () => void): () => void {
@@ -148,7 +159,7 @@ export function useInteractionCapabilities(): InteractionCapabilities {
   const { isPointerRestricted, isSaveDataEnabled } = useSyncExternalStore(
     subscribe,
     getSnapshot,
-    () => ({ isPointerRestricted: false, isSaveDataEnabled: false })
+    getInitialSnapshot
   );
 
   const hasMotionBudget = !(reduceMotion || isSaveDataEnabled || isPointerRestricted);
