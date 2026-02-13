@@ -5,7 +5,7 @@
 // CSS initial state: .shoe-detail-pros/.shoe-detail-cons in globals.css.
 
 import { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '@/components/layout/Header';
@@ -36,9 +36,10 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
   const prosRef = useRef<HTMLDivElement>(null);
   const consRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
+  const animateEnabled = !useReducedMotion();
 
   useEffect(() => {
-    if (!isDesktop) return;
+    if (!isDesktop || !animateEnabled) return;
     gsap.registerPlugin(ScrollTrigger);
     const triggers: ScrollTrigger[] = [];
 
@@ -77,13 +78,13 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
     return () => {
       triggers.forEach((t) => t.kill());
     };
-  }, [isDesktop]);
+  }, [isDesktop, animateEnabled]);
 
   if (!shoe) {
     return (
       <>
         <Header />
-        <main className="pt-20 min-h-screen flex items-center justify-center">
+        <main id="main-content" className="pt-20 min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl sm:text-4xl font-bold text-[var(--color-foreground)]">
               러닝화를 찾을 수 없습니다
@@ -110,7 +111,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
   return (
     <>
       <Header />
-      <main className="pt-20" style={brandThemeVars}>
+      <main id="main-content" className="pt-20" style={brandThemeVars}>
         {/* Breadcrumb */}
         <div className="bg-[var(--color-card)] border-b border-[var(--color-border)]">
           <div className="layout-shell py-4">
@@ -148,8 +149,9 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
               {/* Image with ImageDistortion glow */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={animateEnabled ? { opacity: 0, x: -20 } : false}
+                animate={animateEnabled ? { opacity: 1, x: 0 } : undefined}
+                transition={animateEnabled ? { duration: 0.45 } : undefined}
                 className="relative aspect-[4/3] lg:aspect-square rounded-3xl overflow-hidden border border-[var(--color-border)]"
               >
                 <ImageDistortion variant="glow">
@@ -193,8 +195,9 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
 
               {/* Info */}
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={animateEnabled ? { opacity: 0, x: 20 } : false}
+                animate={animateEnabled ? { opacity: 1, x: 0 } : undefined}
+                transition={animateEnabled ? { duration: 0.45 } : undefined}
                 className="flex flex-col justify-center"
               >
                 <div className="flex items-center gap-2 mb-4">
@@ -235,13 +238,17 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                     {shoe.technologies.map((tech, i) => (
                       <motion.div
                         key={tech}
-                        initial={{ opacity: 0, scale: 0.5, y: 10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        transition={{
-                          type: 'spring',
-                          ...SPRING_SNAPPY,
-                          delay: 0.4 + i * STAGGER_NORMAL,
-                        }}
+                        initial={animateEnabled ? { opacity: 0, scale: 0.5, y: 10 } : false}
+                        animate={animateEnabled ? { opacity: 1, scale: 1, y: 0 } : undefined}
+                        transition={
+                          animateEnabled
+                            ? {
+                                type: 'spring',
+                                ...SPRING_SNAPPY,
+                                delay: 0.4 + i * STAGGER_NORMAL,
+                              }
+                            : undefined
+                        }
                       >
                         <Badge variant="spec">
                           {tech}
@@ -277,9 +284,10 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Spec Chart */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+                whileInView={animateEnabled ? { opacity: 1, y: 0 } : undefined}
                 viewport={{ once: true }}
+                transition={animateEnabled ? { duration: 0.4 } : undefined}
                 className="lg:col-span-1 bg-[var(--color-card)] rounded-2xl p-6 border border-[var(--color-border)]"
               >
                 <h2 className="type-h3 text-[var(--color-foreground)] mb-6">
@@ -302,10 +310,10 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                     {shoe.pros.map((pro, index) => (
                       <motion.li
                         key={index}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
+                        initial={animateEnabled ? { opacity: 0, x: -10 } : false}
+                        whileInView={animateEnabled ? { opacity: 1, x: 0 } : undefined}
                         viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 }}
+                        transition={animateEnabled ? { delay: index * 0.1 } : undefined}
                         className="flex items-start gap-2 type-body text-[var(--color-foreground)]/80"
                       >
                         <span className="text-[var(--color-daily)] mt-1">•</span>
@@ -327,10 +335,10 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                     {shoe.cons.map((con, index) => (
                       <motion.li
                         key={index}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
+                        initial={animateEnabled ? { opacity: 0, x: -10 } : false}
+                        whileInView={animateEnabled ? { opacity: 1, x: 0 } : undefined}
                         viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 }}
+                        transition={animateEnabled ? { delay: index * 0.1 } : undefined}
                         className="flex items-start gap-2 type-body text-[var(--color-foreground)]/80"
                       >
                         <span className="text-[var(--color-racing)] mt-1">•</span>
@@ -344,9 +352,10 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
 
             {/* Best For - wave stagger animation */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+              whileInView={animateEnabled ? { opacity: 1, y: 0 } : undefined}
               viewport={{ once: true }}
+              transition={animateEnabled ? { duration: 0.4 } : undefined}
               className="mt-8 bg-gradient-to-r from-[var(--color-asics-blue)]/10 to-[var(--color-asics-accent)]/10 rounded-2xl p-6 border border-[var(--color-asics-accent)]/20"
             >
               <h2 className="type-h3 text-[var(--color-foreground)] mb-4 flex items-center gap-2">
@@ -356,14 +365,18 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 {shoe.bestFor.map((item, index) => (
                   <motion.span
                     key={index}
-                    initial={{ opacity: 0, scale: 0.8, y: 10 }}
-                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    initial={animateEnabled ? { opacity: 0, scale: 0.8, y: 10 } : false}
+                    whileInView={animateEnabled ? { opacity: 1, scale: 1, y: 0 } : undefined}
                     viewport={{ once: true }}
                     transition={{
-                      delay: index * 0.08,
-                      type: 'spring',
-                      stiffness: 300,
-                      damping: 20,
+                      ...(animateEnabled
+                        ? {
+                            delay: index * 0.08,
+                            type: 'spring',
+                            stiffness: 300,
+                            damping: 20,
+                          }
+                        : {}),
                     }}
                     className="px-4 py-2 bg-[var(--color-card)] rounded-full type-body text-[var(--color-foreground)]/80 border border-[var(--color-border)]"
                   >
@@ -378,11 +391,12 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
         {/* Similar Shoes - horizontal scroll carousel */}
         {similarShoes.length > 0 && (
           <section className="section-space-tight bg-[var(--color-card)] overflow-x-clip">
-            <div className="layout-shell">
+              <div className="layout-shell">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+                whileInView={animateEnabled ? { opacity: 1, y: 0 } : undefined}
                 viewport={{ once: true }}
+                transition={animateEnabled ? { duration: 0.35 } : undefined}
                 className="mb-8"
               >
                 <h2 className="type-h2 text-[var(--color-foreground)] text-balance">

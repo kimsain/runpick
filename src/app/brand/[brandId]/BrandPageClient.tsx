@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
@@ -40,6 +40,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
   }, [shoes]);
   const sectionsRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
+  const animateEnabled = !useReducedMotion();
 
   // Track header visibility (mirrors Header.tsx logic)
   const [headerHidden, setHeaderHidden] = useState(false);
@@ -77,7 +78,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
     return (
       <>
         <Header />
-        <main className="pt-20 min-h-screen flex items-center justify-center">
+        <main id="main-content" className="pt-20 min-h-screen flex items-center justify-center">
           <div className="text-center px-4">
             <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)]">
               브랜드를 찾을 수 없습니다
@@ -106,7 +107,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
   return (
     <>
       <Header />
-      <main className="pt-20" style={brandThemeVars}>
+      <main id="main-content" className="pt-20" style={brandThemeVars}>
         {/* Hero Section */}
         <section className="section-space-tight bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)] relative overflow-hidden">
           <div className="relative layout-shell">
@@ -119,17 +120,17 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                 <span style={{ color: brand.color }}>{brand.name}</span>
               </TextReveal>
               <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+                initial={animateEnabled ? { opacity: 0, y: 10 } : false}
+                animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+                transition={animateEnabled ? { delay: 0.3 } : undefined}
                 className="mt-4 type-lead text-[var(--color-foreground)]/62 reading-measure text-pretty"
               >
                 {brand.description}
               </motion.p>
               <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                initial={animateEnabled ? { opacity: 0 } : false}
+                animate={animateEnabled ? { opacity: 1 } : undefined}
+                transition={animateEnabled ? { delay: 0.5 } : undefined}
                 className="mt-2 type-caption text-[var(--color-foreground)]/42"
               >
                 {shoes.length}개 모델
@@ -143,18 +144,19 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
 
         {/* Category Navigation — fixed below header, follows header hide/show */}
         <motion.section
-          animate={{ y: headerHidden ? -64 : 0 }}
-          transition={{ duration: DUR_FAST, ease: 'easeOut' }}
+          animate={animateEnabled ? { y: headerHidden ? -64 : 0 } : undefined}
+          initial={animateEnabled ? false : undefined}
+          transition={animateEnabled ? { duration: DUR_FAST, ease: 'easeOut' } : undefined}
           className="fixed top-16 left-0 right-0 pt-2 pb-3 sm:py-3 border-b border-[var(--color-border)] bg-[var(--color-background)]/95 backdrop-blur-sm z-40"
         >
           <div className="layout-shell">
             <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto overscroll-x-contain scrollbar-hide pb-2 snap-x snap-mandatory touch-pan-x">
               {categories.map((category) => (
-                <MagneticElement key={category.id} strength={0.2} radius={120}>
-                  <Link href={`/brand/${brandId}/${category.id}`}>
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                  <MagneticElement key={category.id} strength={0.2} radius={120}>
+                    <Link href={`/brand/${brandId}/${category.id}`}>
+                      <motion.div
+                      whileHover={animateEnabled ? { scale: 1.05 } : undefined}
+                      whileTap={animateEnabled ? { scale: 0.95 } : undefined}
                       className="px-3.5 py-2 min-h-11 sm:px-6 sm:py-3 rounded-full border border-[var(--color-border)] hover:border-transparent transition-all cursor-pointer whitespace-nowrap shrink-0 snap-start"
                       style={{
                         background: `linear-gradient(135deg, transparent, ${category.color}10)`,
@@ -191,12 +193,12 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                 id={category.id}
               >
                 <div className="layout-shell">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="mb-8"
-                  >
+              <motion.div
+                initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+                whileInView={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+                viewport={{ once: true }}
+                className="mb-8"
+              >
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-3xl">{category.icon}</span>
                       <h2
@@ -216,9 +218,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {categoryShoes.map((shoe, index) => (
-                      <div key={shoe.id} className="shoe-card-wrapper">
-                        <ShoeCard shoe={shoe} index={index} />
-                      </div>
+                      <ShoeCard key={shoe.id} shoe={shoe} index={index} />
                     ))}
                   </div>
                 </div>

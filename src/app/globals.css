@@ -281,10 +281,6 @@ body {
     opacity: 0;
     transform: translateX(60px);
   }
-  .shoe-card-wrapper {
-    opacity: 0;
-    transform: translateY(40px);
-  }
 }
 
 /* ScrollIndicator — CSS compositor animation */
@@ -348,10 +344,27 @@ body {
     box-shadow: none !important;
   }
 
-  /* BrandPageClient shoe card visibility */
-  .shoe-card-wrapper {
-    opacity: 1 !important;
-    transform: none !important;
-  }
+}
 
+/* Accessibility / Interaction */
+*:focus-visible {
+  outline: 2px solid var(--color-asics-accent);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  z-index: 10000;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.5rem;
+  background: var(--color-asics-blue);
+  color: white;
+  transform: translateY(-140%);
+  transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
 }

@@ -5,12 +5,24 @@
 // Mobile uses native scroll — this component renders children only.
 // Scroll position resets on pathname change (no key-based remount needed).
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { useReducedMotion } from 'framer-motion';
+
+type NavigatorWithConnection = Navigator & {
+  connection?: {
+    saveData?: boolean;
+    effectiveType?: string;
+    addEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
+    removeEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
+  };
+};
+
+const LOW_POWER_CONNECTION_TYPES = new Set(['slow-2g', '2g']);
 
 interface SmoothScrollProps {
   children: React.ReactNode;
@@ -20,9 +32,34 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null);
   const isDesktop = useIsDesktop();
   const pathname = usePathname();
+  const reduceMotion = useReducedMotion();
+  const [isEnabled, setIsEnabled] = useState(false);
 
   useEffect(() => {
-    if (!isDesktop) return; // Mobile: use native scroll
+    const navConnection = (navigator as NavigatorWithConnection).connection;
+
+    const checkEnabled = () => {
+      const isCoarsePointer =
+        window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
+      const isSaveData = Boolean(navConnection?.saveData) ||
+        (navConnection?.effectiveType
+          ? LOW_POWER_CONNECTION_TYPES.has(navConnection.effectiveType)
+          : false);
+      setIsEnabled(!isDesktop || reduceMotion ? false : !isCoarsePointer && !isSaveData);
+    };
+
+    checkEnabled();
+    window.addEventListener('resize', checkEnabled);
+    navConnection?.addEventListener?.('change', checkEnabled);
+
+    return () => {
+      window.removeEventListener('resize', checkEnabled);
+      navConnection?.removeEventListener?.('change', checkEnabled);
+    };
+  }, [isDesktop, reduceMotion]);
+
+  useEffect(() => {
+    if (!isEnabled) return; // Mobile or reduced-motion: native scroll
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -52,7 +89,7 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, [isDesktop]);
+  }, [isEnabled]);
 
   // Reset scroll position on route change without destroying the tree
   useEffect(() => {

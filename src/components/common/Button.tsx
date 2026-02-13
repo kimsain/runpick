@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, HTMLMotionProps, AnimatePresence } from 'framer-motion';
+import { motion, useReducedMotion, HTMLMotionProps, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useState, useCallback, useRef } from 'react';
 import MagneticElement from '@/components/effects/MagneticElement';
@@ -36,7 +36,6 @@ const sizes: Record<ButtonSize, string> = {
   lg: 'px-6 py-3 text-base',
 };
 
-// Ripple component for click effect
 function Ripple({ x, y, onComplete }: { x: number; y: number; onComplete: () => void }) {
   return (
     <motion.span
@@ -69,6 +68,7 @@ export default function Button({
   const [isPressed, setIsPressed] = useState(false);
   const rippleIdRef = useRef(0);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const animateEnabled = !useReducedMotion();
 
   const baseStyles = `
     inline-flex items-center justify-center gap-2
@@ -83,48 +83,67 @@ export default function Button({
   const isDisabled = Boolean(props.disabled);
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    if (animateEnabled) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
 
-    const newRipple = {
-      id: rippleIdRef.current++,
-      x,
-      y,
-    };
+      const newRipple = {
+        id: rippleIdRef.current++,
+        x,
+        y,
+      };
 
-    setRipples((prev) => [...prev, newRipple]);
-    setIsPressed(true);
-    setTimeout(() => setIsPressed(false), 150);
+      setRipples((prev) => [...prev, newRipple]);
+      setIsPressed(true);
+      setTimeout(() => setIsPressed(false), 150);
+    }
 
     if (onClick) {
       onClick(e);
     }
-  }, [onClick]);
+  }, [animateEnabled, onClick]);
 
   const removeRipple = useCallback((id: number) => {
     setRipples((prev) => prev.filter((ripple) => ripple.id !== id));
   }, []);
 
+  const hoverTransition = animateEnabled
+    ? {
+      type: 'spring' as const,
+      stiffness: 400,
+      damping: 17,
+    }
+    : undefined;
+
+  const hoverAnimation = animateEnabled
+    ? {
+      scale: 1.05,
+      boxShadow:
+        variant === 'primary'
+          ? '0 10px 30px -10px var(--color-asics-accent)'
+          : '0 5px 15px -5px rgba(0,0,0,0.2)',
+    }
+    : undefined;
+
   const buttonContent = (
     <>
-      {/* Ripple effects */}
       <AnimatePresence>
-        {ripples.map((ripple) => (
-          <Ripple
-            key={ripple.id}
-            x={ripple.x}
-            y={ripple.y}
-            onComplete={() => removeRipple(ripple.id)}
-          />
-        ))}
+        {animateEnabled &&
+          ripples.map((ripple) => (
+            <Ripple
+              key={ripple.id}
+              x={ripple.x}
+              y={ripple.y}
+              onComplete={() => removeRipple(ripple.id)}
+            />
+          ))}
       </AnimatePresence>
 
-      {/* Hover glow effect */}
       <motion.div
         className="absolute inset-0 rounded-full pointer-events-none"
-        initial={{ opacity: 0 }}
-        whileHover={{ opacity: 1 }}
+        initial={animateEnabled ? { opacity: 0 } : { opacity: 0 }}
+        whileHover={animateEnabled ? { opacity: 1 } : undefined}
         style={{
           background: variant === 'primary'
             ? 'radial-gradient(circle at center, rgba(255,255,255,0.15), transparent 70%)'
@@ -132,7 +151,6 @@ export default function Button({
         }}
       />
 
-      {/* Content */}
       <span className="relative z-10 flex items-center gap-2">{children}</span>
     </>
   );
@@ -146,20 +164,9 @@ export default function Button({
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{
-              scale: 1.05,
-              boxShadow: variant === 'primary'
-                ? '0 10px 30px -10px var(--color-asics-accent)'
-                : '0 5px 15px -5px rgba(0,0,0,0.2)',
-            }}
-            whileTap={{
-              scale: 0.95,
-            }}
-            transition={{
-              type: 'spring',
-              stiffness: 400,
-              damping: 17,
-            }}
+            whileHover={hoverAnimation}
+            whileTap={animateEnabled ? { scale: 0.95 } : undefined}
+            transition={hoverTransition}
             className={combinedClassName}
           >
             {buttonContent}
@@ -173,20 +180,9 @@ export default function Button({
         <Link href={href}>
           <motion.span
             data-cursor="hover"
-            whileHover={{
-              scale: 1.05,
-              boxShadow: variant === 'primary'
-                ? '0 10px 30px -10px var(--color-asics-accent)'
-                : '0 5px 15px -5px rgba(0,0,0,0.2)',
-            }}
-            whileTap={{
-              scale: 0.95,
-            }}
-            transition={{
-              type: 'spring',
-              stiffness: 400,
-              damping: 17,
-            }}
+            whileHover={hoverAnimation}
+            whileTap={animateEnabled ? { scale: 0.95 } : undefined}
+            transition={hoverTransition}
             className={combinedClassName}
           >
             {buttonContent}
@@ -201,23 +197,10 @@ export default function Button({
       <motion.button
         ref={buttonRef}
         data-cursor="hover"
-        whileHover={isDisabled ? undefined : {
-          scale: 1.05,
-          boxShadow: variant === 'primary'
-            ? '0 10px 30px -10px var(--color-asics-accent)'
-            : '0 5px 15px -5px rgba(0,0,0,0.2)',
-        }}
-        whileTap={isDisabled ? undefined : {
-          scale: 0.92,
-        }}
-        animate={isPressed ? {
-          scale: [1, 0.95, 1.02, 1],
-        } : {}}
-        transition={{
-          type: 'spring',
-          stiffness: 400,
-          damping: 17,
-        }}
+        whileHover={isDisabled ? undefined : hoverAnimation}
+        whileTap={isDisabled || !animateEnabled ? undefined : { scale: 0.92 }}
+        animate={animateEnabled && isPressed ? { scale: [1, 0.95, 1.02, 1] } : {}}
+        transition={hoverTransition}
         className={combinedClassName}
         onClick={isDisabled ? undefined : handleClick}
         {...props}

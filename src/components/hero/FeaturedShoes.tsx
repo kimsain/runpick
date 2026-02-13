@@ -13,15 +13,27 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
 import { EASE_OUT_EXPO, DUR_REVEAL } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { useReducedMotion } from 'framer-motion';
+
+type NavigatorWithConnection = Navigator & {
+  connection?: {
+    saveData?: boolean;
+    effectiveType?: string;
+    addEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
+    removeEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
+  };
+};
+
+const LOW_POWER_CONNECTION_TYPES = new Set(['slow-2g', '2g']);
 
 // Featured badge component
-function FeaturedBadge() {
+function FeaturedBadge({ animateEnabled }: { animateEnabled: boolean }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={animateEnabled ? { opacity: 0, y: -20 } : false}
+      whileInView={animateEnabled ? { opacity: 1, y: 0 } : undefined}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: 0.3 }}
+      transition={animateEnabled ? { duration: 0.5, delay: 0.3 } : undefined}
       className="inline-flex items-center gap-2 mb-6 sm:mb-8"
     >
       <div
@@ -41,7 +53,15 @@ function FeaturedBadge() {
 }
 
 // Enhanced shoe card wrapper with spotlight effect
-function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeof getAllShoes>[0]>; index: number }) {
+function SpotlightShoeCard({
+  shoe,
+  index,
+  animateEnabled,
+}: {
+  shoe: NonNullable<ReturnType<typeof getAllShoes>[0]>;
+  index: number;
+  animateEnabled: boolean;
+}) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -53,11 +73,13 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
       {/* Spotlight/glow effect behind card */}
       <motion.div
         className="absolute -inset-4 rounded-3xl pointer-events-none"
-        animate={{
-          opacity: isHovered ? 1 : 0,
-          scale: isHovered ? 1 : 0.9,
-        }}
-        transition={{ duration: 0.3 }}
+        animate={animateEnabled
+          ? {
+              opacity: isHovered ? 1 : 0,
+              scale: isHovered ? 1 : 0.9,
+            }
+          : undefined}
+        transition={animateEnabled ? { duration: 0.3 } : undefined}
         style={{
           background: `radial-gradient(circle at 50% 50%, var(--color-asics-blue)30 0%, transparent 70%)`,
           filter: 'blur(20px)',
@@ -71,16 +93,20 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
           background: `linear-gradient(135deg, var(--color-asics-blue), var(--color-asics-accent))`,
           boxShadow: '0 4px 15px var(--color-asics-blue)',
         }}
-        initial={{ scale: 0, rotate: -180 }}
-        whileInView={{ scale: 1, rotate: 0 }}
+        initial={animateEnabled ? { scale: 0, rotate: -180 } : false}
+        whileInView={animateEnabled ? { scale: 1, rotate: 0 } : undefined}
         viewport={{ once: true }}
-        transition={{
-          duration: 0.5,
-          delay: 0.4 + index * 0.15,
-          type: 'spring',
-          stiffness: 200,
-        }}
-        whileHover={{ scale: 1.1, rotate: 10 }}
+        transition={
+          animateEnabled
+            ? {
+                duration: 0.5,
+                delay: 0.4 + index * 0.15,
+                type: 'spring',
+                stiffness: 200,
+              }
+            : undefined
+        }
+        whileHover={animateEnabled ? { scale: 1.1, rotate: 10 } : undefined}
       >
         #{index + 1}
       </motion.div>
@@ -93,14 +119,18 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
             background: 'linear-gradient(135deg, #FF6B6B, #FF8E53)',
             boxShadow: '0 4px 15px rgba(255, 107, 107, 0.4)',
           }}
-          initial={{ scale: 0, y: -20 }}
-          whileInView={{ scale: 1, y: 0 }}
+          initial={animateEnabled ? { scale: 0, y: -20 } : false}
+          whileInView={animateEnabled ? { scale: 1, y: 0 } : undefined}
           viewport={{ once: true }}
-          transition={{
-            duration: 0.4,
-            delay: 0.6,
-            type: 'spring',
-          }}
+          transition={
+            animateEnabled
+              ? {
+                  duration: 0.4,
+                  delay: 0.6,
+                  type: 'spring',
+                }
+              : undefined
+          }
         >
           <span>MOST POPULAR</span>
         </motion.div>
@@ -108,8 +138,8 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
 
       {/* The actual shoe card */}
       <motion.div
-        whileHover={{ y: -8, scale: 1.02 }}
-        transition={{ duration: 0.3 }}
+        whileHover={animateEnabled ? { y: -8, scale: 1.02 } : undefined}
+        transition={animateEnabled ? { duration: 0.3 } : undefined}
         className="relative z-10"
       >
         <ShoeCard shoe={shoe} index={index} />
@@ -120,13 +150,18 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
         className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 rounded-full"
         style={{
           background: 'linear-gradient(90deg, transparent, var(--color-asics-accent), transparent)',
+          width: '80%',
+          opacity: 0,
         }}
-        initial={{ width: 0, opacity: 0 }}
-        animate={{
+        initial={animateEnabled ? { width: 0, opacity: 0 } : undefined}
+        animate={animateEnabled ? {
           width: isHovered ? '80%' : '0%',
           opacity: isHovered ? 1 : 0,
+        } : {
+          width: '0%',
+          opacity: 0,
         }}
-        transition={{ duration: 0.3 }}
+        transition={animateEnabled ? { duration: 0.3 } : undefined}
       />
     </div>
   );
@@ -135,6 +170,8 @@ function SpotlightShoeCard({ shoe, index }: { shoe: NonNullable<ReturnType<typeo
 export default function FeaturedShoes() {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const animateEnabled = !useReducedMotion();
+  const [isEnabled, setIsEnabled] = useState(false);
 
   const allShoes = useMemo(() => getAllShoes(), []);
   // 각 카테고리에서 인기 모델 Top 5
@@ -153,9 +190,32 @@ export default function FeaturedShoes() {
   // GSAP pin needs wider viewport (1024px+) — at 768px cards are too narrow
   const isPinDesktop = useIsDesktop(1024);
 
+  useEffect(() => {
+    const conn = (navigator as NavigatorWithConnection).connection;
+
+    const checkEnabled = () => {
+      const isPointerRestricted =
+        window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
+      const isSaveData = Boolean(conn?.saveData) ||
+        !!(conn?.effectiveType && LOW_POWER_CONNECTION_TYPES.has(conn.effectiveType));
+
+      const nextEnabled = isPinDesktop && animateEnabled && !isPointerRestricted && !isSaveData;
+      setIsEnabled((prev) => (prev === nextEnabled ? prev : nextEnabled));
+    };
+
+    checkEnabled();
+    window.addEventListener('resize', checkEnabled);
+    conn?.addEventListener?.('change', checkEnabled);
+
+    return () => {
+      window.removeEventListener('resize', checkEnabled);
+      conn?.removeEventListener?.('change', checkEnabled);
+    };
+  }, [isPinDesktop, animateEnabled]);
+
   // Desktop: GSAP horizontal scroll with pin
   useEffect(() => {
-    if (!isPinDesktop) return;
+    if (!isEnabled) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -179,7 +239,7 @@ export default function FeaturedShoes() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [isPinDesktop]);
+  }, [isEnabled]);
 
   return (
     <section ref={sectionRef} className="relative bg-[var(--color-background)] section-space-tight">
@@ -190,7 +250,7 @@ export default function FeaturedShoes() {
       >
         {/* Section header */}
         <div className="text-center pt-6 md:pt-8 pb-8 md:pb-4 layout-shell">
-          <FeaturedBadge />
+          <FeaturedBadge animateEnabled={animateEnabled} />
 
           <TextReveal
             as="h2"
@@ -200,7 +260,8 @@ export default function FeaturedShoes() {
             <span
               className="inline-block"
               style={{
-                backgroundImage: 'linear-gradient(90deg, var(--color-foreground), var(--color-asics-blue), var(--color-asics-accent))',
+                backgroundImage:
+                  'linear-gradient(90deg, var(--color-foreground), var(--color-asics-blue), var(--color-asics-accent))',
                 backgroundSize: '100% 100%',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
@@ -213,10 +274,14 @@ export default function FeaturedShoes() {
 
           <motion.p
             className="mt-4 type-lead text-[var(--color-foreground)]/62 text-pretty reading-measure"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={animateEnabled ? { opacity: 0 } : false}
+            whileInView={animateEnabled ? { opacity: 1 } : undefined}
             viewport={{ once: true }}
-            transition={{ duration: DUR_REVEAL, delay: 0.2, ease: EASE_OUT_EXPO as unknown as number[] }}
+            transition={
+              animateEnabled
+                ? { duration: DUR_REVEAL, delay: 0.2, ease: EASE_OUT_EXPO as unknown as number[] }
+                : undefined
+            }
           >
             러너들이 가장 사랑하는 모델들
           </motion.p>
@@ -233,7 +298,14 @@ export default function FeaturedShoes() {
           }`}
         >
           {featuredShoes.map((shoe, index) => (
-            shoe && <SpotlightShoeCard key={shoe.id} shoe={shoe} index={index} />
+            shoe && (
+              <SpotlightShoeCard
+                key={shoe.id}
+                shoe={shoe}
+                index={index}
+                animateEnabled={animateEnabled}
+              />
+            )
           ))}
         </div>
       </div>

@@ -5,28 +5,40 @@
 // and ScrollIndicator (desktop only, CSS @keyframes animation).
 
 import { motion } from 'framer-motion';
+import { useReducedMotion } from 'framer-motion';
 import Button from '@/components/common/Button';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { EASE_OUT_EXPO, STAGGER_NORMAL } from '@/constants/animation';
 
 // Pulsing CTA button wrapper
-function PulsingButton({ children, href, variant = 'primary', delay = 0 }: {
+function PulsingButton({
+  children,
+  href,
+  variant = 'primary',
+  delay = 0,
+  animateEnabled = true,
+}: {
   children: React.ReactNode;
   href: string;
   variant?: 'primary' | 'outline';
   delay?: number;
+  animateEnabled?: boolean;
 }) {
   return (
     <motion.div
       className="relative"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.6,
-        delay,
-        ease: EASE_OUT_EXPO as unknown as number[],
-      }}
+      initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+      animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+      transition={
+        animateEnabled
+          ? {
+              duration: 0.6,
+              delay,
+              ease: EASE_OUT_EXPO as unknown as number[],
+            }
+          : undefined
+      }
     >
       <Button href={href} size="lg" variant={variant === 'outline' ? 'outline' : undefined}>
         {children}
@@ -36,6 +48,8 @@ function PulsingButton({ children, href, variant = 'primary', delay = 0 }: {
 }
 
 export default function HeroSection() {
+  const animateEnabled = !useReducedMotion();
+
   return (
     <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
       {/* Background gradient - static to prevent flicker */}
@@ -59,15 +73,19 @@ export default function HeroSection() {
         className="relative z-10 layout-shell pt-24 pb-16 sm:pt-28 sm:pb-20 text-center"
       >
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          initial={animateEnabled ? { opacity: 0 } : false}
+          animate={animateEnabled ? { opacity: 1 } : undefined}
+          transition={animateEnabled ? { duration: 0.5 } : undefined}
         >
           {/* Eyebrow with shimmer effect */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+            animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+            transition={
+              animateEnabled
+                ? { delay: 0.2, duration: 0.6 }
+                : undefined
+            }
             className="relative inline-block mb-6"
           >
             <span
@@ -125,9 +143,13 @@ export default function HeroSection() {
 
           {/* Subtitle with fade in */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.6, ease: EASE_OUT_EXPO as unknown as number[] }}
+            initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+            animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+            transition={
+              animateEnabled
+                ? { delay: 1.2, duration: 0.6, ease: EASE_OUT_EXPO as unknown as number[] }
+                : undefined
+            }
             className="mt-7 sm:mt-8 type-lead text-[var(--color-foreground)]/65 reading-measure text-pretty"
           >
             Daily, Super Trainer, Racing 카테고리별로 정리된 러닝화 카탈로그와
@@ -136,10 +158,15 @@ export default function HeroSection() {
 
           {/* CTA Buttons with stagger clip-path reveal */}
           <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-            <PulsingButton href="/quiz" delay={1.5}>
+            <PulsingButton href="/quiz" delay={1.5} animateEnabled={animateEnabled}>
               나에게 맞는 신발 찾기
             </PulsingButton>
-            <PulsingButton href="/brand" variant="outline" delay={1.5 + STAGGER_NORMAL}>
+            <PulsingButton
+              href="/brand"
+              variant="outline"
+              delay={1.5 + STAGGER_NORMAL}
+              animateEnabled={animateEnabled}
+            >
               카탈로그 둘러보기
             </PulsingButton>
           </div>
@@ -149,24 +176,24 @@ export default function HeroSection() {
 
       {/* Enhanced scroll indicator wrapped with MagneticElement */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.0, duration: 0.6 }}
+        initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+        animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+        transition={animateEnabled ? { delay: 2.0, duration: 0.6 } : undefined}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:block"
       >
         <MagneticElement strength={0.25}>
-          <ScrollIndicator />
+          <ScrollIndicator animateEnabled={animateEnabled} />
         </MagneticElement>
       </motion.div>
     </section>
   );
 }
 
-function ScrollIndicator() {
+function ScrollIndicator({ animateEnabled = true }: { animateEnabled?: boolean }) {
   return (
     <motion.div
       className="flex flex-col items-center gap-3 cursor-pointer group"
-      whileHover={{ scale: 1.1 }}
+      whileHover={animateEnabled ? { scale: 1.1 } : undefined}
       data-cursor="pointer"
     >
       <span className="text-xs tracking-wider uppercase font-medium text-[var(--color-foreground)]/50 group-hover:text-[var(--color-asics-accent)] transition-colors">

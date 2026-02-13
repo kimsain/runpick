@@ -1,7 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
@@ -10,13 +10,50 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { EASE_OUT_EXPO } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
+type NavigatorWithConnection = Navigator & {
+  connection?: {
+    saveData?: boolean;
+    effectiveType?: string;
+    addEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
+    removeEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
+  };
+};
+
+const LOW_POWER_CONNECTION_TYPES = new Set(['slow-2g', '2g']);
+
 export default function QuizCTA() {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
+  const animateEnabled = !useReducedMotion();
+  const [isEnabled, setIsEnabled] = useState(false);
 
   useEffect(() => {
-    if (!isDesktop) return;
+    const conn = (navigator as NavigatorWithConnection).connection;
+
+    const checkEnabled = () => {
+      const isCoarsePointer =
+        window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
+      const isSaveData = !!(
+        conn?.saveData ||
+        (conn?.effectiveType && LOW_POWER_CONNECTION_TYPES.has(conn.effectiveType))
+      );
+      const nextEnabled = isDesktop && animateEnabled && !isCoarsePointer && !isSaveData;
+      setIsEnabled((prev) => (prev === nextEnabled ? prev : nextEnabled));
+    };
+
+    checkEnabled();
+    window.addEventListener('resize', checkEnabled);
+    conn?.addEventListener?.('change', checkEnabled);
+
+    return () => {
+      window.removeEventListener('resize', checkEnabled);
+      conn?.removeEventListener?.('change', checkEnabled);
+    };
+  }, [isDesktop, animateEnabled]);
+
+  useEffect(() => {
+    if (!isEnabled) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -37,7 +74,7 @@ export default function QuizCTA() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [isDesktop]);
+  }, [isEnabled]);
 
   return (
     <section ref={sectionRef} className="section-space relative">
@@ -93,10 +130,14 @@ export default function QuizCTA() {
           <div className="relative py-11 px-5 sm:py-16 sm:px-8 md:py-20 md:px-14 text-center">
             {/* Pill badge */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={animateEnabled ? { opacity: 0, y: 10 } : false}
+              whileInView={animateEnabled ? { opacity: 1, y: 0 } : undefined}
               viewport={{ once: true }}
-              transition={{ delay: 0.1, duration: 0.5, ease: EASE_OUT_EXPO as unknown as number[] }}
+              transition={
+                animateEnabled
+                  ? { delay: 0.1, duration: 0.5, ease: EASE_OUT_EXPO as unknown as number[] }
+                  : undefined
+              }
               className="inline-flex items-center gap-2 mb-8"
             >
               <span
@@ -123,10 +164,10 @@ export default function QuizCTA() {
 
             <motion.p
               className="type-lead text-white/58 reading-measure mb-9 text-pretty"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={animateEnabled ? { opacity: 0 } : false}
+              whileInView={animateEnabled ? { opacity: 1 } : undefined}
               viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.6 }}
+              transition={animateEnabled ? { delay: 0.3, duration: 0.6 } : undefined}
             >
               러닝 스타일, 목표, 발 유형을 분석해서
               <br className="hidden sm:block" />
@@ -135,10 +176,10 @@ export default function QuizCTA() {
 
             {/* CTA Button */}
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={animateEnabled ? { opacity: 0, y: 15 } : false}
+              whileInView={animateEnabled ? { opacity: 1, y: 0 } : undefined}
               viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+              transition={animateEnabled ? { delay: 0.4, duration: 0.5 } : undefined}
             >
               <MagneticElement strength={0.2}>
                 <Link href="/quiz" data-cursor="hover">
@@ -148,12 +189,12 @@ export default function QuizCTA() {
                       background: 'white',
                       color: 'var(--color-asics-blue)',
                     }}
-                    whileHover={{
+                    whileHover={animateEnabled ? {
                       scale: 1.04,
                       boxShadow: '0 20px 50px -12px rgba(0,209,255,0.35), 0 0 0 1px rgba(255,255,255,0.1)',
-                    }}
-                    whileTap={{ scale: 0.97 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                    } : undefined}
+                    whileTap={animateEnabled ? { scale: 0.97 } : undefined}
+                    transition={animateEnabled ? { type: 'spring', stiffness: 400, damping: 20 } : undefined}
                   >
                     <span className="relative z-10">추천 퀴즈 시작하기</span>
                     <span className="relative z-10">→</span>

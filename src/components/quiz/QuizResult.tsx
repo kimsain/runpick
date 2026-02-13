@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { motion, useMotionValue, useTransform, animate, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { QuizResult as QuizResultType } from '@/types/quiz';
@@ -19,6 +19,7 @@ interface QuizResultProps {
 
 function MatchScoreCircle({ score }: { score: number }) {
   const motionValue = useMotionValue(0);
+  const animateEnabled = !useReducedMotion();
   const rounded = useTransform(motionValue, (v) => Math.round(v));
   const circumference = 2 * Math.PI * 54; // radius=54
   const strokeDashoffset = useTransform(
@@ -28,6 +29,14 @@ function MatchScoreCircle({ score }: { score: number }) {
   const displayRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
+    if (!animateEnabled) {
+      motionValue.set(score);
+      if (displayRef.current) {
+        displayRef.current.textContent = `${score}%`;
+      }
+      return;
+    }
+
     const controls = animate(motionValue, score, {
       duration: 1.5,
       delay: 0.5,
@@ -40,7 +49,7 @@ function MatchScoreCircle({ score }: { score: number }) {
       controls.stop();
       unsubscribe();
     };
-  }, [score, motionValue, rounded]);
+  }, [score, motionValue, rounded, animateEnabled]);
 
   return (
     <div className="relative w-28 h-28 sm:w-36 sm:h-36">
@@ -88,45 +97,48 @@ function MatchScoreCircle({ score }: { score: number }) {
 }
 
 export default function QuizResult({ result, onRetry }: QuizResultProps) {
+  const animateEnabled = !useReducedMotion();
   const { primaryRecommendation, alternatives, matchScore, matchReasons, reasoning } = result;
   const category = getCategoryById(primaryRecommendation.categoryId);
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      initial={animateEnabled ? { opacity: 0 } : false}
+      animate={animateEnabled ? { opacity: 1 } : undefined}
+      transition={animateEnabled ? { duration: 0.5 } : undefined}
       className="relative"
     >
       {/* Hero: Match Score + Title */}
       <div className="relative text-center mb-8 sm:mb-12">
         {/* Particle burst */}
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', delay: 0.2 }}
+      <motion.div
+          initial={animateEnabled ? { scale: 0 } : false}
+          animate={animateEnabled ? { scale: 1 } : undefined}
+          transition={animateEnabled ? { type: 'spring', delay: 0.2 } : undefined}
           className="inline-block mb-4 relative"
         >
           <span className="text-5xl">🎉</span>
-          {[...Array(6)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-2 h-2 rounded-full"
-              style={{
-                background: 'var(--color-asics-accent)',
-                left: '50%',
-                top: '50%',
-              }}
-              initial={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-              animate={{
-                opacity: 0,
-                scale: 0,
-                x: Math.cos((i * Math.PI * 2) / 6) * 60,
-                y: Math.sin((i * Math.PI * 2) / 6) * 60,
-              }}
-              transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-            />
-          ))}
+          {animateEnabled ? (
+            [...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-2 h-2 rounded-full"
+                style={{
+                  background: 'var(--color-asics-accent)',
+                  left: '50%',
+                  top: '50%',
+                }}
+                initial={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+                animate={{
+                  opacity: 0,
+                  scale: 0,
+                  x: Math.cos((i * Math.PI * 2) / 6) * 60,
+                  y: Math.sin((i * Math.PI * 2) / 6) * 60,
+                }}
+                transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+              />
+            ))
+          ) : null}
         </motion.div>
 
         <TextReveal
@@ -140,9 +152,9 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
 
         {/* Match score circle */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.4, type: 'spring', stiffness: 200, damping: 20 }}
+          initial={animateEnabled ? { opacity: 0, scale: 0.8 } : false}
+          animate={animateEnabled ? { opacity: 1, scale: 1 } : undefined}
+          transition={animateEnabled ? { delay: 0.4, type: 'spring', stiffness: 200, damping: 20 } : undefined}
           className="flex justify-center mb-6"
         >
           <MatchScoreCircle score={matchScore} />
@@ -151,17 +163,17 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
         {/* Match reason badges */}
         {matchReasons.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
+            initial={animateEnabled ? { opacity: 0, y: 10 } : false}
+            animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+            transition={animateEnabled ? { delay: 0.8 } : undefined}
             className="flex flex-wrap items-center justify-center gap-2 mb-6"
           >
             {matchReasons.map((reason, i) => (
               <motion.span
                 key={reason}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.9 + i * 0.1 }}
+                initial={animateEnabled ? { opacity: 0, scale: 0.8 } : false}
+                animate={animateEnabled ? { opacity: 1, scale: 1 } : undefined}
+                transition={animateEnabled ? { delay: 0.9 + i * 0.1 } : undefined}
                 className="px-4 py-1.5 rounded-full text-sm font-medium bg-[var(--color-asics-accent)]/10 text-[var(--color-asics-accent)] border border-[var(--color-asics-accent)]/20"
               >
                 {reason}
@@ -171,9 +183,9 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
         )}
 
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0 }}
+          initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+          animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+          transition={animateEnabled ? { delay: 1.0 } : undefined}
           className="type-body text-[var(--color-foreground)]/62 reading-measure text-pretty"
         >
           {reasoning}
@@ -181,17 +193,21 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
       </div>
 
       {/* Primary Recommendation */}
-      <motion.div
-        initial={{ opacity: 0, y: 30, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{
-          delay: 0.5,
-          type: 'spring',
-          stiffness: 200,
-          damping: 20,
-        }}
-        className="relative bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] rounded-3xl overflow-hidden border border-[var(--color-asics-accent)]/30 mb-8"
-      >
+        <motion.div
+          initial={animateEnabled ? { opacity: 0, y: 30, scale: 0.95 } : false}
+          animate={animateEnabled ? { opacity: 1, y: 0, scale: 1 } : undefined}
+          transition={
+            animateEnabled
+              ? {
+                  delay: 0.5,
+                  type: 'spring',
+                  stiffness: 200,
+                  damping: 20,
+                }
+              : undefined
+          }
+          className="relative bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] rounded-3xl overflow-hidden border border-[var(--color-asics-accent)]/30 mb-8"
+        >
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-asics-blue)]/5 to-[var(--color-asics-accent)]/10" />
 
         <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 p-5 sm:gap-8 sm:p-8">
@@ -249,12 +265,12 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
       </motion.div>
 
       {/* Spec Analysis Section - separated from primary card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
-        className="mb-12 p-4 sm:p-6 bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)]"
-      >
+        <motion.div
+          initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+          animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+          transition={animateEnabled ? { delay: 0.7 } : undefined}
+          className="mb-12 p-4 sm:p-6 bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)]"
+        >
         <h3 className="type-h3 text-[var(--color-foreground)] mb-4">
           스펙 분석
         </h3>
@@ -262,11 +278,11 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
       </motion.div>
 
       {/* Alternatives — 3 custom cards */}
-      {alternatives.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
+        {alternatives.length > 0 && (
+          <motion.div
+          initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+          animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+          transition={animateEnabled ? { delay: 0.7 } : undefined}
           className="mb-12"
         >
           <h3 className="type-h3 text-[var(--color-foreground)] mb-6 text-balance">
@@ -281,12 +297,12 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
                 { label: '내구성', value: shoe.specs.durability },
               ].sort((a, b) => b.value - a.value)[0];
 
-              return (
+                return (
                 <motion.div
                   key={shoe.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 + index * 0.1 }}
+                  initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+                  animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+                  transition={animateEnabled ? { delay: 0.8 + index * 0.1 } : undefined}
                 >
                   <Link
                     href={`/shoe/${shoe.slug}`}
@@ -333,12 +349,12 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
       )}
 
       {/* Actions */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.9 }}
-        className="flex flex-col sm:flex-row items-center justify-center gap-4"
-      >
+        <motion.div
+          initial={animateEnabled ? { opacity: 0 } : false}
+          animate={animateEnabled ? { opacity: 1 } : undefined}
+          transition={animateEnabled ? { delay: 0.9 } : undefined}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+        >
         <Button variant="outline" onClick={onRetry}>
           다시 테스트하기
         </Button>

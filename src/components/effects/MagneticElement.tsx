@@ -1,6 +1,6 @@
 'use client';
 import { useRef, useState, useEffect, ReactNode } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion';
 import { SPRING_SMOOTH, MOBILE_BREAKPOINT } from '@/constants/animation';
 
 interface MagneticElementProps {
@@ -16,6 +16,7 @@ export default function MagneticElement({
   radius = 150,
   className = '',
 }: MagneticElementProps) {
+  const animateEnabled = !useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(true);
   const x = useMotionValue(0);
@@ -31,6 +32,7 @@ export default function MagneticElement({
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (!animateEnabled) return;
     if (!ref.current || isMobile) return;
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -46,9 +48,14 @@ export default function MagneticElement({
   };
 
   const handleMouseLeave = () => {
+    if (!animateEnabled) return;
     x.set(0);
     y.set(0);
   };
+
+  if (!animateEnabled) {
+    return <div className={className}>{children}</div>;
+  }
 
   if (isMobile) {
     return <div className={className}>{children}</div>;

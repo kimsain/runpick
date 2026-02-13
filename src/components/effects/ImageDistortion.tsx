@@ -1,5 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
+import { useReducedMotion } from 'framer-motion';
 import { useState, ReactNode } from 'react';
 
 interface ImageDistortionProps {
@@ -11,7 +12,11 @@ export default function ImageDistortion({
   children,
   variant = 'scan',
 }: ImageDistortionProps) {
+  const animateEnabled = !useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
+  if (!animateEnabled) {
+    return <div className="relative overflow-hidden">{children}</div>;
+  }
 
   return (
     <motion.div

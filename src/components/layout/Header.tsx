@@ -2,16 +2,18 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { DUR_FAST } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isDesktop = useIsDesktop();
+  const animateEnabled = !useReducedMotion();
   const pathname = usePathname();
   const lastScrollY = useRef(0);
   const scrolledRef = useRef(false);
@@ -37,7 +39,6 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when route changes or scroll
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -73,7 +74,7 @@ export default function Header() {
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: isHidden ? -100 : 0 }}
-        transition={{ duration: DUR_FAST, ease: 'easeOut' }}
+        transition={animateEnabled ? { duration: DUR_FAST, ease: 'easeOut' } : undefined}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled || mobileMenuOpen
             ? 'glass shadow-lg shadow-[var(--color-asics-blue)]/10 backdrop-blur-xl border-b border-white/10'
@@ -86,8 +87,8 @@ export default function Header() {
             <Link href="/" className="flex items-center gap-2 shrink-0">
               <motion.span
                 className="text-2xl font-bold text-gradient relative"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={animateEnabled ? { scale: 1.05 } : undefined}
+                whileTap={animateEnabled ? { scale: 0.95 } : undefined}
                 style={{ textShadow: '0 0 20px rgba(0, 61, 165, 0.3)' }}
               >
                 RunPick
@@ -97,10 +98,14 @@ export default function Header() {
             {/* Desktop Navigation - Right aligned */}
             <div className="hidden md:flex items-center gap-8">
               <MagneticElement strength={0.15}>
-                <NavLink href="/brand">Catalog</NavLink>
+                <NavLink href="/brand" animateEnabled={animateEnabled}>
+                  Catalog
+                </NavLink>
               </MagneticElement>
               <MagneticElement strength={0.15}>
-                <NavLink href="/quiz">Quiz</NavLink>
+                <NavLink href="/quiz" animateEnabled={animateEnabled}>
+                  Quiz
+                </NavLink>
               </MagneticElement>
             </div>
 
@@ -113,10 +118,7 @@ export default function Header() {
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav-panel"
               >
-                <motion.div
-                  animate={mobileMenuOpen ? 'open' : 'closed'}
-                  className="w-6 h-5 flex flex-col justify-between"
-                >
+                <motion.div animate={mobileMenuOpen ? 'open' : 'closed'} className="w-6 h-5 flex flex-col justify-between">
                   <motion.span
                     variants={{
                       closed: { rotate: 0, y: 0 },
@@ -149,26 +151,26 @@ export default function Header() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={animateEnabled ? { opacity: 0 } : false}
+            animate={animateEnabled ? { opacity: 1 } : undefined}
+            exit={animateEnabled ? { opacity: 0 } : undefined}
             className="fixed inset-0 z-40 md:hidden"
           >
             {/* Backdrop */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={animateEnabled ? { opacity: 0 } : false}
+              animate={animateEnabled ? { opacity: 1 } : undefined}
+              exit={animateEnabled ? { opacity: 0 } : undefined}
               onClick={() => setMobileMenuOpen(false)}
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
 
             {/* Menu Content */}
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              initial={animateEnabled ? { x: '100%' } : false}
+              animate={animateEnabled ? { x: 0 } : undefined}
+              exit={animateEnabled ? { x: '100%' } : undefined}
+              transition={animateEnabled ? { type: 'spring', damping: 25, stiffness: 200 } : undefined}
               className="absolute top-16 right-0 bottom-0 w-full max-w-sm bg-[var(--color-card)] border-l border-[var(--color-border)] overflow-y-auto pb-[calc(1.5rem+env(safe-area-inset-bottom))]"
               id="mobile-nav-panel"
               role="dialog"
@@ -179,13 +181,10 @@ export default function Header() {
                 <p className="text-xs font-semibold tracking-wide text-[var(--color-foreground)]/45 uppercase">
                   Menu
                 </p>
-                <MobileNavLink
-                  href="/brand"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <MobileNavLink href="/brand" onClick={() => setMobileMenuOpen(false)} animateEnabled={animateEnabled}>
                   🏷️ Catalog
                 </MobileNavLink>
-                <MobileNavLink href="/quiz" onClick={() => setMobileMenuOpen(false)}>
+                <MobileNavLink href="/quiz" onClick={() => setMobileMenuOpen(false)} animateEnabled={animateEnabled}>
                   🎯 Quiz
                 </MobileNavLink>
               </div>
@@ -197,7 +196,15 @@ export default function Header() {
   );
 }
 
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+function NavLink({
+  href,
+  children,
+  animateEnabled,
+}: {
+  href: string;
+  children: React.ReactNode;
+  animateEnabled: boolean;
+}) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -206,14 +213,11 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
         className="text-sm font-semibold text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)] transition-all duration-300 relative px-3 py-2 rounded-lg"
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
-        whileHover={{
-          y: -2,
-          color: 'var(--color-asics-accent)',
-        }}
+        whileHover={animateEnabled ? { y: -2, color: 'var(--color-asics-accent)' } : undefined}
         animate={{
           backgroundColor: isHovered ? 'rgba(0, 61, 165, 0.1)' : 'transparent',
         }}
-        transition={{ duration: 0.2 }}
+        transition={animateEnabled ? { duration: 0.2 } : undefined}
       >
         {children}
         {/* Animated underline using clip-path reveal */}
@@ -227,12 +231,16 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
         {/* Subtle glow on hover */}
         <motion.span
           className="absolute inset-0 rounded-lg pointer-events-none"
-          animate={{
-            boxShadow: isHovered
-              ? '0 0 15px rgba(0, 61, 165, 0.3)'
-              : '0 0 0px rgba(0, 61, 165, 0)',
-          }}
-          transition={{ duration: 0.3 }}
+          animate={
+            animateEnabled
+              ? {
+                  boxShadow: isHovered
+                    ? '0 0 15px rgba(0, 61, 165, 0.3)'
+                    : '0 0 0px rgba(0, 61, 165, 0)',
+                }
+              : undefined
+          }
+          transition={animateEnabled ? { duration: 0.3 } : undefined}
         />
       </motion.span>
     </Link>
@@ -243,26 +251,25 @@ function MobileNavLink({
   href,
   children,
   onClick,
+  animateEnabled,
 }: {
   href: string;
   children: React.ReactNode;
   onClick: () => void;
+  animateEnabled: boolean;
 }) {
   return (
     <Link href={href} onClick={onClick}>
       <motion.div
-        whileHover={{
-          x: 10,
-          backgroundColor: 'rgba(0, 61, 165, 0.1)',
-        }}
-        whileTap={{ scale: 0.98 }}
+        whileHover={animateEnabled ? { x: 10, backgroundColor: 'rgba(0, 61, 165, 0.1)' } : undefined}
+        whileTap={animateEnabled ? { scale: 0.98 } : undefined}
         className="text-lg font-medium text-[var(--color-foreground)] py-4 px-4 -mx-4 border-b border-[var(--color-border)]/50 rounded-lg transition-colors relative overflow-hidden"
       >
         <motion.span
           className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[var(--color-asics-blue)] to-[var(--color-asics-accent)]"
-          initial={{ scaleY: 0 }}
-          whileHover={{ scaleY: 1 }}
-          transition={{ duration: 0.2 }}
+          initial={animateEnabled ? { scaleY: 0 } : false}
+          whileHover={animateEnabled ? { scaleY: 1 } : undefined}
+          transition={animateEnabled ? { duration: 0.2 } : undefined}
         />
         {children}
       </motion.div>

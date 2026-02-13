@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -30,6 +30,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
   );
   const brand = useMemo(() => getBrandById(brandId), [brandId]);
   const isDesktop = useIsDesktop();
+  const animateEnabled = !useReducedMotion();
 
   const [selectedSubcategory, setSelectedSubcategory] = useState<SubcategoryId | 'all'>(
     'all'
@@ -72,7 +73,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
     return (
       <>
         <Header />
-        <main className="pt-20 min-h-screen flex items-center justify-center">
+        <main id="main-content" className="pt-20 min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-[var(--color-foreground)]">
               카테고리를 찾을 수 없습니다
@@ -137,7 +138,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
   return (
     <>
       <Header />
-      <main className="pt-20" style={brandThemeVars}>
+      <main id="main-content" className="pt-20" style={brandThemeVars}>
         {/* Hero Section */}
         <section
           className="section-space-tight relative overflow-hidden"
@@ -155,8 +156,9 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
 
           <div className="relative layout-shell text-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+              animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+              transition={animateEnabled ? { duration: DUR_FAST } : undefined}
             >
               <Link
                 href={`/brand/${brandId}`}
@@ -167,9 +169,9 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
 
               <motion.span
                 className="block text-4xl sm:text-6xl mb-4"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: 'spring', delay: 0.2 }}
+                initial={animateEnabled ? { scale: 0 } : false}
+                animate={animateEnabled ? { scale: 1 } : undefined}
+                transition={animateEnabled ? { type: 'spring', delay: 0.2 } : undefined}
               >
                 {categoryData.icon}
               </motion.span>
@@ -202,8 +204,9 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
 
         {/* Subcategory Tabs — fixed below header, follows header hide/show */}
         <motion.section
-          animate={{ y: isDesktop && headerHidden ? -64 : 0 }}
-          transition={{ duration: DUR_FAST, ease: 'easeOut' }}
+          animate={animateEnabled ? { y: isDesktop && headerHidden ? -64 : 0 } : undefined}
+          initial={animateEnabled ? false : undefined}
+          transition={animateEnabled ? { duration: DUR_FAST, ease: 'easeOut' } : undefined}
           className="fixed top-16 left-0 right-0 pt-2 pb-3 sm:py-3 border-b border-[var(--color-border)] bg-[var(--color-background)]/95 backdrop-blur-sm z-40"
         >
           <div className="layout-shell">
@@ -213,7 +216,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                 className="relative px-4 py-2 min-h-11 rounded-full text-sm font-medium whitespace-nowrap transition-all snap-start"
                 aria-pressed={selectedSubcategory === 'all'}
               >
-                {selectedSubcategory === 'all' && (
+                {selectedSubcategory === 'all' && animateEnabled && (
                   <motion.div
                     layoutId="subcategory-indicator"
                     className="absolute inset-0 rounded-full bg-[var(--color-foreground)]"
@@ -238,7 +241,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                     className="relative px-4 py-2 min-h-11 rounded-full text-sm font-medium whitespace-nowrap transition-all snap-start"
                     aria-pressed={selectedSubcategory === sub.id}
                   >
-                    {selectedSubcategory === sub.id && (
+                    {selectedSubcategory === sub.id && animateEnabled && (
                       <motion.div
                         layoutId="subcategory-indicator"
                         className="absolute inset-0 rounded-full"
@@ -268,8 +271,9 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
           <div className="layout-shell">
             {selectedSubcategory !== 'all' && (
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={animateEnabled ? { opacity: 0, y: 10 } : false}
+                animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+                transition={animateEnabled ? { duration: DUR_FAST } : undefined}
                 className="mb-8"
               >
                 {selectedSubcategoryInfo ? (
@@ -286,21 +290,25 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
             )}
 
             <motion.div
-              layout
+              layout={animateEnabled}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              <AnimatePresence mode="popLayout">
+              <AnimatePresence mode={animateEnabled ? 'popLayout' : undefined}>
                 {displayedShoes.map((shoe, index) => (
-                  <motion.div
-                    key={shoe.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                  >
-                    <ShoeCard shoe={shoe} index={index} />
-                  </motion.div>
+                  animateEnabled ? (
+                    <motion.div
+                      key={shoe.id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                    >
+                      <ShoeCard shoe={shoe} index={index} />
+                    </motion.div>
+                  ) : (
+                    <ShoeCard key={shoe.id} shoe={shoe} index={index} />
+                  )
                 ))}
               </AnimatePresence>
             </motion.div>

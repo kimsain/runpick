@@ -4,13 +4,13 @@
 // Shows: image, category badge, name, shortDescription, top 2 specs, price.
 // Desktop: ImageDistortion + mouse-follow glow. Mobile: static card.
 
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { RunningShoe, ShoeSpecs } from '@/types/shoe';
 import Badge from '@/components/common/Badge';
 import { getCategoryById } from '@/data/categories';
 import { hasShoeImage } from '@/data/image-manifest';
-import { useRef, useState, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import ImageDistortion from '@/components/effects/ImageDistortion';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import SmartShoeImage from '@/components/common/SmartShoeImage';
@@ -63,7 +63,9 @@ function SpecDotBar({ label, value }: { label: string; value: number }) {
   );
 }
 
-function ShoeCardDecorations({ isHovered }: { isHovered: boolean }) {
+function ShoeCardDecorations({ isHovered, isMotionEnabled }: { isHovered: boolean; isMotionEnabled: boolean }) {
+  if (!isMotionEnabled) return null;
+
   return (
     <motion.div
       className="absolute -bottom-4 -right-4 w-32 h-32 blur-3xl pointer-events-none hidden md:block"
@@ -77,12 +79,41 @@ function ShoeCardDecorations({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-function ShoeCardImage({ shoe, category, index, isHovered }: {
+function ShoeCardImage({ shoe, category, index, isHovered, isMotionEnabled }: {
   shoe: RunningShoe;
   category: ReturnType<typeof getCategoryById>;
   index: number;
   isHovered: boolean;
+  isMotionEnabled: boolean;
 }) {
+  if (!isMotionEnabled) {
+    return (
+      <div className="relative aspect-[4/3] bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center p-4">
+          <div className="relative w-full h-full">
+            <SmartShoeImage
+              src={shoe.imageUrl}
+              alt={shoe.name}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-contain drop-shadow-2xl"
+              priority={index < 3}
+              showFallbackBadge
+              forceFallback={!hasShoeImage(shoe.imageUrl)}
+              fallbackBadgeLabel={`${shoe.brandId.toUpperCase()} 이미지 준비중`}
+            />
+          </div>
+        </div>
+
+        <div className="absolute top-3 left-3 z-10">
+          <Badge variant="category" categoryId={shoe.categoryId}>
+            {category?.icon} {category?.name}
+          </Badge>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative aspect-[4/3] bg-gradient-to-br from-[var(--color-card)] to-[var(--color-card-hover)] overflow-hidden">
       <motion.div
@@ -126,13 +157,15 @@ function ShoeCardImage({ shoe, category, index, isHovered }: {
   );
 }
 
-export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
+function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
   const category = useMemo(() => getCategoryById(shoe.categoryId), [shoe.categoryId]);
   const topSpecs = useMemo(() => getTopSpecs(shoe.specs), [shoe.specs]);
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const isDesktop = useIsDesktop();
-  const showDetailHint = isDesktop ? isHovered : true;
+  const reduceMotion = useReducedMotion();
+  const isMotionEnabled = isDesktop && !reduceMotion;
+  const showDetailHint = isMotionEnabled ? isHovered : true;
 
   // 3D tilt effect values - desktop only
   const x = useMotionValue(0);
@@ -148,34 +181,36 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
   const glowY = useTransform(ySpring, [-0.5, 0.5], ['0%', '100%']);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDesktop || !cardRef.current) return;
+    if (!isMotionEnabled || !cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const xPct = (e.clientX - rect.left) / rect.width - 0.5;
     const yPct = (e.clientY - rect.top) / rect.height - 0.5;
     x.set(xPct);
     y.set(yPct);
-  }, [isDesktop, x, y]);
+  }, [isMotionEnabled, x, y]);
 
   const handleMouseLeave = useCallback(() => {
+    if (!isMotionEnabled) return;
     x.set(0);
     y.set(0);
     setIsHovered(false);
-  }, [x, y]);
+  }, [isMotionEnabled, x, y]);
 
   const handleMouseEnter = useCallback(() => {
+    if (!isMotionEnabled) return;
     setIsHovered(true);
-  }, []);
+  }, [isMotionEnabled]);
 
   return (
     <Link href={`/shoe/${shoe.slug}`}>
       <motion.div
         ref={cardRef}
         data-cursor="view"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={isMotionEnabled ? { opacity: 0, y: 20 } : false}
+        whileInView={isMotionEnabled ? { opacity: 1, y: 0 } : undefined}
         viewport={{ once: true }}
-        transition={{ duration: 0.4, delay: index * 0.1 }}
-        whileHover={isDesktop ? {
+        transition={isMotionEnabled ? { duration: 0.4, delay: index * 0.1 } : undefined}
+        whileHover={isMotionEnabled ? {
           y: -12,
           scale: 1.03,
           transition: {
@@ -187,7 +222,7 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onMouseEnter={handleMouseEnter}
-        style={isDesktop ? {
+        style={isMotionEnabled ? {
           rotateX,
           rotateY,
           filter: isHovered
@@ -199,22 +234,36 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
         className="group relative bg-[var(--color-card)] rounded-2xl overflow-hidden border border-[var(--color-border)] hover:border-[var(--color-asics-accent)]/60 transition-colors duration-300 cursor-pointer"
       >
         {/* Dynamic glow effect that follows mouse */}
-        <motion.div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-          style={{
-            background: `radial-gradient(400px circle at var(--glow-x) var(--glow-y), var(--color-asics-accent)25, var(--color-asics-blue)10, transparent 50%)`,
-            ['--glow-x' as string]: glowX,
-            ['--glow-y' as string]: glowY,
-          }}
-        />
+        {isMotionEnabled && (
+          <motion.div
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+            style={{
+              background: `radial-gradient(400px circle at var(--glow-x) var(--glow-y), var(--color-asics-accent)25, var(--color-asics-blue)10, transparent 50%)`,
+              ['--glow-x' as string]: glowX,
+              ['--glow-y' as string]: glowY,
+            }}
+          />
+        )}
 
         {/* Image container — ImageDistortion on desktop only */}
         {isDesktop ? (
           <ImageDistortion variant="scan">
-            <ShoeCardImage shoe={shoe} category={category} index={index} isHovered={isHovered} />
+            <ShoeCardImage
+              shoe={shoe}
+              category={category}
+              index={index}
+              isHovered={isHovered}
+              isMotionEnabled={isMotionEnabled}
+            />
           </ImageDistortion>
         ) : (
-          <ShoeCardImage shoe={shoe} category={category} index={index} isHovered={isHovered} />
+          <ShoeCardImage
+            shoe={shoe}
+            category={category}
+            index={index}
+            isHovered={isHovered}
+            isMotionEnabled={false}
+          />
         )}
 
         {/* Content */}
@@ -251,17 +300,19 @@ export default function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
             </span>
             <motion.span
               className="type-body text-[var(--color-asics-accent)]"
-              initial={isDesktop ? { x: -10, opacity: 0 } : false}
+              initial={isMotionEnabled ? { x: -10, opacity: 0 } : false}
               animate={showDetailHint ? { x: 0, opacity: 1 } : { x: -10, opacity: 0 }}
-              transition={{ duration: 0.3, type: 'spring', stiffness: 300 }}
+              transition={isMotionEnabled ? { duration: 0.3, type: 'spring', stiffness: 300 } : undefined}
             >
               자세히 보기 →
             </motion.span>
           </div>
         </div>
 
-        <ShoeCardDecorations isHovered={isHovered} />
+        <ShoeCardDecorations isHovered={isHovered} isMotionEnabled={isMotionEnabled} />
       </motion.div>
     </Link>
   );
 }
+
+export default memo(ShoeCard);

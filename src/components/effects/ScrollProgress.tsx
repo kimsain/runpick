@@ -1,15 +1,50 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { useReducedMotion } from 'framer-motion';
+
+type NavigatorWithConnection = Navigator & {
+  connection?: {
+    saveData?: boolean;
+    effectiveType?: string;
+    addEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
+    removeEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
+  };
+};
+
+const LOW_POWER_CONNECTION_TYPES = new Set(['slow-2g', '2g']);
 
 export default function ScrollProgress() {
   const barRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
+  const reduceMotion = useReducedMotion();
+  const [isEnabled, setIsEnabled] = useState(false);
 
   useEffect(() => {
-    if (!isDesktop) return;
+    const conn = (navigator as NavigatorWithConnection).connection;
+    const checkEnabled = () => {
+      const isCoarsePointer =
+        window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
+      const isSaveData = Boolean(conn?.saveData) ||
+        (conn?.effectiveType ? LOW_POWER_CONNECTION_TYPES.has(conn.effectiveType) : false);
+
+      setIsEnabled(!isDesktop || reduceMotion ? false : !isCoarsePointer && !isSaveData);
+    };
+
+    checkEnabled();
+    window.addEventListener('resize', checkEnabled);
+    conn?.addEventListener?.('change', checkEnabled);
+
+    return () => {
+      window.removeEventListener('resize', checkEnabled);
+      conn?.removeEventListener?.('change', checkEnabled);
+    };
+  }, [isDesktop, reduceMotion]);
+
+  useEffect(() => {
+    if (!isEnabled) return;
     gsap.registerPlugin(ScrollTrigger);
     const bar = barRef.current;
     if (!bar) return;
@@ -23,7 +58,7 @@ export default function ScrollProgress() {
     });
 
     return () => { trigger.kill(); };
-  }, [isDesktop]);
+  }, [isEnabled]);
 
   return (
     <div

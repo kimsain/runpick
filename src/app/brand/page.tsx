@@ -41,7 +41,7 @@ export default function BrandIndexPage() {
   return (
     <>
       <Header />
-      <main className="pt-20 min-h-screen bg-[var(--color-background)]">
+      <main id="main-content" className="pt-20 min-h-screen bg-[var(--color-background)]">
         <section className="section-space-tight border-b border-[var(--color-border)] bg-gradient-to-b from-[var(--color-card)] to-[var(--color-background)]">
           <div className="layout-shell text-center">
             <p className="type-eyebrow text-[var(--color-foreground)]/45">

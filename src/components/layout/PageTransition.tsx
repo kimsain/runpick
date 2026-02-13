@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { useReducedMotion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
@@ -20,8 +21,9 @@ const pageVariants = {
 export default function PageTransition({ children }: PageTransitionProps) {
   const pathname = usePathname();
   const isDesktop = useIsDesktop();
+  const animateEnabled = !useReducedMotion();
 
-  if (!isDesktop) {
+  if (!isDesktop || !animateEnabled) {
     return <div key={pathname}>{children}</div>;
   }
 

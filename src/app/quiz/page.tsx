@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import QuizProgress from '@/components/quiz/QuizProgress';
@@ -28,6 +28,7 @@ export default function QuizPage() {
   const timersRef = useRef<NodeJS.Timeout[]>([]);
   const quizCardRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
+  const animateEnabled = !useReducedMotion();
   const brands = useMemo(() => getAllBrands(), []);
 
   const currentQuestion = quizQuestions[currentIndex];
@@ -52,6 +53,9 @@ export default function QuizPage() {
       // Start analysis animation
       setPhase('analyzing');
       setAnalysisStep(0);
+
+      timersRef.current.forEach((timerId) => clearTimeout(timerId));
+      timersRef.current = [];
 
       // Phase text changes
       timersRef.current.push(setTimeout(() => setAnalysisStep(1), 300));
@@ -120,7 +124,7 @@ export default function QuizPage() {
   useEffect(() => {
     if (phase !== 'quiz') return;
 
-    window.requestAnimationFrame(() => {
+    const frame = window.requestAnimationFrame(() => {
       const top = quizCardRef.current?.getBoundingClientRect().top;
       if (typeof top !== 'number') return;
 
@@ -128,6 +132,10 @@ export default function QuizPage() {
       const targetY = window.scrollY + top - offset;
       window.scrollTo({ top: Math.max(targetY, 0), behavior: 'smooth' });
     });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
   }, [phase, currentIndex, isDesktop]);
 
   const analysisTexts = [
@@ -141,15 +149,15 @@ export default function QuizPage() {
   return (
     <>
       <Header />
-      <main className={`pt-20 min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)] relative overflow-hidden ${phase === 'quiz' ? 'pb-24 sm:pb-0' : ''}`}>
+      <main id="main-content" className={`pt-20 min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)] relative overflow-hidden ${phase === 'quiz' ? 'pb-24 sm:pb-0' : ''}`}>
         <div className="relative layout-shell max-w-3xl py-8 sm:py-12">
           <AnimatePresence mode="wait">
             {phase === 'brand-select' && (
               <motion.div
                 key="brand-select"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={animateEnabled ? { opacity: 0 } : false}
+                animate={animateEnabled ? { opacity: 1 } : undefined}
+                exit={animateEnabled ? { opacity: 0 } : undefined}
               >
                 <div className="text-center mb-8">
                   <TextReveal
@@ -223,9 +231,9 @@ export default function QuizPage() {
             {phase === 'quiz' && (
               <motion.div
                 key="quiz"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={animateEnabled ? { opacity: 0 } : false}
+                animate={animateEnabled ? { opacity: 1 } : undefined}
+                exit={animateEnabled ? { opacity: 0 } : undefined}
               >
                 {/* Header */}
                 <div className="text-center mb-8">
@@ -233,9 +241,9 @@ export default function QuizPage() {
                     러닝화 추천 퀴즈
                   </TextReveal>
                   <motion.p
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
+                    initial={animateEnabled ? { opacity: 0, y: 10 } : false}
+                    animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+                    transition={animateEnabled ? { delay: 0.3 } : undefined}
                     className="type-body text-[var(--color-foreground)]/62 text-pretty"
                   >
                     5가지 질문으로 딱 맞는 러닝화를 찾아드려요
@@ -256,10 +264,10 @@ export default function QuizPage() {
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={currentIndex}
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -30 }}
-                      transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      initial={animateEnabled ? { opacity: 0, y: 30 } : false}
+                      animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+                      exit={animateEnabled ? { opacity: 0, y: -30 } : undefined}
+                      transition={animateEnabled ? { duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] } : undefined}
                     >
                       <QuizQuestionComponent
                         question={currentQuestion}
@@ -317,15 +325,15 @@ export default function QuizPage() {
             {phase === 'analyzing' && (
               <motion.div
                 key="analyzing"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={animateEnabled ? { opacity: 0 } : false}
+                animate={animateEnabled ? { opacity: 1 } : undefined}
+                exit={animateEnabled ? { opacity: 0 } : undefined}
                 className="flex flex-col items-center justify-center min-h-[400px]"
               >
                 {/* Spinning loader */}
                 <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+                  animate={animateEnabled ? { rotate: 360 } : undefined}
+                  transition={animateEnabled ? { duration: 1.5, repeat: Infinity, ease: 'linear' } : undefined}
                   className="w-16 h-16 rounded-full border-4 border-[var(--color-border)] border-t-[var(--color-asics-accent)] mb-8"
                 />
 
@@ -333,9 +341,9 @@ export default function QuizPage() {
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={analysisStep}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
+                    initial={animateEnabled ? { opacity: 0, y: 10 } : false}
+                    animate={animateEnabled ? { opacity: 1, y: 0 } : undefined}
+                    exit={animateEnabled ? { opacity: 0, y: -10 } : undefined}
                     className="text-lg text-[var(--color-foreground)]/80 mb-6"
                   >
                     {analysisTexts[analysisStep]}
@@ -345,9 +353,9 @@ export default function QuizPage() {
                 {/* Progress bar */}
                 <div className="w-64 h-1.5 bg-[var(--color-border)] rounded-full overflow-hidden">
                   <motion.div
-                    initial={{ width: '0%' }}
-                    animate={{ width: '100%' }}
-                    transition={{ duration: 0.8, ease: 'easeInOut' }}
+                    initial={animateEnabled ? { width: '0%' } : { width: '100%' }}
+                    animate={animateEnabled ? { width: '100%' } : { width: '100%' }}
+                    transition={animateEnabled ? { duration: 0.8, ease: 'easeInOut' } : undefined}
                     className="h-full bg-gradient-to-r from-[var(--color-asics-blue)] to-[var(--color-asics-accent)] rounded-full"
                   />
                 </div>
@@ -357,9 +365,9 @@ export default function QuizPage() {
             {phase === 'result' && result && (
               <motion.div
                 key="result"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={animateEnabled ? { opacity: 0 } : false}
+                animate={animateEnabled ? { opacity: 1 } : undefined}
+                exit={animateEnabled ? { opacity: 0 } : undefined}
               >
                 <QuizResult result={result} onRetry={handleRetry} />
                 <div className="mt-4 text-center">

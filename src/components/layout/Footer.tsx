@@ -2,22 +2,57 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TextReveal from '@/components/effects/TextReveal';
 import { STAGGER_NORMAL } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { getAllBrands } from '@/utils/shoe-utils';
+import { useReducedMotion } from 'framer-motion';
+
+type NavigatorWithConnection = Navigator & {
+  connection?: {
+    saveData?: boolean;
+    effectiveType?: string;
+    addEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
+    removeEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
+  };
+};
+
+const LOW_POWER_CONNECTION_TYPES = new Set(['slow-2g', '2g']);
 
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const linksRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
+  const reduceMotion = useReducedMotion();
   const brands = getAllBrands();
+  const [isEnabled, setIsEnabled] = useState(false);
 
   useEffect(() => {
-    if (!isDesktop) return;
+    const navConnection = (navigator as NavigatorWithConnection).connection;
+    const checkEnabled = () => {
+      const isCoarsePointer =
+        window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
+      const isSaveData = Boolean(navConnection?.saveData) ||
+        (navConnection?.effectiveType ? LOW_POWER_CONNECTION_TYPES.has(navConnection.effectiveType) : false);
+
+      setIsEnabled(!isDesktop || reduceMotion ? false : !isCoarsePointer && !isSaveData);
+    };
+
+    checkEnabled();
+    window.addEventListener('resize', checkEnabled);
+    navConnection?.addEventListener?.('change', checkEnabled);
+
+    return () => {
+      window.removeEventListener('resize', checkEnabled);
+      navConnection?.removeEventListener?.('change', checkEnabled);
+    };
+  }, [isDesktop, reduceMotion]);
+
+  useEffect(() => {
+    if (!isEnabled) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -40,7 +75,7 @@ export default function Footer() {
     }, footerRef);
 
     return () => ctx.revert();
-  }, [isDesktop]);
+  }, [isEnabled]);
 
   return (
     <footer ref={footerRef} className="relative bg-[var(--color-card)] border-t border-[var(--color-border)] overflow-hidden">

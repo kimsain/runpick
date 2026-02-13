@@ -1,9 +1,34 @@
 'use client';
+
 import { useEffect, useState } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { MOBILE_BREAKPOINT } from '@/constants/animation';
 
 // Cache grain texture at module level — generated once per browser session
 let cachedGrainUrl: string | null = null;
+
+type NavigatorWithConnection = Navigator & {
+  connection?: {
+    saveData?: boolean;
+    effectiveType?: string;
+    addEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
+    removeEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void;
+  };
+};
+
+const LOW_POWER_CONNECTION_TYPES = new Set(['slow-2g', '2g']);
+
+function shouldDisableGrain(animateEnabled: boolean): boolean {
+  if (!animateEnabled) return true;
+
+  const prefersCoarsePointer = window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
+  const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+  const conn = (navigator as NavigatorWithConnection).connection;
+  const isSaveData = Boolean(conn?.saveData) ||
+    !!(conn?.effectiveType && LOW_POWER_CONNECTION_TYPES.has(conn.effectiveType));
+
+  return prefersCoarsePointer || isMobile || isSaveData;
+}
 
 function getGrainTexture(): string {
   if (cachedGrainUrl) return cachedGrainUrl;
@@ -29,16 +54,38 @@ function getGrainTexture(): string {
 
 export default function GrainOverlay() {
   const [grainUrl, setGrainUrl] = useState<string | null>(null);
-  const [isMobile, setIsMobile] = useState(true);
+  const [isEnabled, setIsEnabled] = useState(false);
+  const animateEnabled = !useReducedMotion();
 
   useEffect(() => {
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    if (window.innerWidth >= MOBILE_BREAKPOINT) {
+    const handleResize = () => {
+      setIsEnabled(!shouldDisableGrain(animateEnabled));
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    const connection = (navigator as NavigatorWithConnection).connection;
+    const handleConnectionChange = () => {
+      handleResize();
+    };
+
+    connection?.addEventListener?.('change', handleConnectionChange);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      connection?.removeEventListener?.('change', handleConnectionChange);
+    };
+  }, [animateEnabled]);
+
+  useEffect(() => {
+    if (!isEnabled) return;
+    if (!grainUrl) {
       setGrainUrl(getGrainTexture());
     }
-  }, []);
+  }, [isEnabled, grainUrl]);
 
-  if (isMobile || !grainUrl) return null;
+  if (!isEnabled || !grainUrl) return null;
 
   return (
     <div

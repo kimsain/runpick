@@ -2,7 +2,7 @@
 
 // Single quiz question with option grid. Single-select only.
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { QuizQuestion as QuizQuestionType } from '@/types/quiz';
 
 interface QuizQuestionProps {
@@ -16,6 +16,8 @@ export default function QuizQuestion({
   selectedOption,
   onSelectOption,
 }: QuizQuestionProps) {
+  const animateEnabled = !useReducedMotion();
+
   const handleClick = (optionId: string) => {
     onSelectOption(optionId);
   };
@@ -37,16 +39,22 @@ export default function QuizQuestion({
           return (
             <motion.button
               key={option.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{
-                opacity: hasSelection && !isSelected ? 0.5 : 1,
-                y: 0,
-                scale: isSelected ? 1.02 : 1,
-              }}
-              transition={{ delay: index * 0.08, duration: 0.3 }}
-              whileHover={!isSelected ? { scale: 1.02, y: -4 } : {}}
-              whileTap={!isSelected ? { scale: 0.98 } : {}}
+              type="button"
+              initial={animateEnabled ? { opacity: 0, y: 20 } : false}
+              animate={
+                animateEnabled
+                  ? {
+                      opacity: hasSelection && !isSelected ? 0.5 : 1,
+                      y: 0,
+                      scale: isSelected ? 1.02 : 1,
+                    }
+                  : undefined
+              }
+              transition={animateEnabled ? { delay: index * 0.08, duration: 0.3 } : undefined}
+              whileHover={animateEnabled && !isSelected ? { scale: 1.02, y: -4 } : undefined}
+              whileTap={animateEnabled && !isSelected ? { scale: 0.98 } : undefined}
               onClick={() => handleClick(option.id)}
+              aria-label={option.labelKo}
               className={`relative w-full min-h-[96px] p-4 sm:p-6 rounded-2xl border text-left transition-all ${
                 isSelected
                   ? 'border-[var(--color-asics-accent)] bg-[var(--color-asics-accent)]/10 shadow-[0_0_20px_rgba(0,209,255,0.15)]'
@@ -57,9 +65,11 @@ export default function QuizQuestion({
               {/* Check icon for selected */}
               {isSelected && (
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                  initial={animateEnabled ? { scale: 0 } : false}
+                  animate={animateEnabled ? { scale: 1 } : undefined}
+                  transition={
+                    animateEnabled ? { type: 'spring', stiffness: 500, damping: 25 } : undefined
+                  }
                   className="absolute top-4 right-4 w-6 h-6 rounded-full bg-[var(--color-asics-accent)] flex items-center justify-center"
                 >
                   <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">

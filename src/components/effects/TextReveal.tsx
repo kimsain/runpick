@@ -1,5 +1,5 @@
 'use client';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ElementType, ReactNode } from 'react';
 import { EASE_OUT_EXPO, DUR_REVEAL, STAGGER_FAST } from '@/constants/animation';
 
@@ -21,7 +21,16 @@ export default function TextReveal({
   delay = 0,
   className = '',
 }: TextRevealProps) {
+  const animateEnabled = !useReducedMotion();
+  const text = typeof children === 'string' ? children : '';
+  const words = text.split(' ');
+  const wordStagger = stagger ?? STAGGER_FAST;
+
   if (mode === 'clip') {
+    if (!animateEnabled) {
+      return <Tag className={className}>{children}</Tag>;
+    }
+
     return (
       <Tag className={className}>
         <span className="text-reveal-clip block">
@@ -43,10 +52,13 @@ export default function TextReveal({
     );
   }
 
-  // Word mode - split text content and animate each word
-  const text = typeof children === 'string' ? children : '';
-  const words = text.split(' ');
-  const wordStagger = stagger ?? STAGGER_FAST;
+  if (!animateEnabled) {
+    return (
+      <Tag className={className} style={{ wordBreak: 'keep-all' }}>
+        {children}
+      </Tag>
+    );
+  }
 
   return (
     <Tag className={className} style={{ wordBreak: 'keep-all' }}>
