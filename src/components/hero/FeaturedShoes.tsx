@@ -220,7 +220,7 @@ export default function FeaturedShoes() {
 
         {/* Horizontal scrolling cards */}
         <div
-          className={`horizontal-cards flex items-center gap-8 pl-[5vw] md:pl-[10vw] pr-[10vw] pb-20 md:pb-6 ${
+          className={`horizontal-cards flex items-start md:items-center gap-8 pt-5 md:pt-0 pl-[5vw] md:pl-[10vw] pr-[10vw] pb-20 md:pb-6 ${
             !isPinDesktop ? 'mobile-scroll-snap scrollbar-hide' : ''
           }`}
         >

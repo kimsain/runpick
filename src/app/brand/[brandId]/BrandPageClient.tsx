@@ -124,23 +124,23 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
           className="fixed top-16 left-0 right-0 py-3 border-b border-[var(--color-border)] bg-[var(--color-background)]/95 backdrop-blur-sm z-40"
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-4">
               {categories.map((category) => (
                 <MagneticElement key={category.id} strength={0.2} radius={120}>
                   <Link href={`/brand/${brandId}/${category.id}`}>
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-4 py-2 sm:px-6 sm:py-3 rounded-full border border-[var(--color-border)] hover:border-transparent transition-all cursor-pointer"
+                      className="px-3 py-1.5 sm:px-6 sm:py-3 rounded-full border border-[var(--color-border)] hover:border-transparent transition-all cursor-pointer"
                       style={{
                         background: `linear-gradient(135deg, transparent, ${category.color}10)`,
                       }}
                     >
-                      <span className="mr-2">{category.icon}</span>
-                      <span style={{ color: category.color }} className="font-medium">
+                      <span className="mr-1 sm:mr-2">{category.icon}</span>
+                      <span style={{ color: category.color }} className="text-sm sm:text-base font-medium">
                         {category.name}
                       </span>
-                      <span className="ml-2 text-sm text-[var(--color-foreground)]/40">
+                      <span className="ml-1 sm:ml-2 text-xs sm:text-sm text-[var(--color-foreground)]/40">
                         {getShoesByCategory(category.id).length}
                       </span>
                     </motion.div>
