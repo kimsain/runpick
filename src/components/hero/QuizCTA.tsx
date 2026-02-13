@@ -42,7 +42,7 @@ export default function QuizCTA() {
 
   return (
     <section ref={sectionRef} className="section-space relative">
-      <div className="layout-shell max-w-5xl">
+      <div className="layout-shell">
         <div
           ref={containerRef}
           className="relative overflow-hidden rounded-[2rem] quiz-cta-container"

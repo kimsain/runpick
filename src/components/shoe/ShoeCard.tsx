@@ -28,6 +28,10 @@ const SPEC_LABELS: Record<string, string> = {
   durability: '내구성',
 };
 
+function formatMillimeter(value: number): string {
+  return Number.isInteger(value) ? `${value}` : value.toFixed(1);
+}
+
 function getTopSpecs(specs: ShoeSpecs): { key: string; label: string; value: number }[] {
   const entries = [
     { key: 'cushioning', value: specs.cushioning },
@@ -43,15 +47,15 @@ function getTopSpecs(specs: ShoeSpecs): { key: string; label: string; value: num
 
 function SpecDotBar({ label, value }: { label: string; value: number }) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex w-full items-center gap-1.5">
       <span className="type-caption text-[var(--color-foreground)]/50 w-14 shrink-0 whitespace-nowrap">
         {label}
       </span>
-      <div className="flex gap-[2px]">
+      <div className="flex flex-1 min-w-0 gap-[2px]">
         {Array.from({ length: 10 }, (_, i) => (
           <div
             key={i}
-            className="w-[6px] h-[6px] rounded-[1px]"
+            className="h-[6px] flex-1 rounded-[1px]"
             style={{
               background: i < value
                 ? 'var(--color-asics-accent)'
@@ -62,6 +66,28 @@ function SpecDotBar({ label, value }: { label: string; value: number }) {
         ))}
       </div>
       <span className="type-caption font-medium text-[var(--color-foreground)]/60 w-4 text-right">{value}</span>
+    </div>
+  );
+}
+
+function ShoeMetaItem({
+  icon,
+  label,
+  value,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-2 rounded-md border border-[var(--color-border)]/70 bg-[var(--color-background)]/30 px-2.5 py-1.5">
+      <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+        <span className="text-[var(--color-asics-accent)]">{icon}</span>
+        <span className="type-caption text-[var(--color-foreground)]/52">{label}</span>
+      </span>
+      <span className="type-caption font-medium text-[var(--color-foreground)]/76 whitespace-nowrap">
+        {value}
+      </span>
     </div>
   );
 }
@@ -279,15 +305,27 @@ function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
             {shoe.shortDescription}
           </p>
 
-          <div className="mt-3 flex items-center gap-4 type-caption text-[var(--color-foreground)]/50">
-            <span className="flex items-center gap-1">
-              <span className="text-[var(--color-asics-accent)]">⚖</span>
-              <span>{shoe.specs.weight}g</span>
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="text-[var(--color-asics-accent)]">↕</span>
-              <span>{shoe.specs.drop}mm</span>
-            </span>
+          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <ShoeMetaItem
+              icon="⚖"
+              label="무게"
+              value={`${shoe.specs.weight}g`}
+            />
+            <ShoeMetaItem
+              icon="🦶"
+              label="힐스택"
+              value={`${formatMillimeter(shoe.specs.stackHeight.heel)}mm`}
+            />
+            <ShoeMetaItem
+              icon="👣"
+              label="포어스택"
+              value={`${formatMillimeter(shoe.specs.stackHeight.forefoot)}mm`}
+            />
+            <ShoeMetaItem
+              icon="↕"
+              label="드랍"
+              value={`${shoe.specs.drop}mm`}
+            />
           </div>
 
           {/* Top 2 spec scores */}
@@ -298,12 +336,12 @@ function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
           </div>
 
           {/* Price */}
-          <div className="mt-3 pt-3 border-t border-[var(--color-border)] flex items-center justify-between">
-            <span className="type-h3 text-gradient">
+          <div className="mt-3 pt-3 border-t border-[var(--color-border)] flex flex-col items-center gap-1">
+            <span className="type-h3 text-gradient text-center">
               {shoe.priceFormatted}
             </span>
             <motion.span
-              className="type-body text-[var(--color-asics-accent)]"
+              className="type-body text-[var(--color-asics-accent)] text-center"
               initial={isMotionEnabled ? { x: -10, opacity: 0 } : false}
               animate={showDetailHint ? { x: 0, opacity: 1 } : { x: -10, opacity: 0 }}
               transition={isMotionEnabled ? { duration: 0.3, type: 'spring', stiffness: 300 } : undefined}

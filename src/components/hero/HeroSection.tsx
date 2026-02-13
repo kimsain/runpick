@@ -158,6 +158,10 @@ export default function HeroSection() {
             <SentenceLineBreakText
               text="Daily, Super Trainer, Racing 카테고리별로 정리된 러닝화 카탈로그와 맞춤 추천 퀴즈로 완벽한 러닝화를 찾아보세요."
               variant="lead"
+              desktopLines={[
+                'Daily, Super Trainer, Racing 카테고리별로 정리된 러닝화 카탈로그와',
+                '맞춤 추천 퀴즈로 완벽한 러닝화를 찾아보세요.',
+              ]}
             />
           </motion.p>
 

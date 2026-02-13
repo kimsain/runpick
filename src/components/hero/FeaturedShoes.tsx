@@ -9,7 +9,6 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import ShoeCard from '@/components/shoe/ShoeCard';
 import { getAllShoes } from '@/utils/shoe-utils';
 import { gsap, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
-import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import TextReveal from '@/components/effects/TextReveal';
 import { EASE_OUT_EXPO, DUR_REVEAL } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
@@ -192,8 +191,8 @@ export default function FeaturedShoes() {
       const cards = container?.querySelector('.horizontal-cards') as HTMLElement | null;
       if (cards && container) {
         const headerHeight = headerRef.current?.offsetHeight ?? 0;
-        // Delay pin start until cards are fully visible, not while lower card area is clipped.
-        const startOffset = Math.min(Math.max(Math.round(headerHeight + 12), 96), 220);
+        // Start pin earlier so the section title remains visible with cards on desktop.
+        const startOffset = Math.min(Math.max(Math.round(headerHeight * 0.22), 24), 64);
 
         gsap.to(cards, {
           x: () => -(cards.scrollWidth - window.innerWidth + 100),
@@ -244,8 +243,8 @@ export default function FeaturedShoes() {
             </span>
           </TextReveal>
 
-          <motion.p
-            className="mt-4 type-lead text-[var(--color-foreground)]/62 text-pretty reading-measure"
+          <motion.div
+            className="mt-4 type-lead h-[1.7em]"
             initial={animateEnabled ? { opacity: 0 } : false}
             whileInView={animateEnabled ? { opacity: 1 } : undefined}
             viewport={{ once: true }}
@@ -254,12 +253,8 @@ export default function FeaturedShoes() {
                 ? { duration: DUR_REVEAL, delay: 0.2, ease: EASE_OUT_EXPO as unknown as number[] }
                 : undefined
             }
-          >
-            <SentenceLineBreakText
-              text="러너들이 가장 사랑하는 모델들"
-              variant="lead"
-            />
-          </motion.p>
+            aria-hidden="true"
+          />
 
           <p className="mt-2 type-caption text-[var(--color-foreground)]/45 md:hidden">
             좌우로 넘겨서 비교해보세요

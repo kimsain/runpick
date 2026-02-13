@@ -7,6 +7,8 @@ interface SentenceLineBreakTextProps {
   text: string;
   className?: string;
   variant?: SentenceLineBreakVariant;
+  mobileLines?: string[];
+  desktopLines?: string[];
   mobileTarget?: number;
   desktopTarget?: number;
   minTokenCount?: number;
@@ -69,6 +71,8 @@ export default function SentenceLineBreakText({
   text,
   className,
   variant = 'body',
+  mobileLines,
+  desktopLines,
   mobileTarget,
   desktopTarget,
   minTokenCount,
@@ -77,29 +81,59 @@ export default function SentenceLineBreakText({
   const resolvedMobileTarget = mobileTarget ?? defaults.mobileTarget;
   const resolvedDesktopTarget = desktopTarget ?? defaults.desktopTarget;
   const resolvedMinTokenCount = minTokenCount ?? defaults.minTokenCount;
-  const plan = resolvePlanWithCache(
-    text,
-    resolvedMobileTarget,
-    resolvedDesktopTarget,
-    resolvedMinTokenCount
-  );
+  const hasManualMobileLines = !!mobileLines && mobileLines.length > 0;
+  const hasManualDesktopLines = !!desktopLines && desktopLines.length > 0;
+  const hasManualLines = hasManualMobileLines || hasManualDesktopLines;
+  const plan = hasManualLines
+    ? null
+    : resolvePlanWithCache(
+        text,
+        resolvedMobileTarget,
+        resolvedDesktopTarget,
+        resolvedMinTokenCount
+      );
 
-  if (!plan.shouldOptimize) {
+  const fallbackPlan =
+    hasManualLines && (!hasManualMobileLines || !hasManualDesktopLines)
+      ? resolvePlanWithCache(
+          text,
+          resolvedMobileTarget,
+          resolvedDesktopTarget,
+          resolvedMinTokenCount
+        )
+      : null;
+
+  const resolvedMobileLines = hasManualMobileLines
+    ? mobileLines
+    : hasManualLines
+      ? (fallbackPlan?.mobileLines ?? [text])
+      : (plan?.mobileLines ?? [text]);
+  const resolvedDesktopLines = hasManualDesktopLines
+    ? desktopLines
+    : hasManualLines
+      ? (fallbackPlan?.desktopLines ?? [text])
+      : (plan?.desktopLines ?? [text]);
+  const shouldOptimize =
+    resolvedMobileLines.length > 1 ||
+    resolvedDesktopLines.length > 1 ||
+    !isSameLines(resolvedMobileLines, resolvedDesktopLines);
+
+  if (!shouldOptimize) {
     return <span className={className}>{text}</span>;
   }
 
-  if (isSameLines(plan.mobileLines, plan.desktopLines)) {
-    return <span className={className}>{renderLines(plan.mobileLines)}</span>;
+  if (isSameLines(resolvedMobileLines, resolvedDesktopLines)) {
+    return <span className={className}>{renderLines(resolvedMobileLines)}</span>;
   }
 
   return (
     <span className={className}>
       <span className="sr-only">{text}</span>
       <span aria-hidden="true" className="sentence-flow md:hidden">
-        {renderLines(plan.mobileLines)}
+        {renderLines(resolvedMobileLines)}
       </span>
       <span aria-hidden="true" className="sentence-flow hidden md:inline">
-        {renderLines(plan.desktopLines)}
+        {renderLines(resolvedDesktopLines)}
       </span>
     </span>
   );

@@ -16,6 +16,17 @@ import MagneticElement from '@/components/effects/MagneticElement';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
+const CATEGORY_DESKTOP_BREAKS: Record<string, string[]> = {
+  daily: [
+    '매일 신을 수 있는',
+    '편안하고 내구성 좋은 트레이닝화',
+  ],
+  'super-trainer': [
+    '데일리와 레이싱의 중간,',
+    '빠른 템포런과 인터벌에 최적화',
+  ],
+};
+
 // Category card component — 6 core hover effects only
 function CategoryCard({
   category,
@@ -125,7 +136,11 @@ function CategoryCard({
               </p>
 
               <p className="type-body type-readable text-[var(--color-foreground)]/52 max-w-[30ch]">
-                <SentenceLineBreakText text={category.description} variant="body" />
+                <SentenceLineBreakText
+                  text={category.description}
+                  variant="body"
+                  desktopLines={CATEGORY_DESKTOP_BREAKS[category.id]}
+                />
               </p>
 
               {/* Subcategory badge */}
