@@ -105,14 +105,14 @@ export default function QuizCTA() {
               className="inline-flex items-center gap-2 mb-8"
             >
               <span
-                className="type-caption px-5 py-2 rounded-full font-medium tracking-wide"
+                className="inline-flex min-w-[16rem] items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-semibold"
                 style={{
                   background: 'rgba(0,209,255,0.08)',
                   border: '1px solid rgba(0,209,255,0.2)',
                   color: 'var(--color-asics-accent)',
                 }}
               >
-                <span className="inline-block mr-2">🎯</span>
+                <span className="inline-block">🎯</span>
                 5개 질문 &middot; 1분 소요
               </span>
             </motion.div>
@@ -152,7 +152,7 @@ export default function QuizCTA() {
               <MagneticElement strength={0.2}>
                 <Link href="/quiz" data-cursor="hover">
                   <motion.span
-                    className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full text-base font-semibold overflow-hidden"
+                    className="group relative inline-flex min-w-[16rem] items-center justify-center gap-3 rounded-full px-8 py-4 text-base font-semibold overflow-hidden"
                     style={{
                       background: 'white',
                       color: 'var(--color-asics-blue)',
@@ -170,13 +170,6 @@ export default function QuizCTA() {
                 </Link>
               </MagneticElement>
             </motion.div>
-
-            {/* Bottom decorative dots */}
-            <div className="hidden md:flex justify-center gap-1.5 mt-10">
-              {[0, 1, 2].map((i) => (
-                <div key={i} className="w-1 h-1 rounded-full bg-white/30" />
-              ))}
-            </div>
           </div>
         </div>
       </div>

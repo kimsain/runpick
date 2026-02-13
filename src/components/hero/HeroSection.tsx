@@ -42,7 +42,12 @@ function PulsingButton({
           : undefined
       }
     >
-      <Button href={href} size="lg" variant={variant === 'outline' ? 'outline' : undefined}>
+      <Button
+        href={href}
+        size="lg"
+        variant={variant === 'outline' ? 'outline' : undefined}
+        className="w-[15.5rem] justify-center"
+      >
         {children}
       </Button>
     </motion.div>
@@ -166,7 +171,7 @@ export default function HeroSection() {
           </motion.p>
 
           {/* CTA Buttons with stagger clip-path reveal */}
-          <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+          <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
             <PulsingButton href="/quiz" delay={1.5} animateEnabled={animateEnabled}>
               나에게 맞는 신발 찾기
             </PulsingButton>

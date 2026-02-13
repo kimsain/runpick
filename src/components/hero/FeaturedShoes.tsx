@@ -15,32 +15,6 @@ import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { useReducedMotion } from 'framer-motion';
 import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
-// Featured badge component
-function FeaturedBadge({ animateEnabled }: { animateEnabled: boolean }) {
-  return (
-    <motion.div
-      initial={animateEnabled ? { opacity: 0, y: -20 } : false}
-      whileInView={animateEnabled ? { opacity: 1, y: 0 } : undefined}
-      viewport={{ once: true }}
-      transition={animateEnabled ? { duration: 0.5, delay: 0.3 } : undefined}
-      className="inline-flex items-center gap-2 mb-6 sm:mb-8"
-    >
-      <div
-        className="featured-badge-pulse flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--color-asics-blue)]/20 to-[var(--color-asics-accent)]/20 border border-[var(--color-asics-accent)]/30"
-        style={{
-          boxShadow: '0 0 8px 1px rgba(0, 209, 255, 0.15)',
-        }}
-      >
-        <span className="text-lg">⭐</span>
-        <span className="type-caption font-semibold text-[var(--color-asics-accent)]">
-          RUNNER&apos;S CHOICE
-        </span>
-        <span className="text-lg">🔥</span>
-      </div>
-    </motion.div>
-  );
-}
-
 // Enhanced shoe card wrapper with spotlight effect
 function SpotlightShoeCard({
   shoe,
@@ -75,62 +49,61 @@ function SpotlightShoeCard({
         }}
       />
 
-      {/* Ranking badge */}
-      <motion.div
-        className="absolute -top-3 -left-1 z-20 w-10 h-10 rounded-full flex items-center justify-center font-bold text-white"
-        style={{
-          background: `linear-gradient(135deg, var(--color-asics-blue), var(--color-asics-accent))`,
-          boxShadow: '0 4px 15px var(--color-asics-blue)',
-        }}
-        initial={animateEnabled ? { scale: 0, rotate: -180 } : false}
-        whileInView={animateEnabled ? { scale: 1, rotate: 0 } : undefined}
-        viewport={{ once: true }}
-        transition={
-          animateEnabled
-            ? {
-                duration: 0.5,
-                delay: 0.4 + index * 0.15,
-                type: 'spring',
-                stiffness: 200,
-              }
-            : undefined
-        }
-        whileHover={animateEnabled ? { scale: 1.1, rotate: 10 } : undefined}
-      >
-        #{index + 1}
-      </motion.div>
-
-      {/* Popular tag for first item */}
-      {index === 0 && (
-        <motion.div
-          className="absolute -top-3 right-5 z-20 px-3 py-1 rounded-full type-caption font-bold text-white"
-          style={{
-            background: 'linear-gradient(135deg, #FF6B6B, #FF8E53)',
-            boxShadow: '0 4px 15px rgba(255, 107, 107, 0.4)',
-          }}
-          initial={animateEnabled ? { scale: 0, y: -20 } : false}
-          whileInView={animateEnabled ? { scale: 1, y: 0 } : undefined}
-          viewport={{ once: true }}
-          transition={
-            animateEnabled
-              ? {
-                  duration: 0.4,
-                  delay: 0.6,
-                  type: 'spring',
-                }
-              : undefined
-          }
-        >
-          <span>MOST POPULAR</span>
-        </motion.div>
-      )}
-
       {/* The actual shoe card */}
       <motion.div
         whileHover={animateEnabled ? { y: -8, scale: 1.02, zIndex: 20 } : undefined}
         transition={animateEnabled ? { duration: 0.3 } : undefined}
         className="relative z-10"
       >
+        {/* Ranking badge - moves with hovered/scaled card wrapper */}
+        <motion.div
+          className="pointer-events-none absolute -top-3 -left-1 z-40 w-10 h-10 rounded-full flex items-center justify-center font-bold text-white"
+          style={{
+            background: `linear-gradient(135deg, var(--color-asics-blue), var(--color-asics-accent))`,
+            boxShadow: '0 4px 15px var(--color-asics-blue)',
+          }}
+          initial={animateEnabled ? { scale: 0, rotate: -180 } : false}
+          whileInView={animateEnabled ? { scale: 1, rotate: 0 } : undefined}
+          viewport={{ once: true }}
+          transition={
+            animateEnabled
+              ? {
+                  duration: 0.5,
+                  delay: 0.4 + index * 0.15,
+                  type: 'spring',
+                  stiffness: 200,
+                }
+              : undefined
+          }
+        >
+          #{index + 1}
+        </motion.div>
+
+        {/* Popular tag for first item - follows card transform too */}
+        {index === 0 && (
+          <motion.div
+            className="pointer-events-none absolute -top-3 right-5 z-40 px-3 py-1 rounded-full type-caption font-bold text-white"
+            style={{
+              background: 'linear-gradient(135deg, #FF6B6B, #FF8E53)',
+              boxShadow: '0 4px 15px rgba(255, 107, 107, 0.4)',
+            }}
+            initial={animateEnabled ? { scale: 0, y: -20 } : false}
+            whileInView={animateEnabled ? { scale: 1, y: 0 } : undefined}
+            viewport={{ once: true }}
+            transition={
+              animateEnabled
+                ? {
+                    duration: 0.4,
+                    delay: 0.6,
+                    type: 'spring',
+                  }
+                : undefined
+            }
+          >
+            <span>MOST POPULAR</span>
+          </motion.div>
+        )}
+
         <ShoeCard shoe={shoe} index={index} />
       </motion.div>
 
@@ -221,8 +194,6 @@ export default function FeaturedShoes() {
       >
         {/* Section header */}
         <div ref={headerRef} className="text-center pt-6 md:pt-8 pb-8 md:pb-4 layout-shell">
-          <FeaturedBadge animateEnabled={animateEnabled} />
-
           <TextReveal
             as="h2"
             mode="clip"
