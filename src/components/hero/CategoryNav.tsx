@@ -10,6 +10,7 @@ import { useState, useEffect, useRef } from 'react';
 import { categories } from '@/data/categories';
 import { getAllBrandIds } from '@/utils/shoe-utils';
 import { gsap, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
+import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
@@ -124,7 +125,7 @@ function CategoryCard({
               </p>
 
               <p className="type-body type-readable text-[var(--color-foreground)]/52 max-w-[30ch]">
-                {category.description}
+                <SentenceLineBreakText text={category.description} variant="body" />
               </p>
 
               {/* Subcategory badge */}
@@ -251,7 +252,10 @@ export default function CategoryNav() {
             viewport={{ once: true }}
             transition={animateEnabled ? { duration: 0.6, delay: 0.5 } : undefined}
           >
-            목적에 맞는 카테고리를 선택해보세요
+            <SentenceLineBreakText
+              text="목적에 맞는 카테고리를 선택해보세요"
+              variant="lead"
+            />
           </motion.p>
 
           <p className="mt-3 type-caption text-[var(--color-foreground)]/45">

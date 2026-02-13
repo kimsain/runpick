@@ -7,6 +7,7 @@
 import { motion } from 'framer-motion';
 import { useReducedMotion } from 'framer-motion';
 import Button from '@/components/common/Button';
+import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { EASE_OUT_EXPO, STAGGER_NORMAL } from '@/constants/animation';
@@ -154,8 +155,10 @@ export default function HeroSection() {
             }
             className="mt-7 sm:mt-8 type-lead text-[var(--color-foreground)]/65 reading-measure text-pretty"
           >
-            Daily, Super Trainer, Racing 카테고리별로 정리된 러닝화 카탈로그와
-            맞춤 추천 퀴즈로 완벽한 러닝화를 찾아보세요.
+            <SentenceLineBreakText
+              text="Daily, Super Trainer, Racing 카테고리별로 정리된 러닝화 카탈로그와 맞춤 추천 퀴즈로 완벽한 러닝화를 찾아보세요."
+              variant="lead"
+            />
           </motion.p>
 
           {/* CTA Buttons with stagger clip-path reveal */}

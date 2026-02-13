@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import { categories } from '@/data/categories';
 import { CategoryId } from '@/types/shoe';
 import { getAllBrandIds, getAllBrands, getShoesByBrand } from '@/utils/shoe-utils';
@@ -51,9 +52,14 @@ export default function BrandIndexPage() {
               브랜드를 선택하세요
             </h1>
             <p className="mt-4 type-lead text-[var(--color-foreground)]/62 reading-measure text-pretty">
-              {selectedCategoryInfo
-                ? `${selectedCategoryInfo.name} 카테고리로 바로 이동할 브랜드를 선택하세요.`
-                : '관심 있는 브랜드를 선택하면 카탈로그로 이동합니다.'}
+              <SentenceLineBreakText
+                text={
+                  selectedCategoryInfo
+                    ? `${selectedCategoryInfo.name} 카테고리로 바로 이동할 브랜드를 선택하세요.`
+                    : '관심 있는 브랜드를 선택하면 카탈로그로 이동합니다.'
+                }
+                variant="lead"
+              />
             </p>
 
             {selectedCategoryInfo && (
@@ -146,7 +152,7 @@ export default function BrandIndexPage() {
                     </div>
 
                     <p className="mt-4 type-body text-[var(--color-foreground)]/56">
-                      {brand.description}
+                      <SentenceLineBreakText text={brand.description} variant="body" />
                     </p>
 
                     <div className="mt-6 flex items-center justify-between border-t border-[var(--color-border)] pt-4">

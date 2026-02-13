@@ -8,6 +8,7 @@ import QuizProgress from '@/components/quiz/QuizProgress';
 import QuizQuestionComponent from '@/components/quiz/QuizQuestion';
 import QuizResult from '@/components/quiz/QuizResult';
 import Button from '@/components/common/Button';
+import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import TextReveal from '@/components/effects/TextReveal';
 import { quizQuestions } from '@/data/quiz-questions';
 import { QuizAnswer, QuizResult as QuizResultType } from '@/types/quiz';
@@ -178,13 +179,19 @@ export default function QuizPage() {
                     러닝화 추천 퀴즈
                   </TextReveal>
                   <p className="type-body text-[var(--color-foreground)]/62 text-pretty reading-measure type-readable">
-                    먼저 선호 브랜드를 선택하세요. 전체 선택 시 브랜드 상관없이 추천합니다.
+                    <SentenceLineBreakText
+                      text="먼저 선호 브랜드를 선택하세요. 전체 선택 시 브랜드 상관없이 추천합니다."
+                      variant="body"
+                    />
                   </p>
                 </div>
 
                 <div className="bg-[var(--color-card)] rounded-3xl p-6 sm:p-8 border border-[var(--color-border)]">
                   <h2 className="type-h2 text-[var(--color-foreground)] mb-6 text-balance">
-                    어떤 브랜드를 우선 추천할까요?
+                    <SentenceLineBreakText
+                      text="어떤 브랜드를 우선 추천할까요?"
+                      variant="headline"
+                    />
                   </h2>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -260,7 +267,10 @@ export default function QuizPage() {
                     transition={animateEnabled ? { delay: 0.3 } : undefined}
                     className="type-body text-[var(--color-foreground)]/62 text-pretty reading-measure type-readable"
                   >
-                    5가지 질문으로 딱 맞는 러닝화를 찾아드려요
+                    <SentenceLineBreakText
+                      text="5가지 질문으로 딱 맞는 러닝화를 찾아드려요"
+                      variant="body"
+                    />
                   </motion.p>
                   <p className="mt-2 flex items-center justify-center type-caption text-[var(--color-foreground)]/45">
                     <span className="mr-1">선호 브랜드</span>

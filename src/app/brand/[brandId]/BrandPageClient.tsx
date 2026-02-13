@@ -7,6 +7,7 @@ import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
 import Badge from '@/components/common/Badge';
 import BrandSwitcher from '@/components/common/BrandSwitcher';
+import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { categories } from '@/data/categories';
@@ -104,7 +105,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                 transition={animateEnabled ? { delay: 0.3 } : undefined}
                 className="mt-4 type-lead text-[var(--color-foreground)]/62 reading-measure text-pretty"
               >
-                {brand.description}
+                <SentenceLineBreakText text={brand.description} variant="lead" />
               </motion.p>
               <motion.p
                 initial={animateEnabled ? { opacity: 0 } : false}
@@ -193,7 +194,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
                       </Badge>
                     </div>
                     <p className="type-body text-[var(--color-foreground)]/62 text-pretty">
-                      {category.description}
+                      <SentenceLineBreakText text={category.description} variant="body" />
                     </p>
                   </motion.div>
 

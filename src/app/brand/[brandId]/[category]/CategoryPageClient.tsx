@@ -6,6 +6,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ShoeCard from '@/components/shoe/ShoeCard';
 import BrandSwitcher from '@/components/common/BrandSwitcher';
+import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import TextReveal from '@/components/effects/TextReveal';
 import { getCategoryById, getSubcategoriesByCategory } from '@/data/categories';
 import { getBrandById, getShoesByBrandAndCategory } from '@/utils/shoe-utils';
@@ -174,7 +175,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                 </span>
               </TextReveal>
               <p className="type-lead text-[var(--color-foreground)]/62 reading-measure text-pretty">
-                {categoryData.description}
+                <SentenceLineBreakText text={categoryData.description} variant="lead" />
               </p>
               <p className="mt-4 type-caption text-[var(--color-foreground)]/42">
                 {allCategoryShoes.length}개 모델
@@ -273,7 +274,10 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
                       {selectedSubcategoryInfo.name}
                     </h2>
                     <p className="type-body text-[var(--color-foreground)]/62 text-pretty">
-                      {selectedSubcategoryInfo.description}
+                      <SentenceLineBreakText
+                        text={selectedSubcategoryInfo.description}
+                        variant="body"
+                      />
                     </p>
                   </>
                 ) : null}

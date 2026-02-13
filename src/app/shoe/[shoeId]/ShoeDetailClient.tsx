@@ -14,6 +14,7 @@ import ShoeSpecChart from '@/components/shoe/ShoeSpecChart';
 import Badge from '@/components/common/Badge';
 import Button from '@/components/common/Button';
 import BrandSwitcher from '@/components/common/BrandSwitcher';
+import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import TextReveal from '@/components/effects/TextReveal';
 import ImageDistortion from '@/components/effects/ImageDistortion';
 import SmartShoeImage from '@/components/common/SmartShoeImage';
@@ -220,7 +221,7 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                 </p>
 
                 <p className="type-body text-[var(--color-foreground)]/82 mb-8 text-pretty">
-                  {shoe.description}
+                  <SentenceLineBreakText text={shoe.description} variant="body" />
                 </p>
 
                 {/* Price */}
@@ -404,7 +405,10 @@ export default function ShoeDetailClient({ shoeId }: ShoeDetailClientProps) {
                   비슷한 러닝화
                 </h2>
                 <p className="type-body text-[var(--color-foreground)]/62 text-pretty">
-                  같은 카테고리의 다른 모델도 살펴보세요
+                  <SentenceLineBreakText
+                    text="같은 카테고리의 다른 모델도 살펴보세요"
+                    variant="body"
+                  />
                 </p>
               </motion.div>
             </div>

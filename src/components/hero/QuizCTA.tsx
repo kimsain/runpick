@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import TextReveal from '@/components/effects/TextReveal';
 import MagneticElement from '@/components/effects/MagneticElement';
 import { gsap, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
@@ -122,7 +123,10 @@ export default function QuizCTA() {
               mode="clip"
               className="type-h1 text-white mb-4 text-balance"
             >
-              어떤 러닝화가 나에게 맞을까?
+              <SentenceLineBreakText
+                text="어떤 러닝화가 나에게 맞을까?"
+                variant="headline"
+              />
             </TextReveal>
 
             <motion.p
@@ -132,7 +136,10 @@ export default function QuizCTA() {
               viewport={{ once: true }}
               transition={animateEnabled ? { delay: 0.3, duration: 0.6 } : undefined}
             >
-              러닝 스타일, 목표, 발 유형을 분석해서 딱 맞는 러닝화를 추천해드려요.
+              <SentenceLineBreakText
+                text="러닝 스타일, 목표, 발 유형을 분석해서 딱 맞는 러닝화를 추천해드려요."
+                variant="lead"
+              />
             </motion.p>
 
             {/* CTA Button */}

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { QuizResult as QuizResultType } from '@/types/quiz';
 import Button from '@/components/common/Button';
+import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import ShoeSpecChart from '@/components/shoe/ShoeSpecChart';
 import { getCategoryById } from '@/data/categories';
 import { hasShoeImage } from '@/data/image-manifest';
@@ -152,7 +153,10 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           delay={0.3}
           className="type-h1 text-[var(--color-foreground)] mb-4 text-balance"
         >
-          당신에게 딱 맞는 러닝화를 찾았어요!
+          <SentenceLineBreakText
+            text="당신에게 딱 맞는 러닝화를 찾았어요!"
+            variant="headline"
+          />
         </TextReveal>
 
         {/* Match score circle */}
@@ -193,7 +197,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
           transition={animateEnabled ? { delay: 1.0 } : undefined}
           className="type-body text-[var(--color-foreground)]/62 reading-measure text-pretty type-readable"
         >
-          {reasoning}
+          <SentenceLineBreakText text={reasoning} variant="body" />
         </motion.p>
       </div>
 
@@ -257,7 +261,10 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
             </div>
 
             <p className="type-body text-[var(--color-foreground)]/82 mb-6 text-pretty reading-measure type-readable">
-              {primaryRecommendation.shortDescription}
+              <SentenceLineBreakText
+                text={primaryRecommendation.shortDescription}
+                variant="body"
+              />
             </p>
 
             <div className="flex items-center gap-4">
@@ -342,7 +349,7 @@ export default function QuizResult({ result, onRetry }: QuizResultProps) {
                         </span>
                       </div>
                       <p className="type-caption text-[var(--color-asics-accent)] leading-snug type-readable">
-                        {reason}
+                        <SentenceLineBreakText text={reason} variant="caption" />
                       </p>
                     </div>
                   </Link>

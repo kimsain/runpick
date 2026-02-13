@@ -9,6 +9,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import ShoeCard from '@/components/shoe/ShoeCard';
 import { getAllShoes } from '@/utils/shoe-utils';
 import { gsap, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
+import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import TextReveal from '@/components/effects/TextReveal';
 import { EASE_OUT_EXPO, DUR_REVEAL } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
@@ -249,7 +250,10 @@ export default function FeaturedShoes() {
                 : undefined
             }
           >
-            러너들이 가장 사랑하는 모델들
+            <SentenceLineBreakText
+              text="러너들이 가장 사랑하는 모델들"
+              variant="lead"
+            />
           </motion.p>
 
           <p className="mt-2 type-caption text-[var(--color-foreground)]/45 md:hidden">

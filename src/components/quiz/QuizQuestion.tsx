@@ -4,6 +4,7 @@
 
 import { motion, useReducedMotion } from 'framer-motion';
 import { QuizQuestion as QuizQuestionType } from '@/types/quiz';
+import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import { useInteractionCapabilities } from '@/hooks/useInteractionCapabilities';
 
 interface QuizQuestionProps {
@@ -27,11 +28,11 @@ export default function QuizQuestion({
   return (
     <div>
       <h2 className="type-h2 text-[var(--color-foreground)] mb-2 text-balance">
-        {question.questionKo}
+        <SentenceLineBreakText text={question.questionKo} variant="headline" />
       </h2>
       {question.description && (
         <p className="type-body text-[var(--color-foreground)]/62 mb-8 text-pretty type-readable">
-          {question.description}
+          <SentenceLineBreakText text={question.description} variant="body" />
         </p>
       )}
 
@@ -88,13 +89,15 @@ export default function QuizQuestion({
                 <h3 className={`type-body font-medium leading-tight ${
                   isSelected ? 'text-[var(--color-asics-accent)]' : 'text-[var(--color-foreground)]'
                 }`}>
-                  {option.labelKo}
+                  <SentenceLineBreakText text={option.labelKo} variant="body" />
                 </h3>
               </div>
 
               {/* Description */}
               {option.description && (
-                <p className="type-caption text-[var(--color-foreground)]/60 leading-snug">{option.description}</p>
+                <p className="type-caption text-[var(--color-foreground)]/60 leading-snug">
+                  <SentenceLineBreakText text={option.description} variant="caption" />
+                </p>
               )}
 
               {/* Glow effect */}

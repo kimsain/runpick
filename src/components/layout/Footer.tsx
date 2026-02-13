@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { ScrollTrigger, gsap, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
+import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import TextReveal from '@/components/effects/TextReveal';
 import { STAGGER_NORMAL } from '@/constants/animation';
 import { getAllBrands } from '@/utils/shoe-utils';
@@ -58,9 +59,10 @@ export default function Footer() {
               RunPick
             </TextReveal>
             <p className="mt-4 type-body text-[var(--color-foreground)]/65 max-w-md">
-              당신에게 딱 맞는 러닝화를 찾아드립니다.
-              카테고리별로 정리된 러닝화 카탈로그와 맞춤 추천 퀴즈로
-              완벽한 러닝화를 찾아보세요.
+              <SentenceLineBreakText
+                text="당신에게 딱 맞는 러닝화를 찾아드립니다. 카테고리별로 정리된 러닝화 카탈로그와 맞춤 추천 퀴즈로 완벽한 러닝화를 찾아보세요."
+                variant="body"
+              />
             </p>
           </div>
 

@@ -99,9 +99,11 @@ body {
 
 .type-readable {
   text-wrap: pretty;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   hyphens: auto;
   text-rendering: optimizeLegibility;
+  word-break: keep-all;
+  line-break: strict;
 }
 
 .type-eyebrow {
@@ -120,8 +122,10 @@ body {
   line-height: 1.05;
   letter-spacing: -0.02em;
   text-wrap: balance;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   hyphens: auto;
+  word-break: keep-all;
+  line-break: strict;
 }
 
 .type-h1 {
@@ -131,8 +135,10 @@ body {
   line-height: 1.12;
   letter-spacing: -0.018em;
   text-wrap: balance;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   hyphens: auto;
+  word-break: keep-all;
+  line-break: strict;
 }
 
 .type-kicker {
@@ -157,8 +163,10 @@ body {
   line-height: 1.16;
   letter-spacing: -0.015em;
   text-wrap: balance;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   hyphens: auto;
+  word-break: keep-all;
+  line-break: strict;
 }
 
 .type-h3 {
@@ -168,24 +176,30 @@ body {
   line-height: 1.24;
   letter-spacing: -0.01em;
   text-wrap: balance;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   hyphens: auto;
+  word-break: keep-all;
+  line-break: strict;
 }
 
 .type-lead {
   font-size: var(--type-lead);
   line-height: 1.7;
   text-wrap: pretty;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   hyphens: auto;
+  word-break: keep-all;
+  line-break: strict;
 }
 
 .type-body {
   font-size: var(--type-body);
   line-height: 1.72;
   text-wrap: pretty;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   hyphens: auto;
+  word-break: keep-all;
+  line-break: strict;
 }
 
 .type-caption {
@@ -193,8 +207,18 @@ body {
   line-height: 1.5;
   letter-spacing: 0.04em;
   text-wrap: pretty;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   hyphens: auto;
+  word-break: keep-all;
+  line-break: strict;
+}
+
+.sentence-flow {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  line-break: strict;
+  hanging-punctuation: first last;
+  text-wrap: pretty;
 }
 
 @media (max-width: 767px) {
