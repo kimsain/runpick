@@ -44,7 +44,9 @@ function getTopSpecs(specs: ShoeSpecs): { key: string; label: string; value: num
 function SpecDotBar({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex items-center gap-1.5">
-      <span className="type-caption text-[var(--color-foreground)]/50 w-9 shrink-0">{label}</span>
+      <span className="type-caption text-[var(--color-foreground)]/50 w-14 shrink-0 whitespace-nowrap">
+        {label}
+      </span>
       <div className="flex gap-[2px]">
         {Array.from({ length: 10 }, (_, i) => (
           <div

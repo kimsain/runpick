@@ -160,6 +160,7 @@ function SpotlightShoeCard({
 export default function FeaturedShoes() {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
   const { hasMotionBudget } = useInteractionCapabilities();
   const animateEnabled = !useReducedMotion() && hasMotionBudget;
 
@@ -190,12 +191,16 @@ export default function FeaturedShoes() {
       const container = scrollContainerRef.current;
       const cards = container?.querySelector('.horizontal-cards') as HTMLElement | null;
       if (cards && container) {
+        const headerHeight = headerRef.current?.offsetHeight ?? 0;
+        // Delay pin start until cards are fully visible, not while lower card area is clipped.
+        const startOffset = Math.min(Math.max(Math.round(headerHeight + 12), 96), 220);
+
         gsap.to(cards, {
           x: () => -(cards.scrollWidth - window.innerWidth + 100),
           ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top top',
+            start: () => `top+=${startOffset} top`,
             end: () => `+=${cards.scrollWidth}`,
             scrub: 1,
             pin: true,
@@ -212,11 +217,11 @@ export default function FeaturedShoes() {
     <section ref={sectionRef} className="relative bg-[var(--color-background)] section-space-tight">
       <div
         ref={scrollContainerRef}
-        className={`relative flex flex-col justify-center overflow-hidden ${!isPinDesktop ? '' : 'min-h-screen'}`}
+        className={`relative flex flex-col justify-center overflow-x-hidden overflow-y-visible ${!isPinDesktop ? '' : 'min-h-screen'}`}
         data-cursor="drag"
       >
         {/* Section header */}
-        <div className="text-center pt-6 md:pt-8 pb-8 md:pb-4 layout-shell">
+        <div ref={headerRef} className="text-center pt-6 md:pt-8 pb-8 md:pb-4 layout-shell">
           <FeaturedBadge animateEnabled={animateEnabled} />
 
           <TextReveal
