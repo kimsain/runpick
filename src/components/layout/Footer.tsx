@@ -2,9 +2,8 @@
 
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { ScrollTrigger, gsap, ensureScrollTriggerRegistration } from '@/lib/scroll-trigger';
-import SentenceLineBreakText from '@/components/common/SentenceLineBreakText';
 import TextReveal from '@/components/effects/TextReveal';
 import { STAGGER_NORMAL } from '@/constants/animation';
 import { getAllBrands } from '@/utils/shoe-utils';
@@ -49,45 +48,25 @@ export default function Footer() {
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--color-asics-blue)]/50 to-transparent" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-32 bg-gradient-to-b from-[var(--color-asics-blue)]/5 to-transparent blur-3xl pointer-events-none" />
 
-      {/* Floating shoe animation */}
-      <FloatingShoe />
-
       <div className="relative layout-shell section-space-tight">
-        <div ref={linksRef} className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
-          <div className="col-span-1 md:col-span-2 footer-link-item">
+        <div ref={linksRef} className="flex flex-col items-center gap-6">
+          <div className="footer-link-item text-center">
             <TextReveal as="span" mode="clip" className="type-h3 text-gradient inline-block">
               RunPick
             </TextReveal>
-            <p className="mt-4 type-body text-[var(--color-foreground)]/65 max-w-md">
-              <SentenceLineBreakText
-                text="당신에게 딱 맞는 러닝화를 찾아드립니다. 카테고리별로 정리된 러닝화 카탈로그와 맞춤 추천 퀴즈로 완벽한 러닝화를 찾아보세요."
-                variant="body"
-              />
-            </p>
           </div>
 
-          <div className="footer-link-item">
-            <h3 className="type-h3 text-[var(--color-foreground)] mb-4">
+          <div className="footer-link-item text-center">
+            <h3 className="type-h3 text-[var(--color-foreground)] mb-3">
               카탈로그
             </h3>
-            <ul className="space-y-2">
+            <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
               <FooterLink href="/brand" animateEnabled={animateEnabled}>전체 브랜드</FooterLink>
               {brands.map((brand) => (
                 <FooterLink key={brand.id} href={`/brand/${brand.id}`} animateEnabled={animateEnabled}>
                   {brand.name}
                 </FooterLink>
               ))}
-            </ul>
-          </div>
-
-          <div className="footer-link-item">
-            <h3 className="type-h3 text-[var(--color-foreground)] mb-4">
-              도움말
-            </h3>
-            <ul className="space-y-2">
-              <FooterLink href="/quiz" animateEnabled={animateEnabled}>
-                추천 퀴즈
-              </FooterLink>
             </ul>
           </div>
         </div>
@@ -104,14 +83,6 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  );
-}
-
-function FloatingShoe() {
-  return (
-    <div className="absolute right-8 top-8 text-4xl opacity-20 pointer-events-none select-none hidden md:block">
-      <span role="img" aria-label="running shoe">👟</span>
-    </div>
   );
 }
 
