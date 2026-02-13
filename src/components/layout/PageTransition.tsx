@@ -2,45 +2,19 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-import { DUR_TRANSITION, EASE_IN_OUT_QUART } from '@/constants/animation';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 interface PageTransitionProps {
   children: React.ReactNode;
 }
 
+// Note: SmoothScroll key={pathname} already unmounts/remounts the entire tree,
+// so exit animations never run. Using opacity-only to avoid Framer Motion's
+// clipPath interpolation error on detached DOM elements.
 const pageVariants = {
-  initial: {
-    clipPath: 'circle(0% at 50% 50%)',
-    opacity: 0,
-  },
-  enter: {
-    clipPath: 'circle(100% at 50% 50%)',
-    opacity: 1,
-    transition: {
-      clipPath: {
-        duration: DUR_TRANSITION,
-        ease: EASE_IN_OUT_QUART as unknown as number[],
-      },
-      opacity: {
-        duration: 0.3,
-      },
-    },
-  },
-  exit: {
-    clipPath: 'circle(0% at 50% 50%)',
-    opacity: 0,
-    transition: {
-      clipPath: {
-        duration: DUR_TRANSITION,
-        ease: EASE_IN_OUT_QUART as unknown as number[],
-      },
-      opacity: {
-        duration: 0.3,
-        delay: DUR_TRANSITION - 0.3,
-      },
-    },
-  },
+  initial: { opacity: 0 },
+  enter: { opacity: 1, transition: { duration: 0.3 } },
+  exit: { opacity: 0, transition: { duration: 0.15 } },
 };
 
 export default function PageTransition({ children }: PageTransitionProps) {

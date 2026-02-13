@@ -4,7 +4,6 @@
 // custom cursor, Lenis smooth scroll, and page transitions.
 // Mounted in layout.tsx (Server Component) -> LayoutClient (Client Component).
 
-import { usePathname } from 'next/navigation';
 import SmoothScroll from './SmoothScroll';
 import CustomCursor from './CustomCursor';
 import PageTransition from './PageTransition';
@@ -16,14 +15,12 @@ interface LayoutClientProps {
 }
 
 export default function LayoutClient({ children }: LayoutClientProps) {
-  const pathname = usePathname();
-
   return (
     <>
       <GrainOverlay />
       <ScrollProgress />
       <CustomCursor />
-      <SmoothScroll key={pathname}>
+      <SmoothScroll>
         <PageTransition>
           {children}
         </PageTransition>

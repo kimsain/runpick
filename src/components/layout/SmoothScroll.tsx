@@ -3,8 +3,10 @@
 // Lenis smooth scroll wrapper. Desktop only (useIsDesktop guard).
 // Syncs with GSAP ticker for frame-perfect ScrollTrigger compatibility.
 // Mobile uses native scroll — this component renders children only.
+// Scroll position resets on pathname change (no key-based remount needed).
 
 import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -17,6 +19,7 @@ interface SmoothScrollProps {
 export default function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null);
   const isDesktop = useIsDesktop();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!isDesktop) return; // Mobile: use native scroll
@@ -47,8 +50,18 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
     return () => {
       gsap.ticker.remove(tickerCallback);
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, [isDesktop]);
+
+  // Reset scroll position on route change without destroying the tree
+  useEffect(() => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname]);
 
   return <>{children}</>;
 }
