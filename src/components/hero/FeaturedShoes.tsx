@@ -166,8 +166,8 @@ export default function FeaturedShoes() {
         const headerHeight = headerRef.current?.offsetHeight ?? 0;
         // Nudge pin start slightly lower so card bottom area (price) is visible before horizontal scroll begins.
         const startOffset = Math.min(
-          Math.max(Math.round(headerHeight * 0.22) + 8, 30),
-          72
+          Math.max(Math.round(headerHeight * 0.22) + 14, 36),
+          78
         );
 
         gsap.to(cards, {

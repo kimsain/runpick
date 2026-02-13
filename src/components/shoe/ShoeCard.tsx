@@ -194,7 +194,6 @@ function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
   const isDesktop = useIsDesktop();
   const { hasMotionBudget } = useInteractionCapabilities();
   const isMotionEnabled = isDesktop && hasMotionBudget;
-  const showDetailHint = isMotionEnabled ? isHovered : true;
 
   // 3D tilt effect values - desktop only
   const x = useMotionValue(0);
@@ -336,18 +335,10 @@ function ShoeCard({ shoe, index = 0 }: ShoeCardProps) {
           </div>
 
           {/* Price */}
-          <div className="mt-3 pt-3 border-t border-[var(--color-border)] flex flex-col items-center gap-1">
+          <div className="mt-2 pt-2 border-t border-[var(--color-border)] flex flex-col items-center">
             <span className="type-h3 text-gradient text-center">
               {shoe.priceFormatted}
             </span>
-            <motion.span
-              className="type-body text-[var(--color-asics-accent)] text-center"
-              initial={isMotionEnabled ? { x: -10, opacity: 0 } : false}
-              animate={showDetailHint ? { x: 0, opacity: 1 } : { x: -10, opacity: 0 }}
-              transition={isMotionEnabled ? { duration: 0.3, type: 'spring', stiffness: 300 } : undefined}
-            >
-              자세히 보기 →
-            </motion.span>
           </div>
         </div>
 
