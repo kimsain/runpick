@@ -167,7 +167,7 @@ export default function BrandPageClient({ brandId }: BrandPageClientProps) {
             return (
               <section
                 key={category.id}
-                className="category-section py-10"
+                className="category-section py-10 scroll-anchor-safe"
                 id={category.id}
               >
                 <div className="layout-shell">

@@ -34,6 +34,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
   const isDesktop = useIsDesktop();
   const { hasMotionBudget } = useInteractionCapabilities();
   const animateEnabled = !useReducedMotion() && hasMotionBudget;
+  const subcategoryNavRef = useRef<HTMLElement>(null);
 
   const [selectedSubcategory, setSelectedSubcategory] = useState<SubcategoryId | 'all'>(
     'all'
@@ -108,7 +109,12 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
       window.requestAnimationFrame(() => {
         const top = listSectionRef.current?.getBoundingClientRect().top;
         if (typeof top !== 'number') return;
-        const targetY = window.scrollY + top - 116;
+
+        const navBottom = subcategoryNavRef.current?.getBoundingClientRect().bottom;
+
+        const targetOffset = Math.max(0, Math.ceil(navBottom ?? 0));
+        const targetY = window.scrollY + top - targetOffset;
+
         window.scrollTo({ top: Math.max(targetY, 0), behavior: 'smooth' });
       });
     }
@@ -183,6 +189,7 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
 
         {/* Subcategory Tabs — fixed below header, follows header hide/show */}
         <motion.section
+          ref={subcategoryNavRef}
           animate={animateEnabled ? { y: isDesktop && headerHidden ? -64 : 0 } : undefined}
           initial={animateEnabled ? false : undefined}
           transition={animateEnabled ? { duration: DUR_FAST, ease: 'easeOut' } : undefined}

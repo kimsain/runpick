@@ -51,6 +51,7 @@ export default function Header() {
   return (
     <>
       <motion.header
+        id="site-header"
         initial={{ y: -100 }}
         animate={{ y: hideByScroll ? -100 : 0 }}
         transition={animateEnabled ? { duration: DUR_FAST, ease: 'easeOut' } : undefined}

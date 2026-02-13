@@ -43,11 +43,11 @@
 /* Base styles */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5.5rem;
+  scroll-padding-top: var(--scroll-anchor-offset);
 }
 
 :root {
-  --scroll-anchor-offset: 5.5rem;
+  --scroll-anchor-offset: calc(5.5rem + env(safe-area-inset-top));
 }
 
 body {
@@ -124,6 +124,10 @@ body {
 }
 
 :target {
+  scroll-margin-top: var(--scroll-anchor-offset);
+}
+
+.scroll-anchor-safe {
   scroll-margin-top: var(--scroll-anchor-offset);
 }
 

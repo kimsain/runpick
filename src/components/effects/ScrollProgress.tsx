@@ -30,7 +30,7 @@ export default function ScrollProgress() {
   return (
     <div
       ref={barRef}
-      className="scroll-progress-bar fixed top-0 left-0 right-0 h-[2px] z-[9991] origin-left hidden md:block"
+      className="scroll-progress-bar fixed top-0 left-0 right-0 h-[2px] z-[9991] origin-left hidden md:block pointer-events-none"
       style={{
         opacity: isEnabled ? 1 : 0,
         background: 'linear-gradient(90deg, var(--color-asics-blue), var(--color-asics-accent))',

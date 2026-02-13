@@ -130,7 +130,8 @@ export default function QuizPage() {
       const top = quizCardRef.current?.getBoundingClientRect().top;
       if (typeof top !== 'number') return;
 
-      const offset = isDesktop ? 96 : 88;
+      const headerBottom = document.getElementById('site-header')?.getBoundingClientRect().bottom ?? 0;
+      const offset = Math.max(0, Math.ceil(headerBottom)) + (isDesktop ? 32 : 24);
       const targetY = window.scrollY + top - offset;
       window.scrollTo({ top: Math.max(targetY, 0), behavior: 'smooth' });
     });
@@ -151,7 +152,7 @@ export default function QuizPage() {
   return (
     <>
       <Header />
-      <main id="main-content" className={`pt-20 min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)] relative overflow-hidden ${phase === 'quiz' ? 'pb-24 sm:pb-0' : ''}`}>
+      <main id="main-content" className={`pt-20 min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)] relative overflow-hidden ${phase === 'quiz' ? 'pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-0' : ''}`}>
         <div className="relative layout-shell max-w-3xl py-8 sm:py-12">
           <AnimatePresence mode="wait">
             {phase === 'brand-select' && (

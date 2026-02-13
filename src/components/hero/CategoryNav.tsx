@@ -208,8 +208,8 @@ export default function CategoryNav() {
   return (
     <section
       id="category-nav"
+      className="section-space bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)] scroll-anchor-safe"
       ref={sectionRef}
-      className="section-space bg-gradient-to-b from-[var(--color-background)] to-[var(--color-card)]"
     >
       <div className="layout-shell">
         {/* Animated section header */}
