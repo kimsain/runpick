@@ -5,19 +5,11 @@
 // Mounted in layout.tsx (Server Component) -> LayoutClient (Client Component).
 
 import { usePathname } from 'next/navigation';
-import dynamic from 'next/dynamic';
 import SmoothScroll from './SmoothScroll';
+import CustomCursor from './CustomCursor';
 import PageTransition from './PageTransition';
-
-const GrainOverlay = dynamic(() => import('@/components/effects/GrainOverlay'), {
-  ssr: false,
-});
-const ScrollProgress = dynamic(() => import('@/components/effects/ScrollProgress'), {
-  ssr: false,
-});
-const CustomCursor = dynamic(() => import('./CustomCursor'), {
-  ssr: false,
-});
+import GrainOverlay from '@/components/effects/GrainOverlay';
+import ScrollProgress from '@/components/effects/ScrollProgress';
 
 interface LayoutClientProps {
   children: React.ReactNode;
