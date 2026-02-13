@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -22,6 +22,7 @@ export default function QuizPage() {
   const [result, setResult] = useState<QuizResultType | null>(null);
   const [phase, setPhase] = useState<QuizPhase>('quiz');
   const [analysisStep, setAnalysisStep] = useState(0);
+  const timersRef = useRef<NodeJS.Timeout[]>([]);
 
   const currentQuestion = quizQuestions[currentIndex];
   const isLastQuestion = currentIndex === quizQuestions.length - 1;
@@ -45,15 +46,15 @@ export default function QuizPage() {
       setAnalysisStep(0);
 
       // Phase text changes
-      setTimeout(() => setAnalysisStep(1), 300);
-      setTimeout(() => setAnalysisStep(2), 600);
+      timersRef.current.push(setTimeout(() => setAnalysisStep(1), 300));
+      timersRef.current.push(setTimeout(() => setAnalysisStep(2), 600));
 
       // Calculate and show result
-      setTimeout(() => {
+      timersRef.current.push(setTimeout(() => {
         const quizResult = calculateQuizResult(updatedAnswers);
         setResult(quizResult);
         setPhase('result');
-      }, 900);
+      }, 900));
     } else {
       setCurrentIndex((prev) => prev + 1);
       setSelectedOption(null);
@@ -76,6 +77,12 @@ export default function QuizPage() {
     setResult(null);
     setPhase('quiz');
     setAnalysisStep(0);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      timersRef.current.forEach(t => clearTimeout(t));
+    };
   }, []);
 
   const analysisTexts = [

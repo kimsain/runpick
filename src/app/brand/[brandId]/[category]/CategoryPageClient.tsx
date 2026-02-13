@@ -29,14 +29,20 @@ export default function CategoryPageClient({ brandId, category }: CategoryPageCl
   // Track header visibility (mirrors Header.tsx logic)
   const [headerHidden, setHeaderHidden] = useState(false);
   const lastScrollY = useRef(0);
+  const headerHiddenRef = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentY = window.scrollY;
       const isDown = currentY > lastScrollY.current;
       const scrolled = currentY > 20;
+      const newHidden = isDown && scrolled;
       lastScrollY.current = currentY;
-      setHeaderHidden(isDown && scrolled);
+
+      if (newHidden !== headerHiddenRef.current) {
+        headerHiddenRef.current = newHidden;
+        setHeaderHidden(newHidden);
+      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);

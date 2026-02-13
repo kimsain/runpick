@@ -10,13 +10,24 @@ export default function Header() {
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const lastScrollY = useRef(0);
+  const scrolledRef = useRef(false);
+  const directionRef = useRef<'up' | 'down'>('up');
 
   useEffect(() => {
     const handleScroll = () => {
       const currentY = window.scrollY;
-      setScrollDirection(currentY > lastScrollY.current ? 'down' : 'up');
+      const newDirection = currentY > lastScrollY.current ? 'down' : 'up';
+      const newScrolled = currentY > 20;
       lastScrollY.current = currentY;
-      setScrolled(currentY > 20);
+
+      if (newDirection !== directionRef.current) {
+        directionRef.current = newDirection;
+        setScrollDirection(newDirection);
+      }
+      if (newScrolled !== scrolledRef.current) {
+        scrolledRef.current = newScrolled;
+        setScrolled(newScrolled);
+      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);

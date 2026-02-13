@@ -6,7 +6,7 @@
 
 import { motion } from 'framer-motion';
 import { QuizQuestion as QuizQuestionType } from '@/types/quiz';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 interface QuizQuestionProps {
   question: QuizQuestionType;
@@ -38,6 +38,12 @@ export default function QuizQuestion({
       onAutoAdvance(optionId);
     }, 500);
   };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   return (
     <div>
